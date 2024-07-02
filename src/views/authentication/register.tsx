@@ -42,7 +42,7 @@ const Register = () => {
                           <Typography color="grey.800" gutterBottom variant={downMD ? 'h3' : 'h2'}>
                             Sign me up!
                           </Typography>
-                          <Typography variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }}>
+                          <Typography color="grey.800" variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }}>
                             Create your business account now
                           </Typography>
                         </Stack>
@@ -58,7 +58,7 @@ const Register = () => {
                   <Grid item xs={12}>
                     <Grid item container direction="column" alignItems="center" xs={12}>
                       <Typography component={Link} href={'/login'} variant="subtitle1" sx={{ textDecoration: 'none' }}>
-                        Already have an account?
+                        Already have an account? Log in
                       </Typography>
                     </Grid>
                   </Grid>

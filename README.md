@@ -2,12 +2,26 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+#### First, run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
+```
+
+#### For running with docker image:
+
+```bash
+docker run -d --name <container_name> -p <container_port>:<app_port> <image_name>
+```
+
+#### Or, running with docker compose:
+
+```
+docker compose up
+
+# to add
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
