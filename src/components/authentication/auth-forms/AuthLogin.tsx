@@ -122,7 +122,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 </InputAdornment>
               }
               inputProps={{}}
-              label="Password"
+              // label="Password"
             />
             {touched.password && errors.password && (
               <FormHelperText error id="standard-weight-helper-text-password-login">

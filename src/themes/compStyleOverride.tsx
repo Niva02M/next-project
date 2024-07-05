@@ -108,10 +108,21 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         }
       }
     },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          '> label': {
+            position: 'static',
+            transform: 'none'
+          }
+        }
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         input: {
           color: theme.palette.text.dark,
+          borderRadius: 0,
           '&::placeholder': {
             color: theme.palette.text.secondary,
             fontSize: '0.875rem'
@@ -123,7 +134,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           background: outlinedFilled ? bgColor : 'transparent',
-          borderRadius: `${borderRadius}px`,
+          borderRadius: 0,
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[400]
           },
@@ -138,7 +149,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           fontWeight: 500,
           background: outlinedFilled ? bgColor : 'transparent',
           padding: '15.5px 14px',
-          borderRadius: `${borderRadius}px`,
+          borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
             padding: '10px 14px',
             '&.MuiInputBase-inputAdornedStart': {
@@ -150,7 +161,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           paddingLeft: 4
         },
         notchedOutline: {
-          borderRadius: `${borderRadius}px`
+          borderRadius: 0
         }
       }
     },
