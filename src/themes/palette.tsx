@@ -89,6 +89,7 @@ const Palette = (mode: ThemeMode, presetColor: PresetColor) => {
         500: mode === ThemeMode.DARK ? colors.darkTextSecondary : colors.grey500,
         600: mode === ThemeMode.DARK ? colors.darkTextTitle : colors.grey600,
         700: mode === ThemeMode.DARK ? colors.darkTextPrimary : colors.grey700,
+        800: mode === ThemeMode.DARK ? colors.darkTextPrimary : colors.grey800,
         900: mode === ThemeMode.DARK ? colors.darkTextPrimary : colors.grey900
       },
       dark: {

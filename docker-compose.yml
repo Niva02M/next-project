@@ -1,16 +1,11 @@
-version: '3.5'
+version: '3.9'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ebtheme-web-next
-    ports:
-      - '3000:3000'
+    image: node:20.14.0-alpine
+    working_dir: /app
+    command: yarn dev
     volumes:
       - .:/app
-      - /app/node_modules
-# Caveat:
-# If you need to add new dependencies to the container, you will need to run:
-# docker-compose run --rm app npm install <package name>
+    ports:
+      - 8000:3000
