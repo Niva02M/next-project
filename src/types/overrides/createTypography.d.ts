@@ -17,7 +17,9 @@ declare module '@mui/material/styles/createTypography' {
     | 'commonAvatar'
     | 'smallAvatar'
     | 'mediumAvatar'
-    | 'largeAvatar';
+    | 'largeAvatar'
+    | 'body3'
+    | 'body4';
 
   export interface TypographyOptions extends Partial<Record<Variant, TypographyStyleOptions> & FontStyleOptions> {
     customInput?: TypographyStyleOptions;
@@ -28,6 +30,8 @@ declare module '@mui/material/styles/createTypography' {
     smallAvatar?: TypographyStyleOptions;
     mediumAvatar?: TypographyStyleOptions;
     largeAvatar?: TypographyStyleOptions;
+    body3?: TypographyStyleOptions;
+    body4?: TypographyStyleOptions;
   }
 
   export interface Typography extends Record<Variant, TypographyStyle>, FontStyle, TypographyUtils {
@@ -39,5 +43,7 @@ declare module '@mui/material/styles/createTypography' {
     smallAvatar: TypographyStyle;
     mediumAvatar: TypographyStyle;
     largeAvatar: TypographyStyle;
+    body3: TypographyStyle;
+    body4: TypographyStyle;
   }
 }
