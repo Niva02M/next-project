@@ -41,7 +41,7 @@ const Login = () => {
                           <Typography color="grey.800" gutterBottom variant={downMD ? 'h3' : 'h2'}>
                             Hi, Welcome Back
                           </Typography>
-                          <Typography fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }}>
+                          <Typography variant="body4" textAlign={{ xs: 'center', md: 'inherit' }}>
                             Enter your credentials to continue
                           </Typography>
                         </Stack>

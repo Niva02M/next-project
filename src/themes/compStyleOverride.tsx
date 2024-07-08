@@ -6,7 +6,7 @@ import { ThemeMode } from 'types/config';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
-  const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
+  // const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
   const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
   const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.dark;
 
@@ -19,12 +19,13 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         },
         sizeMedium: {
           padding: '9px 24px',
-          lineHeight: 'calc(20 /14)'
+          lineHeight: 'calc(20 /14)',
+          fontSize: theme.typography.body2.fontSize
         },
         sizeLarge: {
-          fontSize: theme.typography.body1.fontSize,
           lineHeight: 'calc(23 / 16)',
-          padding: '16px 24px'
+          padding: '16px 24px',
+          fontSize: theme.typography.body1.fontSize
         },
         startIcon: {
           marginLeft: 0
