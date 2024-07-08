@@ -76,7 +76,8 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
       color: theme.palette.grey[800],
     },
     '& > div > input': {
-      padding: '30.5px 14px 11.5px !important'
+      // padding: '30.5px 14px 11.5px !important'
+      padding: '13.5px 16px'
     },
     '& legend': {
       display: 'none'

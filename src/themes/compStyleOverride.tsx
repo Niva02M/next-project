@@ -111,9 +111,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiFormControl: {
       styleOverrides: {
         root: {
-          '> label': {
+          '.MuiInputLabel-root': {
             position: 'static',
-            transform: 'none'
+            transform: 'none',
+            fontSize: theme.typography.body2.fontSize,
+
+            '+.MuiInputBase-formControl': {
+              '.MuiInputBase-input': {
+                '&::placeholder': {
+                  opacity: '1 !important'
+                }
+              }
+            }
           }
         }
       }
@@ -123,9 +132,9 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         input: {
           color: theme.palette.text.dark,
           borderRadius: 0,
+          lineHeight: `calc(20/16)`,
           '&::placeholder': {
             color: theme.palette.text.secondary,
-            fontSize: '0.875rem'
           }
         }
       }
@@ -133,10 +142,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: outlinedFilled ? bgColor : 'transparent',
+          background: 'transparent',
           borderRadius: 0,
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[400]
+            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[500]
           },
           '&:hover $notchedOutline': {
             borderColor: theme.palette.primary.light
@@ -146,8 +155,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           }
         },
         input: {
-          fontWeight: 500,
-          background: outlinedFilled ? bgColor : 'transparent',
+          // fontWeight: 500,
           padding: '15.5px 14px',
           borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
@@ -162,6 +170,14 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         },
         notchedOutline: {
           borderRadius: 0
+        }
+      }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          margin: '4px 0 0',
+          fontSize: theme.typography.body4.fontSize
         }
       }
     },

@@ -91,6 +91,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               onBlur={handleBlur}
               onChange={handleChange}
               inputProps={{}}
+              placeholder="Email"
             />
             {touched.email && errors.email && (
               <FormHelperText error id="standard-weight-helper-text-email-login">
@@ -108,6 +109,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               name="password"
               onBlur={handleBlur}
               onChange={handleChange}
+              placeholder="Password"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
