@@ -35,6 +35,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn } from 'next-auth/react';
+import { TextField } from '@mui/material';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -116,68 +117,27 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit} {...others}>
-          <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-email-login"
-              type="email"
-              value={values.email}
-              name="email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              inputProps={{}}
-            />
-            {touched.email && errors.email && (
-              <FormHelperText error id="standard-weight-helper-text-email-login">
-                {errors.email}
-              </FormHelperText>
-            )}
-          </FormControl>
-
-          <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password-login"
-              type={showPassword ? 'text' : 'password'}
-              value={values.password}
-              name="password"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                    size="large"
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              inputProps={{}}
-              label="Password"
-            />
-            {touched.password && errors.password && (
-              <FormHelperText error id="standard-weight-helper-text-password-login">
-                {errors.password}
-              </FormHelperText>
-            )}
-          </FormControl>
-
-          <Grid container alignItems="center" justifyContent="space-between">
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked" color="primary" />
-                }
-                label="Keep me logged in"
+          <Grid container gap={3}>
+            <Grid item xs={12}>
+              <InputLabel htmlFor="email">Email</InputLabel>
+              <TextField
+                fullWidth
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={values.email}
+                onBlur={handleBlur}
+                onChange={handleChange}
               />
+              {touched.email && errors.email && (
+                <FormHelperText error id="standard-weight-helper-text--register">
+                  {errors.email}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="secondary" sx={{ textDecoration: 'none' }}>
-                Forgot Password?
+              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="primary" sx={{ textDecoration: 'none' }}>
+                Forgot your email?
               </Typography>
             </Grid>
           </Grid>
@@ -189,8 +149,8 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           )}
           <Box sx={{ mt: 2 }}>
             <AnimateButton>
-              <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
-                Sign In
+              <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+                Sign in now
               </Button>
             </AnimateButton>
           </Box>
