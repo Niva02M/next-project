@@ -15,28 +15,31 @@ import ThemeCustomization from 'themes';
 import { store } from 'store';
 import { ConfigProvider } from 'contexts/ConfigContext';
 
-import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
-// import { FirebaseProvider as AuthProvider } from '../contexts/FirebaseContext';
-// import { Auth0Provider as AuthProvider } from '../contexts/Auth0Context';
-// import { AWSCognitoProvider as AuthProvider } from 'contexts/AWSCognitoContext';
+import client from '../../apollo.config';
+import { ApolloProvider } from '@apollo/client';
+import { SessionProvider } from 'next-auth/react';
+
+// import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 
 export default function ProviderWrapper({ children }: { children: ReactNode }) {
   return (
     <Provider store={store}>
-      <ConfigProvider>
-        <ThemeCustomization>
-          <Locales>
-            <NavigationScroll>
-              <AuthProvider>
-                <>
-                  <Snackbar />
-                  {children}
-                </>
-              </AuthProvider>
-            </NavigationScroll>
-          </Locales>
-        </ThemeCustomization>
-      </ConfigProvider>
+      <ApolloProvider client={client}>
+        <ConfigProvider>
+          <ThemeCustomization>
+            <Locales>
+              <NavigationScroll>
+                <SessionProvider>
+                  <>
+                    <Snackbar />
+                    {children}
+                  </>
+                </SessionProvider>
+              </NavigationScroll>
+            </Locales>
+          </ThemeCustomization>
+        </ConfigProvider>
+      </ApolloProvider>
     </Provider>
   );
 }

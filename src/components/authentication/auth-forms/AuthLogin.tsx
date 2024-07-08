@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -23,21 +24,27 @@ import { Formik } from 'formik';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import useAuth from 'hooks/useAuth';
-import useScriptRef from 'hooks/useScriptRef';
-import { DASHBOARD_PATH } from 'config';
+// import useAuth from 'hooks/useAuth';
+// import useScriptRef from 'hooks/useScriptRef';
+// import { DASHBOARD_PATH } from 'config';
+
+import { openSnackbar } from 'store/slices/snackbar';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { generateDeviceId } from 'utils/deviceid.helper';
+import { signIn } from 'next-auth/react';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const theme = useTheme();
-  const router = useRouter();
-  const { login } = useAuth();
-  const scriptedRef = useScriptRef();
+  // const router = useRouter();
+
+  const dispatch = useDispatch();
+  // const { login } = useAuth();
+  // const scriptedRef = useScriptRef();
 
   const [checked, setChecked] = React.useState(true);
 
@@ -53,8 +60,8 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   return (
     <Formik
       initialValues={{
-        email: 'info@codedthemes.com',
-        password: '123456',
+        email: '',
+        password: '',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -63,19 +70,47 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await login(values.email, values.password);
-          if (scriptedRef.current) {
-            setStatus({ success: true });
-            router.push(DASHBOARD_PATH);
+          const res = await signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            redirect: false,
+            deviceId: generateDeviceId(),
+            callbackUrl: '/'
+          });
+          if (res?.ok) {
+            dispatch(
+              openSnackbar({
+                open: true,
+                message: 'Your registration has been successfully completed.',
+                variant: 'alert',
+                alert: {
+                  color: 'success'
+                },
+                close: false
+              })
+            );
+          } else {
+            if (res?.error?.includes(':')) {
+              console.error(res.error);
+              // errorSnack(res.error?.split(':')?.[1] || '');
+            }
             setSubmitting(false);
           }
         } catch (err: any) {
           console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          dispatch(
+            openSnackbar({
+              open: true,
+              message: err.message || 'User registration failed',
+              anchorOrigin: { horizontal: 'center' },
+              variant: 'alert',
+              alert: {
+                color: 'error'
+              }
+            })
+          );
+          setSubmitting(false);
+          // errorSnack(errorMessages.ERROR_IN_SIGNIN);
         }
       }}
     >
