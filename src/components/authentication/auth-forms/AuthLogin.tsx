@@ -143,7 +143,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               />
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="secondary" sx={{ textDecoration: 'none' }}>
+              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="primary" sx={{ textDecoration: 'none' }}>
                 Forgot Password?
               </Typography>
             </Grid>
@@ -156,7 +156,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           )}
           <Box sx={{ mt: 2 }}>
             <AnimateButton>
-              <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+              <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
                 Sign In
               </Button>
             </AnimateButton>

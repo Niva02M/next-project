@@ -15,7 +15,19 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '4px'
+          borderRadius: '36px'
+        },
+        sizeMedium: {
+          padding: '9px 24px',
+          lineHeight: 'calc(20 /14)'
+        },
+        sizeLarge: {
+          fontSize: theme.typography.body1.fontSize,
+          lineHeight: 'calc(23 / 16)',
+          padding: '16px 24px'
+        },
+        startIcon: {
+          marginLeft: 0
         }
       }
     },
@@ -134,7 +146,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           borderRadius: 0,
           lineHeight: `calc(20/16)`,
           '&::placeholder': {
-            color: theme.palette.text.secondary,
+            color: theme.palette.text.secondary
           }
         }
       }
