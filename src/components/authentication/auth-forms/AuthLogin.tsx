@@ -126,6 +126,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               onBlur={handleBlur}
               onChange={handleChange}
               inputProps={{}}
+              placeholder="Email"
             />
             {touched.email && errors.email && (
               <FormHelperText error id="standard-weight-helper-text-email-login">
@@ -143,6 +144,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               name="password"
               onBlur={handleBlur}
               onChange={handleChange}
+              placeholder="Password"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -157,7 +159,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 </InputAdornment>
               }
               inputProps={{}}
-              label="Password"
+              // label="Password"
             />
             {touched.password && errors.password && (
               <FormHelperText error id="standard-weight-helper-text-password-login">
@@ -176,7 +178,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               />
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="secondary" sx={{ textDecoration: 'none' }}>
+              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="primary" sx={{ textDecoration: 'none' }}>
                 Forgot Password?
               </Typography>
             </Grid>
@@ -189,7 +191,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           )}
           <Box sx={{ mt: 2 }}>
             <AnimateButton>
-              <Button color="secondary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+              <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
                 Sign In
               </Button>
             </AnimateButton>

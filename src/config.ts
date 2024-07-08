@@ -1,5 +1,5 @@
 // third party
-import { Roboto } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 
 // types
 import { ConfigProps, MenuOrientation, ThemeDirection, ThemeMode } from 'types/config';
@@ -11,13 +11,13 @@ export const BASE_PATH = '';
 export const DASHBOARD_PATH = '/sample-page';
 export const HORIZONTAL_MAX_ITEM = 7;
 
-const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '500', '700'] });
+const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] });
 
 const config: ConfigProps = {
   menuOrientation: MenuOrientation.VERTICAL,
   miniDrawer: false,
-  fontFamily: roboto.style.fontFamily,
-  borderRadius: 8,
+  fontFamily: poppins.style.fontFamily,
+  borderRadius: 12,
   outlinedFilled: true,
   mode: ThemeMode.LIGHT,
   presetColor: 'default',

@@ -15,7 +15,19 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '4px'
+          borderRadius: '36px'
+        },
+        sizeMedium: {
+          padding: '9px 24px',
+          lineHeight: 'calc(20 /14)'
+        },
+        sizeLarge: {
+          fontSize: theme.typography.body1.fontSize,
+          lineHeight: 'calc(23 / 16)',
+          padding: '16px 24px'
+        },
+        startIcon: {
+          marginLeft: 0
         }
       }
     },
@@ -108,13 +120,33 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         }
       }
     },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          '.MuiInputLabel-root': {
+            position: 'static',
+            transform: 'none',
+            fontSize: theme.typography.body2.fontSize,
+
+            '+.MuiInputBase-formControl': {
+              '.MuiInputBase-input': {
+                '&::placeholder': {
+                  opacity: '1 !important'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         input: {
           color: theme.palette.text.dark,
+          borderRadius: 0,
+          lineHeight: `calc(20/16)`,
           '&::placeholder': {
-            color: theme.palette.text.secondary,
-            fontSize: '0.875rem'
+            color: theme.palette.text.secondary
           }
         }
       }
@@ -122,10 +154,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          background: outlinedFilled ? bgColor : 'transparent',
-          borderRadius: `${borderRadius}px`,
+          background: 'transparent',
+          borderRadius: 0,
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[400]
+            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[500]
           },
           '&:hover $notchedOutline': {
             borderColor: theme.palette.primary.light
@@ -135,10 +167,9 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           }
         },
         input: {
-          fontWeight: 500,
-          background: outlinedFilled ? bgColor : 'transparent',
+          // fontWeight: 500,
           padding: '15.5px 14px',
-          borderRadius: `${borderRadius}px`,
+          borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
             padding: '10px 14px',
             '&.MuiInputBase-inputAdornedStart': {
@@ -150,7 +181,15 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           paddingLeft: 4
         },
         notchedOutline: {
-          borderRadius: `${borderRadius}px`
+          borderRadius: 0
+        }
+      }
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          margin: '4px 0 0',
+          fontSize: theme.typography.body4.fontSize
         }
       }
     },
