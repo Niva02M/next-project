@@ -1,13 +1,13 @@
 // project import
-import GuestGuard from 'utils/route-guard/GuestGuard';
+import MinimalLayout from 'layout/MinimalLayout';
 import Login from 'views/authentication/login';
 
 // ==============================|| HOME PAGE ||============================== //
 
 export default function HomePage() {
   return (
-    <GuestGuard>
+    <MinimalLayout>
       <Login />
-    </GuestGuard>
+    </MinimalLayout>
   );
 }

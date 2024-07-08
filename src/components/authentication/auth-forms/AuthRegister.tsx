@@ -5,18 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-// import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
-// import IconButton from '@mui/material/IconButton';
-// import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
-// import OutlinedInput from '@mui/material/OutlinedInput';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
@@ -28,49 +24,19 @@ import { Formik } from 'formik';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
 import { dispatch } from 'store';
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
 import { openSnackbar } from 'store/slices/snackbar';
-
-// types
-// import { StringColorProps } from 'types';
-
-// assets
-// import Visibility from '@mui/icons-material/Visibility';
-// import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { REGISTER_MUTATION } from 'graphql/auth';
+import { useMutation } from '@apollo/client';
+import { generateDeviceId } from 'utils/deviceid.helper';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
 const JWTRegister = ({ ...others }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const scriptedRef = useScriptRef();
   const router = useRouter();
 
-  const { ADMIN_REGISTER } = useGQL();
-
-  const [handleRegister, { loading, error, data }] = ADMIN_REGISTER();
-
-  // const [showPassword, setShowPassword] = React.useState(false);
-  const [checked, setChecked] = React.useState(true);
-  // const [strength, setStrength] = React.useState(0);
-  // const [level, setLevel] = React.useState<StringColorProps>();
-
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event: React.SyntheticEvent) => {
-  //   event.preventDefault();
-  // };
-
-  const changePassword = (value: string) => {
-    // const temp = strengthIndicator(value);
-    // setStrength(temp);
-    // setLevel(strengthColor(temp));
-  };
-
-  useEffect(() => {
-    changePassword('123456');
-  }, []);
+  const [registerUser] = useMutation(REGISTER_MUTATION);
 
   return (
     <>
@@ -81,43 +47,50 @@ const JWTRegister = ({ ...others }) => {
           confirmPassword: '',
           firstName: '',
           lastName: '',
-          contactNumber: '',
+          phoneNumber: '',
+          termsChecked: false,
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required'),
+          email: Yup.string().email().max(255).required().label('Email'),
+          password: Yup.string().max(255).required().label('Password'),
           confirmPassword: Yup.string()
             .max(255)
-            .required('Confirm Password is required')
+            .required()
             .oneOf([Yup.ref('password')], 'Passwords must match')
+            .label('Confirm Password'),
+          termsChecked: Yup.bool().oneOf([true], 'The terms and conditions must be accepted.')
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            // await register(values.firstName, values.lastName, values.email, values.password, values.contactNumber);
-            await handleRegister({
+            await registerUser({
               variables: {
                 input: {
                   firstName: values.firstName,
                   lastName: values.lastName,
-                  email: values.email,
                   password: values.password,
-                  contactNumber: values.contactNumber
+                  email: values.email,
+                  phoneNumber: {
+                    dialCode: '+977',
+                    number: values.phoneNumber
+                  },
+                  deviceId: generateDeviceId()
                 }
               }
             });
+
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
               dispatch(
                 openSnackbar({
                   open: true,
-                  message: 'Your registration has been successfully completed.',
+                  message: 'User registration successfully completed',
+                  anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
                   variant: 'alert',
                   alert: {
                     color: 'success'
-                  },
-                  close: false
+                  }
                 })
               );
 
@@ -128,20 +101,20 @@ const JWTRegister = ({ ...others }) => {
           } catch (err: any) {
             console.error(err);
             if (scriptedRef.current) {
+              setStatus({ success: false });
+              setErrors({ submit: err.message });
+              setSubmitting(false);
               dispatch(
                 openSnackbar({
                   open: true,
-                  message: err.message || 'User registration failed',
-                  anchorOrigin: { horizontal: 'center' },
+                  message: 'User registration failed',
+                  anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
                   variant: 'alert',
                   alert: {
                     color: 'error'
                   }
                 })
               );
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
             }
           }
         }}
@@ -185,15 +158,15 @@ const JWTRegister = ({ ...others }) => {
                 <InputLabel>Contact number</InputLabel>
                 <TextField
                   fullWidth
-                  name="contactNumber"
+                  name="phoneNumber"
                   placeholder="Your contact number"
-                  value={values.contactNumber}
+                  value={values.phoneNumber}
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
-                {touched.contactNumber && errors.contactNumber && (
-                  <FormHelperText error id="contactNumber-error">
-                    {errors.contactNumber}
+                {touched.phoneNumber && errors.phoneNumber && (
+                  <FormHelperText error id="phoneNumber-error">
+                    {errors.phoneNumber}
                   </FormHelperText>
                 )}
               </Grid>
@@ -248,66 +221,10 @@ const JWTRegister = ({ ...others }) => {
                   </FormHelperText>
                 )}
               </Grid>
-            </Grid>
 
-            {/* <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
-              <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password-register"
-                type={showPassword ? 'text' : 'password'}
-                value={values.password}
-                name="password"
-                label="Password"
-                onBlur={handleBlur}
-                onChange={(e) => {
-                  handleChange(e);
-                  changePassword(e.target.value);
-                }}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      size="large"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                inputProps={{}}
-              />
-              {touched.password && errors.password && (
-                <FormHelperText error id="standard-weight-helper-text-password-register">
-                  {errors.password}
-                </FormHelperText>
-              )}
-            </FormControl> */}
-
-            {/* {strength !== 0 && (
-              <FormControl fullWidth>
-                <Box sx={{ mb: 2 }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1" fontSize="0.75rem">
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </FormControl>
-            )} */}
-
-            <Grid container alignItems="center" justifyContent="space-between">
-              <Grid item>
+              <Grid item xs={12}>
                 <FormControlLabel
-                  control={
-                    <Checkbox checked={checked} onChange={(event) => setChecked(event.target.checked)} name="checked" color="primary" />
-                  }
+                  control={<Checkbox checked={values.termsChecked} onChange={handleChange} name="termsChecked" color="primary" />}
                   label={
                     <Typography variant="subtitle1">
                       Do you agree to our &nbsp;
@@ -317,6 +234,11 @@ const JWTRegister = ({ ...others }) => {
                     </Typography>
                   }
                 />
+                {touched.termsChecked && errors.termsChecked && (
+                  <FormHelperText error id="standard-weight-helper-text--register">
+                    {errors.termsChecked}
+                  </FormHelperText>
+                )}
               </Grid>
             </Grid>
             {errors.submit && (
