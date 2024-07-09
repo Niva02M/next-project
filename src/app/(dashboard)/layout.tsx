@@ -6,8 +6,8 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <AuthGuard>
+    // <AuthGuard>
       <DashboardLayout>{children}</DashboardLayout>
-    </AuthGuard>
+    // </AuthGuard>
   );
 }
