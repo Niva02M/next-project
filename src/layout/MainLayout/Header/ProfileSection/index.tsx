@@ -38,6 +38,7 @@ import { ThemeMode } from 'types/config';
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
+import { IconButton } from '@mui/material';
 
 const User1 = '/assets/images/users/user-round.svg';
 
@@ -52,7 +53,7 @@ const ProfileSection = () => {
   const [value, setValue] = useState('');
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { logout, user } = useAuth();
+  // const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -60,7 +61,7 @@ const ProfileSection = () => {
   const anchorRef = useRef<any>(null);
   const handleLogout = async () => {
     try {
-      await logout();
+      // await logout();
     } catch (err) {
       console.error(err);
     }
@@ -97,49 +98,22 @@ const ProfileSection = () => {
 
   return (
     <>
-      <Chip
-        sx={{
-          height: '48px',
-          alignItems: 'center',
-          borderRadius: '27px',
-          transition: 'all .2s ease-in-out',
-          borderColor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
-          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
-          '&[aria-controls="menu-list-grow"], &:hover': {
-            borderColor: 'primary.main',
-            bgcolor: `${theme.palette.primary.main} !important`,
-            color: 'primary.light',
-            '& svg': {
-              stroke: theme.palette.primary.main
-            }
-          },
-          '& .MuiChip-label': {
-            lineHeight: 0
-          }
-        }}
-        icon={
-          <Avatar
-            src={User1}
-            sx={{
-              ...theme.typography.mediumAvatar,
-              margin: '8px 0 8px 8px !important',
-              cursor: 'pointer'
-            }}
-            ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            color="inherit"
-            alt="user images"
-          />
-        }
-        label={<IconSettings stroke={1.5} size="24px" />}
-        variant="outlined"
-        ref={anchorRef}
-        aria-controls={open ? 'menu-list-grow' : undefined}
-        aria-haspopup="true"
-        onClick={handleToggle}
-        color="primary"
-      />
+      <IconButton onClick={handleToggle} sx={{ p: 0 }}>
+        <Avatar
+          src={User1}
+          alt="user-images"
+          sx={{
+            ...theme.typography.mediumAvatar,
+            cursor: 'pointer',
+            width: 45,
+            height: 45
+          }}
+          ref={anchorRef}
+          aria-controls={open ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          color="inherit"
+        />
+      </IconButton>
       <Popper
         placement="bottom-end"
         open={open}
@@ -162,12 +136,12 @@ const ProfileSection = () => {
               <Paper>
                 {open && (
                   <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                    <Box sx={{ p: 2, pb: 0 }}>
+                    {/* <Box sx={{ p: 2, pb: 0 }}>
                       <Stack>
                         <Stack direction="row" spacing={0.5} alignItems="center">
                           <Typography variant="h4">Good Morning,</Typography>
                           <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                            {user?.name}
+                            {user?.name} 
                           </Typography>
                         </Stack>
                         <Typography variant="subtitle2">Project Admin</Typography>
@@ -189,10 +163,10 @@ const ProfileSection = () => {
                         }}
                       />
                       <Divider />
-                    </Box>
+                    </Box> */}
                     <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                       <Box sx={{ p: 2, pt: 0 }}>
-                        <UpgradePlanCard />
+                        {/* <UpgradePlanCard />
                         <Divider />
                         <Card sx={{ bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.800' : 'primary.light', my: 2 }}>
                           <CardContent>
@@ -231,7 +205,7 @@ const ProfileSection = () => {
                             </Grid>
                           </CardContent>
                         </Card>
-                        <Divider />
+                        <Divider /> */}
                         <List
                           component="nav"
                           sx={{

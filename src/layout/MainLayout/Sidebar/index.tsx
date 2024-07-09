@@ -62,7 +62,7 @@ const Sidebar = () => {
             {isVerticalOpen && drawerContent}
           </Box>
         ) : (
-          <PerfectScrollbar style={{ height: 'calc(100vh - 88px)', ...drawerSX }}>
+          <PerfectScrollbar style={{ height: 'calc(100vh - 61px)', ...drawerSX }}>
             <MenuList />
             {isVerticalOpen && drawerContent}
           </PerfectScrollbar>

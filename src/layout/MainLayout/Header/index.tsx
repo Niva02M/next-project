@@ -42,7 +42,43 @@ const Header = () => {
         <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
           <LogoSection />
         </Box>
-        {!isHorizontal && (
+        
+      </Box>
+
+      {/* header search */}
+      <SearchSection />
+      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1 }} />
+
+
+      {/* mega-menu */}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <MegaMenuSection />
+      </Box>
+
+      {/* live customization & localization */}
+      {/* <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <LocalizationSection />
+      </Box> */}
+
+      {/* notification */}
+      <NotificationSection />
+
+      {/* full sceen toggler */}
+      {/* <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+        <FullScreenSection />
+      </Box> */}
+
+      {/* profile */}
+      <ProfileSection />
+
+      {/* mobile header */}
+      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+        <MobileSection />
+      </Box>
+
+      <Box mx={2}>
+      {!isHorizontal && (
           <Avatar
             variant="rounded"
             sx={{
@@ -64,38 +100,7 @@ const Header = () => {
           </Avatar>
         )}
       </Box>
-
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ flexGrow: 1 }} />
-
-      {/* mega-menu */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <MegaMenuSection />
-      </Box>
-
-      {/* live customization & localization */}
-      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-        <LocalizationSection />
-      </Box>
-
-      {/* notification */}
-      <NotificationSection />
-
-      {/* full sceen toggler */}
-      <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
-        <FullScreenSection />
-      </Box>
-
-      {/* profile */}
-      <ProfileSection />
-
-      {/* mobile header */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-        <MobileSection />
-      </Box>
-    </Box>
+    </>
   );
 };
 

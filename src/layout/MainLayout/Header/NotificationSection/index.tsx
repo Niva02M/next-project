@@ -93,9 +93,10 @@ const NotificationSection = () => {
       <Box
         sx={{
           ml: 2,
-          [theme.breakpoints.down('lg')]: {
-            mr: 2
-          }
+          mr: 2
+          // [theme.breakpoints.down('lg')]: {
+          //   mr: 2
+          // }
         }}
       >
         <Avatar
