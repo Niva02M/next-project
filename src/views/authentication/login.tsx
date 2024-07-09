@@ -29,7 +29,7 @@ const Login = () => {
             <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
               <AuthCardWrapper>
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                  <Grid item sx={{ mb: 3 }}>
+                  <Grid item>
                     <Link href="#" aria-label="logo">
                       <Logo />
                     </Link>
@@ -39,10 +39,7 @@ const Login = () => {
                       <Grid item>
                         <Stack alignItems="center" justifyContent="center" spacing={1}>
                           <Typography color="grey.800" gutterBottom variant={downMD ? 'h3' : 'h2'}>
-                            Hi, Welcome Back
-                          </Typography>
-                          <Typography variant="body4" textAlign={{ xs: 'center', md: 'inherit' }}>
-                            Enter your credentials to continue
+                            Sign in to your account
                           </Typography>
                         </Stack>
                       </Grid>
@@ -56,8 +53,8 @@ const Login = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <Grid item container direction="column" alignItems="center" xs={12}>
-                      <Typography component={Link} href={'/register'} variant="subtitle1" sx={{ textDecoration: 'none' }}>
-                        Don&apos;t have an account?
+                      <Typography color={'primary'} component={Link} href={'/register'} variant="subtitle1" sx={{ textDecoration: 'none' }}>
+                        Don&apos;t have an account? Register today!
                       </Typography>
                     </Grid>
                   </Grid>
