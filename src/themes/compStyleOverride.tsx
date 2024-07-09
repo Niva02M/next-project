@@ -4,6 +4,9 @@ import { alpha, Theme } from '@mui/material/styles';
 // types
 import { ThemeMode } from 'types/config';
 
+//icons
+import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
+
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
   // const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
@@ -248,6 +251,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiCheckbox: {
       styleOverrides: {
         root: {}
+      },
+      defaultProps: {
+        icon: <SquareBoxIcon />, // Custom unchecked icon
+        checkedIcon: <SquareBoxCheckedIcon /> // Custom checked icon
       }
     },
     MuiAvatar: {

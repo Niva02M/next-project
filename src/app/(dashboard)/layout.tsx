@@ -1,6 +1,6 @@
 // PROJECT IMPORTS
 import DashboardLayout from 'layout/MainLayout';
-import AuthGuard from 'utils/route-guard/AuthGuard';
+// import AuthGuard from 'utils/route-guard/AuthGuard';
 
 // ==============================|| DASHBOARD LAYOUT ||============================== //
 

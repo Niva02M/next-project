@@ -95,7 +95,7 @@ const Header = () => {
       <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
         <MobileSection />
       </Box>
-    </>
+    </Box>
   );
 };
 

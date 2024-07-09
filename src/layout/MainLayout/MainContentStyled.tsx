@@ -27,7 +27,7 @@ const MainContentStyled = styled('main', {
   padding: 20,
   marginTop: 88,
   marginRight: 20,
-  borderRadius: `${borderRadius}px`,
+  borderRadius: 0,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
   ...(!open && {

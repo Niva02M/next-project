@@ -162,16 +162,17 @@ const SearchSection = () => {
               <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
             </InputAdornment>
           }
-          endAdornment={
-            <InputAdornment position="end">
-              <HeaderAvatar variant="rounded">
-                <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
-              </HeaderAvatar>
-            </InputAdornment>
-          }
+          // endAdornment={
+          //   <InputAdornment position="end">
+          //     <HeaderAvatar variant="rounded">
+          //       <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
+          //     </HeaderAvatar>
+          //   </InputAdornment>
+          // }
           aria-describedby="search-helper-text"
+          size='small'
           inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
-          sx={{ width: { md: 250, lg: 434 }, ml: 2, px: 2 }}
+          sx={{ width: { md: 250, lg: 306 }, ml: 2, px: 2, '.MuiOutlinedInput-notchedOutline': {borderRadius: '20px'} }}
         />
       </Box>
     </>
