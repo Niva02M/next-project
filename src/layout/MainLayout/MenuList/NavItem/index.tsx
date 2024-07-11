@@ -102,26 +102,28 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
           disableRipple={!drawerOpen}
           sx={{
             zIndex: 1201,
-            borderRadius: `${borderRadius}px`,
+            borderRadius: `2px`,
             mb: 0.5,
-            pl: drawerOpen ? `${level * 24}px` : 1.25,
+            pl: drawerOpen ? `${level * 13}px` : 1.25,
+            py: drawerOpen ? '12px' : 0,
             ...(drawerOpen &&
               level === 1 &&
               mode !== ThemeMode.DARK && {
                 '&:hover': {
-                  bgcolor: 'secondary.light'
+                  bgcolor: 'primary.light'
                 },
                 '&.Mui-selected': {
-                  bgcolor: 'secondary.light',
-                  color: iconSelectedColor,
+                  bgcolor: alpha(theme.palette.primary.main, 0.32),
+                  color: theme.palette.grey[800],
+                  borderRight: `4px solid ${theme.palette.primary.main}`,
                   '&:hover': {
-                    color: iconSelectedColor,
-                    bgcolor: 'secondary.light'
+                    color: theme.palette.grey[800],
+                    bgcolor: 'primary.light'
                   }
                 }
               }),
             ...((!drawerOpen || level !== 1) && {
-              py: level === 1 ? 0 : 1,
+              py: level === 1 ? 0 : 1.5,
               '&:hover': {
                 bgcolor: 'transparent'
               },
@@ -140,7 +142,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
             <ListItemIcon
               sx={{
                 minWidth: level === 1 ? 36 : 18,
-                color: isSelected ? iconSelectedColor : 'text.primary',
+                color: isSelected ? iconSelectedColor : 'text-primary',
                 ...(!drawerOpen &&
                   level === 1 && {
                     borderRadius: `${borderRadius}px`,
@@ -149,12 +151,12 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
                     alignItems: 'center',
                     justifyContent: 'center',
                     '&:hover': {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light'
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : alpha(theme.palette.primary.main, 0.32)
                     },
                     ...(isSelected && {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light',
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : alpha(theme.palette.primary.main, 0.32),
                       '&:hover': {
-                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'secondary.light'
+                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : alpha(theme.palette.primary.main, 0.32)
                       }
                     })
                   })
@@ -173,9 +175,9 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
                     noWrap
                     overflow="hidden"
                     textOverflow="ellipsis"
-                    variant={isSelected ? 'h5' : 'body1'}
-                    color="inherit"
-                    width={102}
+                    variant={'body1'}
+                    color='text.primary'
+                    // width={102}
                   >
                     {item.title}
                   </Typography>
@@ -211,8 +213,8 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
             borderRadius: isParents ? `${borderRadius}px` : 0,
             mb: isParents ? 0 : 0.5,
             alignItems: 'flex-start',
-            bgcolor: level > 1 ? 'transparent !important' : 'inherit',
-            py: 1,
+            bgcolor: level > 1 ? 'transparent' : 'inherit',
+            py: 1.5,
             pl: 2,
             mr: isParents ? 1 : 0
           }}
@@ -230,7 +232,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
 
           <ListItemText
             primary={
-              <Typography variant={isSelected ? 'h5' : 'body1'} color="inherit">
+              <Typography variant={'body1'} color="text.primary">
                 {item.title}
               </Typography>
             }

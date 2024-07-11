@@ -175,7 +175,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           padding: '15.5px 14px',
           borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
-            padding: '10px 14px',
+            padding: '4px 14px',
             '&.MuiInputBase-inputAdornedStart': {
               paddingLeft: 0
             }

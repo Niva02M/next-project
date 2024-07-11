@@ -21,6 +21,7 @@ import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons-reac
 
 // types
 import { ThemeMode } from 'types/config';
+import { useMediaQuery } from '@mui/material';
 
 interface HeaderAvatarProps extends AvatarProps {
   children: ReactNode;
@@ -28,6 +29,7 @@ interface HeaderAvatarProps extends AvatarProps {
 
 const HeaderAvatar = forwardRef(({ children, ...others }: HeaderAvatarProps, ref: Ref<HTMLDivElement>) => {
   const theme = useTheme();
+  const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <Avatar
@@ -35,12 +37,19 @@ const HeaderAvatar = forwardRef(({ children, ...others }: HeaderAvatarProps, ref
       variant="rounded"
       sx={{
         ...theme.typography.commonAvatar,
-        ...theme.typography.mediumAvatar,
-        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-        color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
+        ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
+        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'transparent',
+        color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.main',
+        border:
+          theme.palette.mode === ThemeMode.DARK ? `1px solid ${theme.palette.secondary.main}` : `1px solid ${theme.palette.grey[200]}`,
+        borderRadius: '50%',
         '&:hover': {
-          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
-          color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.light'
+          bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.dark',
+          color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'primary.light',
+          border:
+            theme.palette.mode === ThemeMode.DARK
+              ? `1px solid ${theme.palette.secondary.light}`
+              : `1px solid ${theme.palette.primary.light}`
         }
       }}
       {...others}
@@ -159,7 +168,7 @@ const SearchSection = () => {
           placeholder="Search"
           startAdornment={
             <InputAdornment position="start">
-              <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
+              <IconSearch stroke={1.5} size="24px" color={theme.palette.primary.main} />
             </InputAdornment>
           }
           // endAdornment={
@@ -172,7 +181,7 @@ const SearchSection = () => {
           aria-describedby="search-helper-text"
           size='small'
           inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
-          sx={{ width: { md: 250, lg: 306 }, ml: 2, px: 2, '.MuiOutlinedInput-notchedOutline': {borderRadius: '20px'} }}
+          sx={{ width: { md: 250, lg: 306 }, ml: { xs: 2, md: 5 }, px: 2, '.MuiOutlinedInput-notchedOutline': { borderRadius: '20px' } }}
         />
       </Box>
     </>
