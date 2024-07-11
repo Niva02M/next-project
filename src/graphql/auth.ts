@@ -18,8 +18,54 @@ export const REGISTER_MUTATION = gql`
 `;
 
 export const LOGIN_MUTATION = gql`
-  mutation loginWithEmailPassword($input: LoginEmailPasswordInput!) {
-    loginWithEmailPassword(input: $input) {
+  mutation loginWithEmailPassword($body: LoginEmailPasswordInput!) {
+    loginWithEmailPassword(body: $body) {
+      message
+      expiry {
+        expiresBy
+        expiresAt
+      }
+      token {
+        accessToken
+        accessTokenExpiresIn
+        refreshToken
+        refreshTokenExpiresIn
+      }
+      user {
+        _id
+        email
+        status
+      }
+    }
+  }
+`;
+
+export const FACEBOOK_SIGNIN_MUTATION = gql`
+  mutation loginWithFacebook($body: LoginFacebookInput!) {
+    loginWithFacebook(body: $body) {
+      message
+      expiry {
+        expiresBy
+        expiresAt
+      }
+      token {
+        accessToken
+        accessTokenExpiresIn
+        refreshToken
+        refreshTokenExpiresIn
+      }
+      user {
+        _id
+        email
+        status
+      }
+    }
+  }
+`;
+
+export const GOOGLE_SIGNIN_MUTATION = gql`
+  mutation loginWithGoogle($body: LoginGoogleInput!) {
+    loginWithGoogle(body: $body) {
       message
       expiry {
         expiresBy

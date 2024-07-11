@@ -10,7 +10,9 @@ import { AuthenticationStatus, AuthStatusCode } from 'store/constant';
 
 const httpLink = createHttpLink({
   // eslint-disable-next-line no-undef
-  uri: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api'
+  // uri: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api'
+  uri: 'http://localhost:3000/api'
+  // uri: 'https://9081-202-166-198-75.ngrok-free.app/api'
 });
 
 function isRefreshRequest(operation) {
@@ -19,7 +21,7 @@ function isRefreshRequest(operation) {
 
 function returnTokenDependingOnOperation(operation) {
   if (isRefreshRequest(operation)) return localStorage.getItem('refreshToken') || '';
-  else return localStorage.getItem('accessToken') || '';
+  return localStorage.getItem('accessToken') || '';
 }
 
 const authLink = setContext((operation, { headers }) => {
