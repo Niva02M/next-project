@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 
 // material-ui
-import { Theme } from '@mui/material/styles';
+import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
@@ -27,6 +27,7 @@ import { MenuOrientation } from 'types/config';
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = () => {
+  const theme = useTheme();
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const { menuMaster } = useGetMenuMaster();
@@ -52,7 +53,7 @@ const Sidebar = () => {
     );
 
     let drawerSX = { paddingLeft: '0px', paddingRight: '0px', marginTop: '20px' };
-    if (drawerOpen) drawerSX = { paddingLeft: '16px', paddingRight: '16px', marginTop: '0px' };
+    if (drawerOpen) drawerSX = { paddingLeft: '5px', paddingRight: '5px', marginTop: '0px' };
 
     return (
       <>
@@ -86,7 +87,7 @@ const Sidebar = () => {
               width: drawerWidth,
               bgcolor: 'background.default',
               color: 'text.primary',
-              borderRight: 'none'
+              borderRight: `1px solid ${theme.palette.grey[300]}`
             }
           }}
           ModalProps={{ keepMounted: true }}

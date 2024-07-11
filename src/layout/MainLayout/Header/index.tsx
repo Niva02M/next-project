@@ -8,11 +8,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import useConfig from 'hooks/useConfig';
 import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
-import MobileSection from './MobileSection';
 import ProfileSection from './ProfileSection';
-import FullScreenSection from './FullScreenSection';
-import LocalizationSection from './LocalizationSection';
-import MegaMenuSection from './MegaMenuSection';
+// import MegaMenuSection from './MegaMenuSection';
 import NotificationSection from './NotificationSection';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
@@ -22,6 +19,7 @@ import { IconMenu2 } from '@tabler/icons-react';
 
 // types
 import { MenuOrientation, ThemeMode } from 'types/config';
+import MessageSection from './MessageSection';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -38,11 +36,10 @@ const Header = () => {
   return (
     <>
       {/* logo & toggler button */}
-      <Box sx={{ width: downMD ? 'auto' : 228, display: 'flex' }}>
-        <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
+      <Box sx={{ width: 'auto', display: 'flex' }}>
+        <Box component="span">
           <LogoSection />
         </Box>
-        
       </Box>
 
       {/* header search */}
@@ -50,47 +47,41 @@ const Header = () => {
       <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ flexGrow: 1 }} />
 
-
       {/* mega-menu */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <MegaMenuSection />
-      </Box>
-
-      {/* live customization & localization */}
-      {/* <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-        <LocalizationSection />
       </Box> */}
+      <MessageSection />
 
       {/* notification */}
       <NotificationSection />
 
-      {/* full sceen toggler */}
-      {/* <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
-        <FullScreenSection />
-      </Box> */}
-
       {/* profile */}
       <ProfileSection />
 
-      {/* mobile header */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-        <MobileSection />
-      </Box>
-
-      <Box mx={2}>
-      {!isHorizontal && (
+      <Box ml={1}>
+        {!isHorizontal && (
           <Avatar
             variant="rounded"
             sx={{
               ...theme.typography.commonAvatar,
-              ...theme.typography.mediumAvatar,
+              ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
               overflow: 'hidden',
               transition: 'all .2s ease-in-out',
-              bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-              color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
+              bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'transparent',
+              color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.main',
+              border:
+                theme.palette.mode === ThemeMode.DARK
+                  ? `1px solid ${theme.palette.secondary.main}`
+                  : `1px solid ${theme.palette.grey[200]}`,
+              borderRadius: '50%',
               '&:hover': {
-                bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
-                color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.light'
+                bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.dark',
+                color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'primary.light',
+                border:
+                  theme.palette.mode === ThemeMode.DARK
+                    ? `1px solid ${theme.palette.secondary.light}`
+                    : `1px solid ${theme.palette.primary.light}`
               }
             }}
             onClick={() => handlerDrawerOpen(!drawerOpen)}

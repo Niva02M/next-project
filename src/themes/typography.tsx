@@ -124,8 +124,8 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     fontSize: '1.2rem'
   },
   largeAvatar: {
-    width: '44px',
-    height: '44px',
+    width: '48px',
+    height: '48px',
     fontSize: '1.5rem'
   }
 });

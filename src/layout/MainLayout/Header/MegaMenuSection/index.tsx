@@ -40,10 +40,12 @@ const HeaderAvatar = forwardRef(({ children, sx, ...others }: HeaderAvatarProps,
       ref={ref}
       sx={{
         ...theme.typography.commonAvatar,
-        ...theme.typography.mediumAvatar,
+        ...theme.typography.largeAvatar,
         display: { xs: 'none', md: 'flex' },
-        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'secondary.light',
-        color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
+        bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'transparent',
+        color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.main',
+        border: `1px solid ${theme.palette.grey[200]}`,
+        borderRadius: '50%',
         '&:hover': {
           bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'secondary.dark',
           color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'secondary.light'

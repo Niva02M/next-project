@@ -38,7 +38,7 @@ import { ThemeMode } from 'types/config';
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
-import { IconButton } from '@mui/material';
+import { IconButton, useMediaQuery } from '@mui/material';
 
 const User1 = '/assets/images/users/user-round.svg';
 
@@ -47,6 +47,7 @@ const User1 = '/assets/images/users/user-round.svg';
 const ProfileSection = () => {
   const theme = useTheme();
   const { borderRadius } = useConfig();
+  const downMD = useMediaQuery(theme.breakpoints.down('md'));
   // const navigate = useNavigate();
 
   const [sdm, setSdm] = useState(true);
@@ -103,10 +104,8 @@ const ProfileSection = () => {
           src={User1}
           alt="user-images"
           sx={{
-            ...theme.typography.mediumAvatar,
+            ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
             cursor: 'pointer',
-            width: 45,
-            height: 45
           }}
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
