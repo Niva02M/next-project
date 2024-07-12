@@ -148,6 +148,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
             position: 'static',
             transform: 'none',
             fontSize: theme.typography.body2.fontSize,
+            textAlign: 'left',
 
             '+.MuiInputBase-formControl': {
               '.MuiInputBase-input': {

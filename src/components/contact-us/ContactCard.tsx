@@ -123,20 +123,20 @@ const ContactCard = () => {
               <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Name</InputLabel>
-                    <OutlinedInput type="text" label="Name" placeholder="Enter Your Name" />
+                    <InputLabel shrink={false}>Name</InputLabel>
+                    <OutlinedInput notched={false} type="text" label="Name" placeholder="Enter Your Name" />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Company Name</InputLabel>
-                    <OutlinedInput type="text" label="Company Name" placeholder="Enter Your Company Name" />
+                    <InputLabel shrink={false}>Company Name</InputLabel>
+                    <OutlinedInput notched={false} type="text" label="Company Name" placeholder="Enter Your Company Name" />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <InputLabel>Email Address</InputLabel>
-                    <OutlinedInput type="text" label="Email Address" placeholder="Enter Your Email Address" />
+                    <InputLabel shrink={false}>Email Address</InputLabel>
+                    <OutlinedInput notched={false} type="text" label="Email Address" placeholder="Enter Your Email Address" />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -153,7 +153,15 @@ const ContactCard = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth sx={{ textAlign: 'left' }}>
-                    <TextField id="outlined-select-Size" select fullWidth label="Company Size" value={size} onChange={handleChange1}>
+                    <TextField
+                      InputLabelProps={{ shrink: false }}
+                      id="outlined-select-Size"
+                      select
+                      fullWidth
+                      label="Company Size"
+                      value={size}
+                      onChange={handleChange1}
+                    >
                       {sizes.map((option, index) => (
                         <MenuItem key={index} value={option.value}>
                           {option.label}
@@ -164,7 +172,7 @@ const ContactCard = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth sx={{ textAlign: 'left' }}>
-                    <TextField id="outlined-select-budget" select fullWidth label="Project Budget" value={budget} onChange={handleChange}>
+                    <TextField InputLabelProps={{ shrink: false }} id="outlined-select-budget" select fullWidth label="Project Budget" value={budget} onChange={handleChange}>
                       {currencies.map((option, index) => (
                         <MenuItem key={index} value={option.value}>
                           {option.label}

@@ -77,15 +77,15 @@ const pages: NavItemType = {
           url: '/pages/maintenance/under-construction',
           target: true
         },
-        {
-          id: 'contact-us',
-          title: <FormattedMessage id="contact-us" />,
-          type: 'item',
-          icon: icons.IconPhoneCall,
-          url: '/pages/contact-us',
-          target: true
-        },
       ]
+    },
+    {
+      id: 'contact-us',
+      title: <FormattedMessage id="contact-us" />,
+      type: 'item',
+      icon: icons.IconPhoneCall,
+      url: '/pages/contact-us',
+      target: true
     }
   ]
 };
