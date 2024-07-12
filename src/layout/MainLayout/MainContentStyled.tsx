@@ -26,7 +26,6 @@ const MainContentStyled = styled('main', {
   flexGrow: 1,
   padding: 20,
   marginTop: 61,
-  marginRight: 20,
   borderRadius: 0,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
@@ -36,7 +35,7 @@ const MainContentStyled = styled('main', {
       duration: theme.transitions.duration.shorter + 200
     }),
     [theme.breakpoints.up('md')]: {
-      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? -(drawerWidth - 72) : 20,
+      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? -(drawerWidth - 61) : 0,
       width: `calc(100% - ${drawerWidth}px)`,
       marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 61
     }
@@ -46,7 +45,7 @@ const MainContentStyled = styled('main', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.shorter + 200
     }),
-    marginLeft: menuOrientation === MenuOrientation.HORIZONTAL ? 20 : 0,
+    marginLeft: menuOrientation === MenuOrientation.HORIZONTAL ? 0 : 0,
     marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 61,
     width: `calc(100% - ${drawerWidth}px)`,
     [theme.breakpoints.up('md')]: {
@@ -54,7 +53,7 @@ const MainContentStyled = styled('main', {
     }
   }),
   [theme.breakpoints.down('md')]: {
-    marginLeft: 20,
+    marginLeft: 0,
     padding: 16,
     marginTop: 61,
     ...(!open && {
@@ -62,7 +61,7 @@ const MainContentStyled = styled('main', {
     })
   },
   [theme.breakpoints.down('sm')]: {
-    marginLeft: 10,
+    marginLeft: 0,
     marginRight: 10
   }
 }));

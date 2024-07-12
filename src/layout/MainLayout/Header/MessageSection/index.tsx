@@ -27,7 +27,7 @@ import Transitions from 'ui-component/extended/Transitions';
 import MessageList from './MessageList';
 
 // assets
-import { IconBell, IconMessage } from '@tabler/icons-react';
+import { IconMessage } from '@tabler/icons-react';
 
 // types
 import { ThemeMode } from 'types/config';
