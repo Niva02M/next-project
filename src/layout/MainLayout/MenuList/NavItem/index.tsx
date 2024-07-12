@@ -42,7 +42,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
   const ref = useRef<HTMLSpanElement>(null);
 
   const pathname = usePathname();
-  const { mode, menuOrientation, borderRadius } = useConfig();
+  const { mode, menuOrientation } = useConfig();
 
   const { menuMaster } = useGetMenuMaster();
   const openItem = menuMaster.openedItem;
@@ -105,7 +105,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
             borderRadius: `2px`,
             mb: 0.5,
             pl: drawerOpen ? `${level * 13}px` : 1.25,
-            py: drawerOpen ? '12px' : 0,
+            py: drawerOpen ? '9px' : 0,
             ...(drawerOpen &&
               level === 1 &&
               mode !== ThemeMode.DARK && {
@@ -123,40 +123,42 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
                 }
               }),
             ...((!drawerOpen || level !== 1) && {
-              py: level === 1 ? 0 : 1.5,
+              py: level === 1 ? 0 : 1,
               '&:hover': {
-                bgcolor: 'transparent'
+                bgcolor: 'primary.light'
               },
               '&.Mui-selected': {
                 '&:hover': {
-                  bgcolor: 'transparent'
+                  bgcolor: 'primary.light'
                 },
-                bgcolor: 'transparent'
+                bgcolor: alpha(theme.palette.primary.main, 0.32),
+                color: theme.palette.grey[800],
+                borderRight: `4px solid ${theme.palette.primary.main}`
               }
             })
           }}
           selected={isSelected}
           onClick={() => itemHandler()}
         >
-          <ButtonBase aria-label="theme-icon" sx={{ borderRadius: `${borderRadius}px` }} disableRipple={drawerOpen}>
+          <ButtonBase aria-label="theme-icon" sx={{ borderRadius: `2px` }} disableRipple={drawerOpen}>
             <ListItemIcon
               sx={{
-                minWidth: level === 1 ? 36 : 18,
+                minWidth: level === 1 ? 30 : 18,
                 color: isSelected ? iconSelectedColor : 'text-primary',
                 ...(!drawerOpen &&
                   level === 1 && {
-                    borderRadius: `${borderRadius}px`,
-                    width: 46,
+                    borderRadius: `2px`,
+                    width: 30,
                     height: 46,
                     alignItems: 'center',
                     justifyContent: 'center',
                     '&:hover': {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : alpha(theme.palette.primary.main, 0.32)
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent'
                     },
                     ...(isSelected && {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : alpha(theme.palette.primary.main, 0.32),
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent',
                       '&:hover': {
-                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : alpha(theme.palette.primary.main, 0.32)
+                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'transparent'
                       }
                     })
                   })
@@ -176,7 +178,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
                     overflow="hidden"
                     textOverflow="ellipsis"
                     variant={'body1'}
-                    color='text.primary'
+                    color="text.primary"
                     // width={102}
                   >
                     {item.title}
@@ -210,11 +212,11 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
           target={itemTarget}
           disabled={item.disabled}
           sx={{
-            borderRadius: isParents ? `${borderRadius}px` : 0,
+            borderRadius: isParents ? `2px` : 0,
             mb: isParents ? 0 : 0.5,
             alignItems: 'flex-start',
-            bgcolor: level > 1 ? 'transparent' : 'inherit',
-            py: 1.5,
+            bgcolor: level > 1 ? 'primary.light' : 'inherit',
+            py: 1.1,
             pl: 2,
             mr: isParents ? 1 : 0
           }}

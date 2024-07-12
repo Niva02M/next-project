@@ -1,4 +1,4 @@
-import { IPhone } from 'types/api-inputs/auth';
+// import { IPhone } from 'types/api-inputs/auth';
 interface ICordinates {
   lat?: string;
   long?: string;
@@ -23,7 +23,8 @@ interface IEmail {
 }
 interface IContacts {
   emailDetail: IEmail;
-  phone?: IPhone;
+  // phone?: IPhone;
+  phone?: string;
 }
 
 interface IAboutYou {
