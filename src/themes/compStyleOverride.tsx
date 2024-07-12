@@ -49,7 +49,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
             paddingBottom: 60,
 
             '.MuiBox-root': {
-              '.MuiList-root': {
+              '>.MuiList-root': {
                 '&:last-of-type': {
                   position: 'absolute',
                   bottom: 0,
@@ -463,7 +463,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
             paddingBottom: downMD ? 60 : 0
           },
           '.MuiBox-root': {
-            '.MuiList-root': {
+            '>.MuiList-root': {
               '&:last-of-type': {
                 position: 'absolute',
                 bottom: 0,

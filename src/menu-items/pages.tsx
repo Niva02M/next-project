@@ -2,13 +2,14 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconKey, IconBug } from '@tabler/icons-react';
+import { IconKey, IconBug, IconPhoneCall } from '@tabler/icons-react';
 import { NavItemType } from 'types';
 
 // constant
 const icons = {
   IconKey,
-  IconBug
+  IconBug,
+  IconPhoneCall
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -75,7 +76,15 @@ const pages: NavItemType = {
           type: 'item',
           url: '/pages/maintenance/under-construction',
           target: true
-        }
+        },
+        {
+          id: 'contact-us',
+          title: <FormattedMessage id="contact-us" />,
+          type: 'item',
+          icon: icons.IconPhoneCall,
+          url: '/pages/contact-us',
+          target: true
+        },
       ]
     }
   ]
