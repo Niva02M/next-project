@@ -1,5 +1,3 @@
-// This is example of menu item without group for horizontal layout. There will be no children.
-
 // third-party
 import { FormattedMessage } from 'react-intl';
 
@@ -14,12 +12,12 @@ import { NavItemType } from 'types';
 const icons = {
     IconShieldLock
 };
-const privacyPolicyPage: NavItemType = {
-  id: 'privacy-policy',
-  title: <FormattedMessage id="privacy-policy" />,
+const aboutUsPage: NavItemType = {
+  id: 'about-us',
+  title: <FormattedMessage id="about-us" />,
   icon: icons.IconShieldLock,
   type: 'item',
-  url: '/pages/privacy-policy'
+  url: '/pages/about-us'
 };
 
-export default privacyPolicyPage;
+export default aboutUsPage;

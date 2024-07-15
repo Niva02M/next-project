@@ -17,7 +17,7 @@ const headerBackground = '/assets/images/landing/bg-header.jpg';
 
 // ============================|| SAAS PAGES - PRIVCY POLICY ||============================ //
 
-const PrivacyPolicy = () => {
+const AboutUs = () => {
   return (
     <Box
       sx={{
@@ -44,7 +44,7 @@ const PrivacyPolicy = () => {
                     mt: { xs: 10, md: 'auto' }
                   }}
                 >
-                  Privacy Policy
+                  About us
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -53,7 +53,8 @@ const PrivacyPolicy = () => {
                   sx={{ fontWeight: 400, lineHeight: 1.4, my: { xs: 0, md: 'auto' }, mx: { xs: 12.5, md: 'auto' } }}
                   color="white"
                 >
-                  Last updated on 18th Feb 2022
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+                  dummy text ever since the 1500s.
                 </Typography>
               </Grid>
             </Grid>
@@ -62,8 +63,10 @@ const PrivacyPolicy = () => {
             <MainCard elevation={4} border={false} boxShadow shadow={4} sx={{ mb: 3 }}>
               <Stack spacing={2} sx={{ textAlign: 'left' }}>
                 <Typography>
-                  This Privacy Policy governs the manner in which Demos: A Network for Ideas and Action, Ltd. (“Demos”, “Us” or “We”)
-                  collects, uses, maintains, and discloses information collected from users (“Users” or “You”) of its website located at{' '}
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+                  dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+                  book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+                  unchanged.
                   <Link href="#" underline="none">
                     www.demos.org
                   </Link>{' '}
@@ -167,4 +170,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default AboutUs;
