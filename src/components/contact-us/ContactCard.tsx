@@ -148,6 +148,7 @@ const ContactCard = () => {
                       customInput={TextField}
                       label="Phone Number"
                       placeholder="Enter Your Contact Number"
+                      InputLabelProps={{ shrink: false }}
                     />
                   </FormControl>
                 </Grid>
@@ -172,7 +173,15 @@ const ContactCard = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth sx={{ textAlign: 'left' }}>
-                    <TextField InputLabelProps={{ shrink: false }} id="outlined-select-budget" select fullWidth label="Project Budget" value={budget} onChange={handleChange}>
+                    <TextField
+                      InputLabelProps={{ shrink: false }}
+                      id="outlined-select-budget"
+                      select
+                      fullWidth
+                      label="Project Budget"
+                      value={budget}
+                      onChange={handleChange}
+                    >
                       {currencies.map((option, index) => (
                         <MenuItem key={index} value={option.value}>
                           {option.label}
