@@ -10,14 +10,15 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-    IconShieldLock
+  IconShieldLock
 };
 const aboutUsPage: NavItemType = {
   id: 'about-us',
-  title: <FormattedMessage id="about-us" />,
+  title: <FormattedMessage id="About-us" />,
   icon: icons.IconShieldLock,
-  type: 'item',
-  url: '/pages/about-us'
+  type: 'group',
+  url: '/pages/about-us',
+  target: true
 };
 
 export default aboutUsPage;
