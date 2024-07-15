@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 
 export const REGISTER_MUTATION = gql`
   mutation registerUser($input: SignupInput!) {
@@ -82,6 +82,26 @@ export const GOOGLE_SIGNIN_MUTATION = gql`
         email
         status
       }
+    }
+  }
+`;
+
+export const FORGOT_PASSWORD_MUTATION = gql`
+  mutation forgotPassword($body: ForgotPasswordInput!) {
+    forgotPassword(body: $body) {
+      message
+      expiry {
+        expiresAt
+        expiresBy
+      }
+    }
+  }
+`;
+
+export const VERIFY_FORGOT_PASSWORD_OTP_MUTATION = gql`
+  mutation verifyResetPasswordOTP($body: VerifyResetPasswordOtpInput!) {
+    verifyResetPasswordOTP(body: $body) {
+      message
     }
   }
 `;

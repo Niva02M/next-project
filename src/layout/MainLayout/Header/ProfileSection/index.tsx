@@ -52,7 +52,7 @@ const ProfileSection = () => {
   const [value, setValue] = useState('');
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { logout, user } = useAuth();
+  // const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -60,7 +60,7 @@ const ProfileSection = () => {
   const anchorRef = useRef<any>(null);
   const handleLogout = async () => {
     try {
-      await logout();
+      // await logout();
     } catch (err) {
       console.error(err);
     }
