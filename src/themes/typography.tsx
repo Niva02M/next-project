@@ -89,20 +89,19 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
   mainContent: {
     backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[100],
     width: '100%',
-    minHeight: 'calc(100vh - 88px)',
+    minHeight: 'calc(100vh - 61px)',
     flexGrow: 1,
     padding: '20px',
-    marginTop: '88px',
+    marginTop: '61px',
     marginRight: '20px',
     borderRadius: `${borderRadius}px`
   },
   menuCaption: {
-    fontSize: '0.875rem',
-    fontWeight: 500,
+    fontSize: '1rem',
+    fontWeight: 600,
     color: theme.palette.mode === ThemeMode.DARK ? theme.palette.grey[600] : theme.palette.grey[900],
-    padding: '6px',
+    padding: '6px 11px 0',
     textTransform: 'capitalize',
-    marginTop: '10px'
   },
   subMenuCaption: {
     fontSize: '0.6875rem',
@@ -124,8 +123,8 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     fontSize: '1.2rem'
   },
   largeAvatar: {
-    width: '44px',
-    height: '44px',
+    width: '48px',
+    height: '48px',
     fontSize: '1.5rem'
   }
 });

@@ -1,10 +1,9 @@
 import { memo, useMemo } from 'react';
 
 // material-ui
-import { Theme } from '@mui/material/styles';
+import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
@@ -14,7 +13,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import MenuList from '../MenuList';
 import LogoSection from '../LogoSection';
 import MiniDrawerStyled from './MiniDrawerStyled';
-import Chip from 'ui-component/extended/Chip';
 
 import useConfig from 'hooks/useConfig';
 import { drawerWidth } from 'store/constant';
@@ -22,17 +20,18 @@ import { drawerWidth } from 'store/constant';
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // types
-import { MenuOrientation } from 'types/config';
+// import { MenuOrientation } from 'types/config';
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = () => {
+  const theme = useTheme();
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { menuOrientation, miniDrawer } = useConfig();
+  const { miniDrawer } = useConfig();
 
   const logo = useMemo(
     () => (
@@ -44,32 +43,40 @@ const Sidebar = () => {
   );
 
   const drawer = useMemo(() => {
-    const isVerticalOpen = menuOrientation === MenuOrientation.VERTICAL && drawerOpen;
-    const drawerContent = (
-      <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
-        <Chip label={process.env.REACT_APP_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: 'pointer' }} />
-      </Stack>
-    );
+    // const isVerticalOpen = menuOrientation === MenuOrientation.VERTICAL && drawerOpen;
+    // const drawerContent = (
+    //   <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+    //     <Chip label={process.env.REACT_APP_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: 'pointer' }} />
+    //   </Stack>
+    // );
 
-    let drawerSX = { paddingLeft: '0px', paddingRight: '0px', marginTop: '20px' };
-    if (drawerOpen) drawerSX = { paddingLeft: '16px', paddingRight: '16px', marginTop: '0px' };
+    let drawerSX = {
+      paddingLeft: '5px',
+      paddingRight: '5px',
+      marginTop: '20px'
+    };
+
+    if (drawerOpen)
+      drawerSX = {
+        paddingLeft: '5px',
+        paddingRight: '5px',
+        marginTop: '0px'
+      };
 
     return (
       <>
         {downMD ? (
           <Box sx={drawerSX}>
             <MenuList />
-            {isVerticalOpen && drawerContent}
           </Box>
         ) : (
-          <PerfectScrollbar style={{ height: 'calc(100vh - 88px)', ...drawerSX }}>
+          <PerfectScrollbar style={{ height: 'calc(100vh - 61px)', ...drawerSX }}>
             <MenuList />
-            {isVerticalOpen && drawerContent}
           </PerfectScrollbar>
         )}
       </>
     );
-  }, [downMD, drawerOpen, menuOrientation]);
+  }, [downMD, drawerOpen]);
 
   return (
     <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { xs: 'auto', md: drawerWidth } }} aria-label="mailbox folders">
@@ -86,7 +93,7 @@ const Sidebar = () => {
               width: drawerWidth,
               bgcolor: 'background.default',
               color: 'text.primary',
-              borderRight: 'none'
+              borderRight: `1px solid ${theme.palette.grey[300]}`
             }
           }}
           ModalProps={{ keepMounted: true }}

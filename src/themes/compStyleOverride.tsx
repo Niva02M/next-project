@@ -4,11 +4,17 @@ import { alpha, Theme } from '@mui/material/styles';
 // types
 import { ThemeMode } from 'types/config';
 
+//icons
+import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
+import { useMediaQuery } from '@mui/material';
+
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
   // const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
   const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
   const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.dark;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   return {
     MuiButton: {
@@ -38,7 +44,21 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       },
       styleOverrides: {
         root: {
-          backgroundImage: 'none'
+          backgroundImage: 'none',
+          '.scrollbar-container.ps': {
+            paddingBottom: 60,
+
+            '.MuiBox-root': {
+              '>.MuiList-root': {
+                '&:last-of-type': {
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 5,
+                  right: 5
+                }
+              }
+            }
+          }
         },
         rounded: {
           borderRadius: `${borderRadius}px`
@@ -172,7 +192,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           padding: '15.5px 14px',
           borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
-            padding: '10px 14px',
+            padding: '4px 14px',
             '&.MuiInputBase-inputAdornedStart': {
               paddingLeft: 0
             }
@@ -248,6 +268,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiCheckbox: {
       styleOverrides: {
         root: {}
+      },
+      defaultProps: {
+        icon: <SquareBoxIcon />, // Custom unchecked icon
+        checkedIcon: <SquareBoxCheckedIcon /> // Custom checked icon
       }
     },
     MuiAvatar: {
@@ -427,6 +451,25 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
             },
             '& > .low': {
               background: mode === ThemeMode.DARK ? theme.palette.error.dark : theme.palette.error.light
+            }
+          }
+        }
+      }
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        root: {
+          '.MuiDrawer-paperAnchorLeft': {
+            paddingBottom: downMD ? 60 : 0
+          },
+          '.MuiBox-root': {
+            '>.MuiList-root': {
+              '&:last-of-type': {
+                position: 'absolute',
+                bottom: 0,
+                left: 5,
+                right: 5
+              }
             }
           }
         }

@@ -29,6 +29,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 // types
 import { NavItemType } from 'types';
+
 import { MenuOrientation, ThemeMode } from 'types/config';
 
 // horizontal-menu - wrapper
@@ -86,7 +87,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const ref = useRef<HTMLSpanElement>(null);
 
-  const { mode, menuOrientation, borderRadius } = useConfig();
+  const { mode, menuOrientation } = useConfig();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
@@ -235,23 +236,29 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
           <ListItemButton
             sx={{
               zIndex: 1201,
-              borderRadius: `${borderRadius}px`,
+              borderRadius: `2px`,
               mb: 0.5,
               pl: drawerOpen ? `${level * 24}px` : 1.25,
               ...(drawerOpen &&
                 level === 1 &&
                 mode !== ThemeMode.DARK && {
-                  '&:hover': { bgcolor: 'secondary.light' },
+                  '&:hover': { bgcolor: 'primary.light', color: theme.palette.grey[800] },
                   '&.Mui-selected': {
-                    bgcolor: 'secondary.light',
-                    color: iconSelectedColor,
-                    '&:hover': { color: iconSelectedColor, bgcolor: '.secondary.light' }
+                    bgcolor: alpha(theme.palette.primary.main, 0.32),
+                    color: theme.palette.grey[800],
+                    borderRight: `4px solid ${theme.palette.primary.main}`,
+                    '&:hover': { color: iconSelectedColor, bgcolor: 'primary.light' }
                   }
                 }),
               ...((!drawerOpen || level !== 1) && {
                 py: level === 1 ? 0 : 1,
-                '&:hover': { bgcolor: 'transparent' },
-                '&.Mui-selected': { '&:hover': { bgcolor: 'transparent' }, bgcolor: 'transparent' }
+                '&:hover': { bgcolor: 'primary.light', color: theme.palette.grey[800] },
+                '&.Mui-selected': {
+                  '&:hover': { bgcolor: 'primary.light', color: theme.palette.grey[800] },
+                  bgcolor: alpha(theme.palette.primary.main, 0.32),
+                  color: theme.palette.grey[800],
+                  borderRight: `4px solid ${theme.palette.primary.main}`
+                }
               })
             }}
             selected={isSelected}
@@ -261,22 +268,22 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
             {menuIcon && (
               <ListItemIcon
                 sx={{
-                  minWidth: level === 1 ? 36 : 18,
+                  minWidth: level === 1 ? 30 : 18,
                   color: isSelected ? iconSelectedColor : 'text.primary',
                   ...(!drawerOpen &&
                     level === 1 && {
-                      borderRadius: `${borderRadius}px`,
-                      width: 46,
+                      borderRadius: `2px`,
+                      width: 30,
                       height: 46,
                       alignItems: 'center',
                       justifyContent: 'center',
                       '&:hover': {
-                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light'
+                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent'
                       },
                       ...(isSelected && {
-                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light',
+                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent',
                         '&:hover': {
-                          bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'secondary.light'
+                          bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'transparent'
                         }
                       })
                     })
@@ -289,15 +296,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
               <Tooltip title={menu.title} disableHoverListener={!hoverStatus}>
                 <ListItemText
                   primary={
-                    <Typography
-                      ref={ref}
-                      noWrap
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      variant={isSelected ? 'h5' : 'body1'}
-                      color="inherit"
-                      width={130}
-                    >
+                    <Typography ref={ref} noWrap overflow="hidden" textOverflow="ellipsis" variant="body1" color="inherit" width={130}>
                       {menu.title}
                     </Typography>
                   }
@@ -334,16 +333,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
                 sx={{
                   overflow: 'visible',
                   zIndex: 2001,
-                  minWidth: 180,
-                  '&:before': {
-                    content: '""',
-                    bgcolor: 'background.paper',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    zIndex: 120,
-                    borderLeft: `1px solid`,
-                    borderBottom: `1px solid`,
-                    borderColor: 'divider'
-                  }
+                  minWidth: 180
                 }}
               >
                 {({ TransitionProps }) => (
@@ -375,7 +365,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
                     '&:after': {
                       content: "''",
                       position: 'absolute',
-                      left: '32px',
+                      left: '29px',
                       top: 0,
                       height: '100%',
                       width: '1px',

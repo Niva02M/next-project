@@ -4,18 +4,11 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 
 // third party
@@ -31,8 +24,6 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import { openSnackbar } from 'store/slices/snackbar';
 
 // assets
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, useSession } from 'next-auth/react';
 import { TextField } from '@mui/material';
@@ -42,54 +33,22 @@ import { UserAccountStatus } from 'constants/user';
 // ===============================|| JWT LOGIN ||=============================== //
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
-  const theme = useTheme();
-  const router = useRouter();
+  // const router = useRouter();
 
   const dispatch = useDispatch();
   // const { login } = useAuth();
   // const scriptedRef = useScriptRef();
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
-  const handleMouseDownPassword = (event: React.MouseEvent) => {
-    event.preventDefault()!;
-  };
+  // const [checked, setChecked] = React.useState(true);
 
-  const session = useSession();
+  // const [showPassword, setShowPassword] = React.useState(false);
+  // const handleClickShowPassword = () => {
+  //   setShowPassword(!showPassword);
+  // };
 
-  const handleEmailUnverified = async (user: any, expiry: any) => {
-    try {
-      localStorage.clear();
-      localStorage.setItem('timer', `${new Date().getTime() + expiry?.expiresBy}`);
-      // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
-      // await signOut({ redirect: false });
-      session.update();
-      // successSnack(errorMessages.EMAIL_UNVERIFIED);
-
-      // redirect to code verification page with some delay
-      setTimeout(() => {
-        // router.push(pageRoutes.codeVerification);
-        router.push('/code-verification');
-      }, 3000);
-
-      return;
-    } catch (error) {
-      // errorSnack(errorMessages.EMAIL_UNVERIFIED);
-      console.log(error);
-    }
-  };
-
-  // useEffect(() => {
-  //   console.log({ session });
-  //   const userDetail = session?.data?.user as any;
-  //   if (userDetail?.user?.status == UserAccountStatus.email_verification_pending) {
-  //     handleEmailUnverified(userDetail?.user, userDetail?.expiry);
-  //     return;
-  //   }
-  //   console.log(userDetail, 'userDetail');
-  // }, [dispatch, router, session]);
+  // const handleMouseDownPassword = (event: React.MouseEvent) => {
+  //   event.preventDefault()!;
+  // };
 
   return (
     <Formik

@@ -190,8 +190,11 @@ const NavGroup = ({ item, lastItem, remItems, lastItemId, selectedID, setSelecte
     <>
       {!isHorizontal ? (
         <>
+          {/* group divider */}
+          {drawerOpen && <Divider sx={{ mt: 0.25, mb: 0 }} />}
           <List
-            disablePadding={!drawerOpen}
+            // disablePadding={!drawerOpen}
+            disablePadding
             subheader={
               currentItem.title &&
               drawerOpen && (
@@ -208,12 +211,9 @@ const NavGroup = ({ item, lastItem, remItems, lastItemId, selectedID, setSelecte
           >
             {items}
           </List>
-
-          {/* group divider */}
-          {drawerOpen && <Divider sx={{ mt: 0.25, mb: 1.25 }} />}
         </>
       ) : (
-        <List>
+        <List disablePadding={true}>
           <ListItemButton
             selected={isSelected}
             sx={{
@@ -231,7 +231,7 @@ const NavGroup = ({ item, lastItem, remItems, lastItemId, selectedID, setSelecte
             aria-describedby={popperId}
           >
             {itemIcon && (
-              <ListItemIcon sx={{ minWidth: 36 }}>
+              <ListItemIcon sx={{ minWidth: 30 }}>
                 {currentItem.id === lastItemId ? <IconMinusVertical stroke={1.5} size="20px" /> : itemIcon}
               </ListItemIcon>
             )}
