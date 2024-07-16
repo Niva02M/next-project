@@ -105,3 +105,38 @@ export const VERIFY_FORGOT_PASSWORD_OTP_MUTATION = gql`
     }
   }
 `;
+
+export const VERIFY_EMAIL_MUTATION = gql`
+  mutation verifyEmail($body: VerifyEmailInput!) {
+    verifyEmail(body: $body) {
+      message
+      expiry {
+        expiresAt
+        expiresBy
+      }
+      token {
+        accessToken
+        accessTokenExpiresIn
+        refreshToken
+        refreshTokenExpiresIn
+      }
+      user {
+        _id
+        email
+        status
+      }
+    }
+  }
+`;
+
+export const RESEND_VERIFY_EMAIL_OTP_MUTATION = gql`
+  mutation resendVerifyEmailOtp($body: ResendEmailOtpInput!) {
+    resendVerifyEmailOtp(body: $body) {
+      expiry {
+        expiresAt
+        expiresBy
+      }
+      message
+    }
+  }
+`;
