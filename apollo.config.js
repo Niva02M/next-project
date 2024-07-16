@@ -10,9 +10,9 @@ import { AuthenticationStatus, AuthStatusCode } from 'store/constant';
 
 const httpLink = createHttpLink({
   // eslint-disable-next-line no-undef
-  // uri: process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'http://localhost:3000/api'
+  uri: process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'http://localhost:3000/api'
   // uri: 'http://localhost:3000/api'
-  uri: 'https://e280-202-166-198-75.ngrok-free.app/api'
+  // uri: 'https://e280-202-166-198-75.ngrok-free.app/api'
 });
 
 function isRefreshRequest(operation) {
