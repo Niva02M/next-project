@@ -16,6 +16,7 @@ import { IRegisterValues } from 'types/localStorageValues';
 import { calculateRemainingTime } from 'utils/helper';
 import OtpVerificationScreen from './otp-verification';
 import { RESEND_VERIFY_EMAIL_OTP_MUTATION, VERIFY_EMAIL_MUTATION } from 'graphql/auth';
+import { generateDeviceId } from 'utils/deviceid.helper';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
@@ -76,32 +77,31 @@ const VerifyRegistration = () => {
     }
   };
 
-  const handleResendCode = async () => {};
-  // const handleResendCode = async () => {
-  //   try {
-  //     const { data } = await resendMailOTP({
-  //       variables: {
-  //         body: {
-  //           email: loginDetail?.email || '',
-  //           deviceId: generateDeviceId()
-  //         }
-  //       }
-  //     });
+  const handleResendCode = async () => {
+    try {
+      const { data } = await resendEmailOTP({
+        variables: {
+          body: {
+            email: loginDetail?.email || '',
+            deviceId: generateDeviceId()
+          }
+        }
+      });
 
-  //     if (data.resendVerifyEmailOtp) {
-  //       setOtpTimer(!otpTimer);
-  //       setLocalStorage('register', {
-  //         ...loginDetail,
-  //         expiryTime: new Date(data.resendVerifyEmailOtp.expiry?.expiresAt || 0).getTime()
-  //       });
-  //       successSnack(data?.resendVerifyEmailOtp?.message || 'Successfully login');
-  //     } else {
-  //       errorSnack(errorMessages.RESEND_CODE_FAILED);
-  //     }
-  //   } catch (error) {
-  //     handleError(error);
-  //   }
-  // };
+      if (data.resendVerifyEmailOtp) {
+        setOtpTimer(!otpTimer);
+        setLocalStorage('register', {
+          ...loginDetail,
+          expiryTime: new Date(data.resendVerifyEmailOtp.expiry?.expiresAt || 0).getTime()
+        });
+        successSnack(data?.resendVerifyEmailOtp?.message || 'Code sent successfully. Please check your email');
+      } else {
+        errorSnack('Resending code failed. Please try again');
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -130,7 +130,7 @@ export const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 export const RESEND_VERIFY_EMAIL_OTP_MUTATION = gql`
-  mutation resendVerifyEmailOtp($body: ResendEmailOtpInput!) {
+  mutation resendVerifyEmailOtp($body: EmailSignupOTPInput!) {
     resendVerifyEmailOtp(body: $body) {
       expiry {
         expiresAt
