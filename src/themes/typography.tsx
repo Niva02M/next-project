@@ -38,11 +38,11 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
   },
   subtitle1: {
     fontSize: '0.875rem',
-    fontWeight: 500,
+    fontWeight: 500
   },
   subtitle2: {
     fontSize: '0.75rem',
-    fontWeight: 400,
+    fontWeight: 400
   },
   caption: {
     fontSize: '0.875rem',
@@ -57,7 +57,7 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     fontSize: '0.875rem',
     letterSpacing: '0em',
     fontWeight: 400,
-    lineHeight: '0.875rem',
+    lineHeight: '0.875rem'
   },
   body3: {
     fontSize: '1.125rem'
@@ -73,7 +73,7 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     marginBottom: 1,
     '& > label': {
       fontSize: '0.875rem',
-      color: theme.palette.grey[800],
+      color: theme.palette.grey[800]
     },
     '& > div > input': {
       // padding: '30.5px 14px 11.5px !important'
