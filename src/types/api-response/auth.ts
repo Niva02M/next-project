@@ -74,7 +74,6 @@ interface IForgotPasswordResponse {
 interface ILoginUserResponse {
   _id: string;
   email: string;
-  loginFlowType: string;
   status: string;
 }
 

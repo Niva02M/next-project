@@ -8,7 +8,6 @@ import useListBackendErrors from 'hooks/useShowBackEndError';
 import { useRouter } from 'next/navigation';
 import pageRoutes from 'constants/routes';
 import AuthCodeVerification from 'components/authentication/auth-forms/AuthCodeVerification';
-import { errorMessages, successMessages } from 'constants/error-messages';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { signIn } from 'next-auth/react';
 import { ILoginUserResponse, IToken } from 'types/api-response/auth';
@@ -16,6 +15,8 @@ import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IRegisterValues } from 'types/localStorageValues';
 import { calculateRemainingTime } from 'utils/helper';
 import OtpVerificationScreen from './otp-verification';
+import { RESEND_VERIFY_EMAIL_OTP_MUTATION, VERIFY_EMAIL_MUTATION } from 'graphql/auth';
+import { generateDeviceId } from 'utils/deviceid.helper';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
@@ -30,9 +31,8 @@ const VerifyRegistration = () => {
 
   const router = useRouter();
 
-  const { VERIFY_EMAIL } = useAuthMutations();
-  const [resendMailOTP, { loading: isResendingPassword }] = useMutation(RESEND_MAIL_OTP);
-  const [verifyEmail, { loading: isVerifyingEmail }] = VERIFY_EMAIL();
+  const [resendEmailOTP, { loading: isResendingEmailOtp }] = useMutation(RESEND_VERIFY_EMAIL_OTP_MUTATION);
+  const [verifyEmail, { loading: isVerifyingEmail }] = useMutation(VERIFY_EMAIL_MUTATION);
 
   const handleContinue = async (otp: string) => {
     try {
@@ -46,8 +46,8 @@ const VerifyRegistration = () => {
       });
 
       if (data?.verifyEmail) {
-        successSnack(data?.verifyEmail?.message || successMessages.EMAIL_VERIFIED);
-        if (data.verifyEmail.token) {
+        successSnack(data?.verifyEmail?.message || 'Email verified successfully');
+        if (data.verifyEmail?.token) {
           await tryLogin({
             ...data.verifyEmail.token,
             user: data.verifyEmail.user,
@@ -77,33 +77,31 @@ const VerifyRegistration = () => {
     }
   };
 
-  const handleResendCode = async () => {};
-  // const handleResendCode = async () => {
-  //   try {
-  //     const { data } = await resendMailOTP({
-  //       variables: {
-  //         body: {
-  //           email: loginDetail?.email || '',
-  //           deviceId: generateDeviceId(),
-  //           resendFor: USER_ROLE_CONSTANT
-  //         }
-  //       }
-  //     });
+  const handleResendCode = async () => {
+    try {
+      const { data } = await resendEmailOTP({
+        variables: {
+          body: {
+            email: loginDetail?.email || '',
+            deviceId: generateDeviceId()
+          }
+        }
+      });
 
-  //     if (data.resendVerifyEmailOtp) {
-  //       setOtpTimer(!otpTimer);
-  //       setLocalStorage('register', {
-  //         ...loginDetail,
-  //         expiryTime: new Date(data.resendVerifyEmailOtp.expiry?.expiresAt || 0).getTime()
-  //       });
-  //       successSnack(data?.resendVerifyEmailOtp?.message || 'Successfully login');
-  //     } else {
-  //       errorSnack(errorMessages.RESEND_CODE_FAILED);
-  //     }
-  //   } catch (error) {
-  //     handleError(error);
-  //   }
-  // };
+      if (data.resendVerifyEmailOtp) {
+        setOtpTimer(!otpTimer);
+        setLocalStorage('register', {
+          ...loginDetail,
+          expiryTime: new Date(data.resendVerifyEmailOtp.expiry?.expiresAt || 0).getTime()
+        });
+        successSnack(data?.resendVerifyEmailOtp?.message || 'Code sent successfully. Please check your email');
+      } else {
+        errorSnack('Resending code failed. Please try again');
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -118,7 +116,7 @@ const VerifyRegistration = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [otpTimer]);
+  }, [loginDetail?.expiryTime]);
 
   return (
     <OtpVerificationScreen
@@ -128,7 +126,7 @@ const VerifyRegistration = () => {
       handleResendCode={handleResendCode}
       remainingTime={remainingTime}
       handleContinue={handleContinue}
-      isLoading={isResendingPassword}
+      isLoading={isResendingEmailOtp}
     />
   );
 };

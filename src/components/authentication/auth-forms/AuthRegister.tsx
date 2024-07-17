@@ -23,8 +23,6 @@ import { Formik } from 'formik';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
-import { dispatch } from 'store';
-import { openSnackbar } from 'store/slices/snackbar';
 import { REGISTER_MUTATION } from 'graphql/auth';
 import { useMutation } from '@apollo/client';
 import { generateDeviceId } from 'utils/deviceid.helper';
@@ -42,7 +40,7 @@ const JWTRegister = ({ ...others }) => {
   const { setLocalStorage } = useLocalStorageCodeVerify();
 
   const router = useRouter();
-  const { successSnack } = useSuccErrSnack();
+  const { successSnack, errorSnack } = useSuccErrSnack();
 
   const [registerUser] = useMutation(REGISTER_MUTATION);
 
@@ -103,17 +101,7 @@ const JWTRegister = ({ ...others }) => {
               setStatus({ success: false });
               setErrors({ submit: err.message });
               setSubmitting(false);
-              dispatch(
-                openSnackbar({
-                  open: true,
-                  message: 'User registration failed',
-                  anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-                  variant: 'alert',
-                  alert: {
-                    color: 'error'
-                  }
-                })
-              );
+              errorSnack('User registration failed');
             }
           }
         }}
