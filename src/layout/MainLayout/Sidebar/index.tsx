@@ -66,7 +66,7 @@ const Sidebar = () => {
     return (
       <>
         {downMD ? (
-          <Box sx={drawerSX}>
+          <Box sx={drawerSX} className="mobile-nav">
             <MenuList />
           </Box>
         ) : (
