@@ -14,20 +14,27 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-import useAuth from 'hooks/useAuth';
-import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-
-import { dispatch } from 'store';
-import { openSnackbar } from 'store/slices/snackbar';
+import { generateDeviceId } from 'utils/deviceid.helper';
+import { useMutation } from '@apollo/client';
+import { FORGOT_PASSWORD_MUTATION } from 'graphql/auth';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
+import pageRoutes from 'constants/routes';
+import { useRouter } from 'next/navigation';
+import useListBackendErrors from 'hooks/useShowBackEndError';
 
 // ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
 
 const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
+  const router = useRouter();
 
-  const { resetPassword } = useAuth();
+  const { successSnack } = useSuccErrSnack();
+  const { setLocalStorage } = useLocalStorageCodeVerify();
+  const { handleError } = useListBackendErrors();
+
+  const [forgotPassword] = useMutation(FORGOT_PASSWORD_MUTATION);
 
   return (
     <Formik
@@ -36,54 +43,40 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
         submit: null
       }}
       validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required')
+        email: Yup.string().email().max(255).required().label('Email')
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await resetPassword(values.email).then(
-            () => {
-              setStatus({ success: true });
-              setSubmitting(false);
-              dispatch(
-                openSnackbar({
-                  open: true,
-                  message: 'Check mail for reset password link',
-                  variant: 'alert',
-                  alert: {
-                    color: 'success'
-                  },
-                  close: false
-                })
-              );
-              setTimeout(() => {
-                window.location.replace('/check-mail');
-              }, 1500);
-
-              // WARNING: do not set any formik state here as formik might be already destroyed here. You may get following error by doing so.
-              // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application.
-              // To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.
-              // github issue: https://github.com/formium/formik/issues/2430
-            },
-            (err: any) => {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
+          const deviceId = generateDeviceId();
+          const { data } = await forgotPassword({
+            variables: {
+              body: {
+                email: values.email,
+                deviceId
+              }
             }
-          );
+          });
+
+          setSubmitting(false);
+          successSnack('Code sent successfully. Please check your email');
+          setLocalStorage('forgotPassword', {
+            email: values.email || '',
+            expiresAt: data?.forgotPassword?.expiry?.expiresAt ? new Date(data?.forgotPassword?.expiry?.expiresAt).getTime() : 0,
+            deviceId: deviceId
+          });
+
+          setTimeout(() => {
+            router.push(pageRoutes.forgotPasswordVerification);
+          }, 1500);
         } catch (err: any) {
-          console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          handleError(err);
         }
       }}
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit} {...others}>
           <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-email-forgot">Email Address / Username</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-email-forgot">Email</InputLabel>
             <OutlinedInput
               id="outlined-adornment-email-forgot"
               type="email"
@@ -91,7 +84,8 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
               name="email"
               onBlur={handleBlur}
               onChange={handleChange}
-              label="Email Address / Username"
+              placeholder="Enter your email"
+              label="Email"
               inputProps={{}}
             />
             {touched.email && errors.email && (
@@ -109,8 +103,8 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
 
           <Box sx={{ mt: 2 }}>
             <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
-                Send Mail
+              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                Please send me the link!
               </Button>
             </AnimateButton>
           </Box>
