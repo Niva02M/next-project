@@ -32,6 +32,7 @@ import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
+import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -45,6 +46,8 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const router = useRouter();
 
   // const dispatch = useDispatch();
+
+  const { setLocalStorage } = useLocalStorageCodeVerify();
 
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -61,7 +64,10 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {
       localStorage.clear();
-      localStorage.setItem('timer', `${new Date().getTime() + expiry?.expiresBy}`);
+      setLocalStorage('register', {
+        email: user?.email,
+        expiryTime: new Date(expiry?.expiresAt).getTime()
+      });
       // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
       await signOut({ redirect: false });
       update();
@@ -83,7 +89,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       handleEmailUnverified(payload?.user, payload?.expiry);
       return;
     }
-    console.log('payload', payload);
     if (status === 'authenticated' && payload?.user?.status === UserAccountStatus.email_verified) {
       setTokens(payload?.access_token, payload?.refresh_token);
       return router.push('/sample-page');
@@ -120,7 +125,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           }
           setSubmitting(false);
         } catch (err: any) {
-          console.error(err);
           errorSnack(err.message || 'Login failed');
         }
       }}
