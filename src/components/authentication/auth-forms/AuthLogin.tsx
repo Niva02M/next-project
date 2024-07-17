@@ -25,15 +25,17 @@ import { openSnackbar } from 'store/slices/snackbar';
 
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
-import { signIn, useSession } from 'next-auth/react';
-import { TextField } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { UserAccountStatus } from 'constants/user';
+import { signIn } from 'next-auth/react';
+import { FormControl, IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
+// import { useRouter } from 'next/navigation';
+// import { UserAccountStatus } from 'constants/user';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   // const router = useRouter();
+  const theme = useTheme();
 
   const dispatch = useDispatch();
   // const { login } = useAuth();
@@ -41,14 +43,14 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   // const [checked, setChecked] = React.useState(true);
 
-  // const [showPassword, setShowPassword] = React.useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-  // const handleMouseDownPassword = (event: React.MouseEvent) => {
-  //   event.preventDefault()!;
-  // };
+  const handleMouseDownPassword = (event: React.MouseEvent) => {
+    event.preventDefault()!;
+  };
 
   return (
     <Formik
