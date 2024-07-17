@@ -37,7 +37,7 @@ const Header = () => {
     <>
       {/* logo & toggler button */}
       <Box sx={{ width: 'auto', display: 'flex' }}>
-        <Box component="span">
+        <Box component="span" sx={{ svg: { height: 45 } }}>
           <LogoSection />
         </Box>
       </Box>

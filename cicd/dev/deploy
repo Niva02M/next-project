@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 082670687034.dkr.ecr.ap-southeast-2.amazonaws.com
+
+cd /home/ebpearls/dev
+docker-compose pull web_dev
+docker-compose rm -s -f web_dev
+docker-compose up -d web_dev
+
