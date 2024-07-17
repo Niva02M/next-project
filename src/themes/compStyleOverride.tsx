@@ -51,7 +51,6 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                 position: 'relative',
                 paddingBottom: 60,
                 minHeight: '100%',
-
                 '>.MuiList-root': {
                   '&:last-of-type': {
                     position: 'absolute',
@@ -465,6 +464,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         root: {
           '&.main-nav': {
             '.mobile-nav': {
+              height: '100%',
               '.MuiBox-root': {
                 position: 'relative',
                 minHeight: '100%',
@@ -478,7 +478,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                   }
                 }
               }
-            },
+            }
           }
         }
       }
