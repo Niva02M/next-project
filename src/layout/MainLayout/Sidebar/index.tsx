@@ -70,7 +70,7 @@ const Sidebar = () => {
             <MenuList />
           </Box>
         ) : (
-          <PerfectScrollbar style={{ height: 'calc(100vh - 61px)', ...drawerSX }}>
+          <PerfectScrollbar className="main-nav" style={{ height: 'calc(100vh - 61px)', ...drawerSX }}>
             <MenuList />
           </PerfectScrollbar>
         )}
@@ -82,6 +82,7 @@ const Sidebar = () => {
     <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { xs: 'auto', md: drawerWidth } }} aria-label="mailbox folders">
       {downMD || (miniDrawer && drawerOpen) ? (
         <Drawer
+          className="main-nav"
           variant={downMD ? 'temporary' : 'persistent'}
           anchor="left"
           open={drawerOpen}

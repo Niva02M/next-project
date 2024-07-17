@@ -45,16 +45,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          '.scrollbar-container.ps': {
-            paddingBottom: 60,
-
-            '.MuiBox-root': {
-              '>.MuiList-root': {
-                '&:last-of-type': {
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 5,
-                  right: 5
+          '.main-nav': {
+            '&.scrollbar-container.ps': {
+              paddingBottom: 60,
+  
+              '.MuiBox-root': {
+                '>.MuiList-root': {
+                  '&:last-of-type': {
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 5,
+                    right: 5
+                  }
                 }
               }
             }
@@ -460,16 +462,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiDrawer: {
       styleOverrides: {
         root: {
-          '.MuiDrawer-paperAnchorLeft': {
-            paddingBottom: downMD ? 60 : 0
-          },
-          '.MuiBox-root': {
-            '>.MuiList-root': {
-              '&:last-of-type': {
-                position: 'absolute',
-                bottom: 0,
-                left: 5,
-                right: 5
+          '&.main-nav': {
+            '.MuiDrawer-paperAnchorLeft': {
+              paddingBottom: downMD ? 60 : 0
+            },
+            '.MuiBox-root': {
+              '>.MuiList-root': {
+                '&:last-of-type': {
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 5,
+                  right: 5
+                }
               }
             }
           }
