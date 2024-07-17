@@ -140,3 +140,14 @@ export const RESEND_VERIFY_EMAIL_OTP_MUTATION = gql`
     }
   }
 `;
+
+export const REFRESH_TOKEN_MUTATION = gql`
+  mutation RefreshToken($refreshToken: String!) {
+    refresh(refreshToken: $refreshToken) {
+      accessToken
+      accessTokenExpiresIn
+      refreshToken
+      refreshTokenExpiresIn
+    }
+  }
+`;

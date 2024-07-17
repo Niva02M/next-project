@@ -1,15 +1,11 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-// import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -24,30 +20,36 @@ import { Formik } from 'formik';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
-// import useAuth from 'hooks/useAuth';
-// import useScriptRef from 'hooks/useScriptRef';
 // import { DASHBOARD_PATH } from 'config';
-
-import { openSnackbar } from 'store/slices/snackbar';
 
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generateDeviceId } from 'utils/deviceid.helper';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import pageRoutes from 'constants/routes';
+import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 
 // ===============================|| JWT LOGIN ||=============================== //
+
+const setTokens = (accessToken: string, refreshToken: string) => {
+  localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('refreshToken', refreshToken);
+};
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const theme = useTheme();
   const router = useRouter();
 
-  const dispatch = useDispatch();
-  // const { login } = useAuth();
-  // const scriptedRef = useScriptRef();
+  // const dispatch = useDispatch();
+
+  const { setLocalStorage } = useLocalStorageCodeVerify();
+
+  const { errorSnack, successSnack } = useSuccErrSnack();
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -57,39 +59,41 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     event.preventDefault()!;
   };
 
-  const session = useSession();
+  const { status, data, update } = useSession();
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {
       localStorage.clear();
-      localStorage.setItem('timer', `${new Date().getTime() + expiry?.expiresBy}`);
+      setLocalStorage('register', {
+        email: user?.email,
+        expiryTime: new Date(expiry?.expiresAt).getTime()
+      });
       // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
-      // await signOut({ redirect: false });
-      session.update();
-      // successSnack(errorMessages.EMAIL_UNVERIFIED);
+      await signOut({ redirect: false });
+      update();
+      successSnack('Email verification code sent, please verify your email');
 
-      // redirect to code verification page with some delay
       setTimeout(() => {
-        // router.push(pageRoutes.codeVerification);
-        router.push('/code-verification');
-      }, 3000);
+        router.push(pageRoutes.verifyRegistration);
+      }, 1500);
 
       return;
     } catch (error) {
-      // errorSnack(errorMessages.EMAIL_UNVERIFIED);
-      console.log(error);
+      errorSnack('Email verification failed');
     }
   };
 
-  // useEffect(() => {
-  //   console.log({ session });
-  //   const userDetail = session?.data?.user as any;
-  //   if (userDetail?.user?.status == UserAccountStatus.email_verification_pending) {
-  //     handleEmailUnverified(userDetail?.user, userDetail?.expiry);
-  //     return;
-  //   }
-  //   console.log(userDetail, 'userDetail');
-  // }, [dispatch, router, session]);
+  useEffect(() => {
+    const payload = data?.user as any;
+    if (payload?.user?.status == UserAccountStatus.email_verification_pending) {
+      handleEmailUnverified(payload?.user, payload?.expiry);
+      return;
+    }
+    if (status === 'authenticated' && payload?.user?.status === UserAccountStatus.email_verified) {
+      setTokens(payload?.access_token, payload?.refresh_token);
+      return router.push('/sample-page');
+    }
+  }, [status, data, router]);
 
   return (
     <Formik
@@ -113,39 +117,15 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
             callbackUrl: '/'
           });
           if (res?.ok) {
-            dispatch(
-              openSnackbar({
-                open: true,
-                message: 'Login successful',
-                variant: 'alert',
-                anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-                alert: {
-                  color: 'success'
-                },
-                close: false
-              })
-            );
+            successSnack('Login successful');
           } else {
             if (res?.error?.includes(':')) {
-              console.error(res.error);
-              // errorSnack(res.error?.split(':')?.[1] || '');
+              errorSnack(res.error?.split(':')?.[1] || '');
             }
           }
           setSubmitting(false);
         } catch (err: any) {
-          console.error(err);
-          dispatch(
-            openSnackbar({
-              open: true,
-              message: err.message || 'Login failed',
-              anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-              variant: 'alert',
-              alert: {
-                color: 'error'
-              }
-            })
-          );
-          // errorSnack(errorMessages.ERROR_IN_SIGNIN);
+          errorSnack(err.message || 'Login failed');
         }
       }}
     >
