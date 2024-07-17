@@ -1,4 +1,4 @@
-import { gql, useMutation } from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const REGISTER_MUTATION = gql`
   mutation registerUser($input: SignupInput!) {

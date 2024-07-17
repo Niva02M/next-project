@@ -2,10 +2,15 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
-import { JWT } from 'next-auth/jwt';
-import { jwtDecode } from 'jwt-decode';
+// import { JWT } from 'next-auth/jwt';
+// import { jwtDecode } from 'jwt-decode';
 
-import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, REFRESH_TOKEN_MUTATION } from 'graphql/auth';
+import {
+  LOGIN_MUTATION,
+  FACEBOOK_SIGNIN_MUTATION
+  //  GOOGLE_SIGNIN_MUTATION,
+  // REFRESH_TOKEN_MUTATION
+} from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
 
