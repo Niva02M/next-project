@@ -5,7 +5,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { JWT } from 'next-auth/jwt';
 import { jwtDecode } from 'jwt-decode';
 
-import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION } from 'graphql/auth';
+import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, REFRESH_TOKEN_MUTATION } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
 
@@ -20,6 +20,26 @@ export interface IDecodedToken {
   registrationStatus: string;
   jti: string;
 }
+
+// async function refreshAccessToken(tokenObject: any) {
+//   try {
+//     const { data } = await client.mutate({
+//       mutation: REFRESH_TOKEN_MUTATION,
+//       variables: {
+//         refreshToken: tokenObject.refresh_token
+//       }
+//     });
+
+//     return {
+//       expires_at: data?.refresh?.accessTokenExpiresIn,
+//       refresh_token: data?.refresh?.refreshToken,
+//       access_token: data?.refresh?.accessToken
+//     };
+//   } catch (error) {
+//     throw new Error('RefreshTokenError');
+//   }
+// }
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
@@ -29,40 +49,12 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       type: 'credentials',
-      credentials: {
-        // email: { label: 'Email', type: 'email' },
-        // password: { label: 'Password', type: 'password' },
-        // deviceId: { label: 'Device ID', type: 'text', optional: true }
-        // accessToken: { label: 'Access Token', type: 'text', optional: true },
-        // refreshToken: { label: 'Refresh Token', type: 'text', optional: true },
-        // accessTokenExpiresIn: { label: 'Access Token Expires In', type: 'text', optional: true },
-        // refreshTokenExpiresIn: { label: 'Refresh Token Expires In', type: 'text', optional: true },
-        // user: { label: 'sSigned in user', type: 'object', optional: true },
-        // _id: { label: 'user id', type: 'text', optional: true }
-      },
+      credentials: {},
       async authorize(credentials) {
         if (!credentials) return null;
 
-        const {
-          email,
-          password,
-          deviceId
-          //  accessToken, accessTokenExpiresIn, refreshTokenExpiresIn, refreshToken, _id, user
-        } = credentials as ILoginCredential;
+        const { email, password, deviceId } = credentials as ILoginCredential;
         try {
-          // if (accessToken && refreshToken && _id) {
-          //   return {
-          //     access_token: accessToken,
-          //     refresh_token: refreshToken,
-          //     id: _id,
-          //     expires_at: accessTokenExpiresIn,
-          //     refreshTokenExpiresIn,
-          //     user
-          //   };
-          // }
-
-          console.log(email, password, 5555555555555555);
-
           const res = await client.mutate<{ loginWithEmailPassword: ISignInResponse }>({
             mutation: LOGIN_MUTATION,
             variables: {
@@ -78,8 +70,6 @@ export const authOptions: NextAuthOptions = {
             throw new Error(res?.errors[0].message);
           }
 
-          console.log(res, 66666666666666);
-
           if (res?.data?.loginWithEmailPassword?.token) {
             const data = res.data.loginWithEmailPassword;
 
@@ -89,17 +79,19 @@ export const authOptions: NextAuthOptions = {
               access_token: data.token.accessToken,
               refresh_token: data.token.refreshToken,
               expires_at: data.token.accessTokenExpiresIn,
-              mailVerified: data.user.status !== 'email_verification_pending'
+              emailVerified: data.user.status !== 'email_verification_pending'
             };
           }
-          if (res.data?.loginWithEmailPassword?.user?.status === 'email_verification_pending') {
+          if (res?.data?.loginWithEmailPassword?.user?.status === 'email_verification_pending') {
+            const data = res.data.loginWithEmailPassword;
             return {
-              id: res.data?.loginWithEmailPassword.user?._id || '',
-              user: res.data?.loginWithEmailPassword.user,
-              expiry: res.data?.loginWithEmailPassword.expiry,
-              mailVerified: false
+              id: data?.user?._id || '',
+              user: data?.user,
+              expiry: data?.expiry,
+              emailVerified: false
             };
           }
+
           return null;
         } catch (error: any) {
           throw new Error(error);
@@ -150,33 +142,22 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, account }: any) {
-      console.log(77777777777, account);
-      console.log(88888888888, token);
-      let registrationStatus = '';
-      const userDetail = account as ISignInResponseFormat;
-      if (account) {
-        if (account?.access_token) {
-          registrationStatus = jwtDecode<IDecodedToken>(account.access_token)?.registrationStatus;
-        }
-
+    async jwt({ token, user }: any) {
+      if (user) {
+        const userDetail = user as ISignInResponseFormat;
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
           expires_at: userDetail?.expires_at,
           expiry: userDetail?.expiry,
-          user: { ...userDetail.user, registrationStatus }
+          user: userDetail?.user
         };
       }
       return token;
     },
 
-    async session({ session, token, user }) {
-      console.log(token, 898989898);
+    async session({ session, token }: any) {
       session.user = token;
-
-      // Send properties to the client, like an access_token from a provider.
-
       return session;
     }
   },
