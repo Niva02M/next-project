@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 // import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
@@ -26,12 +26,16 @@ import { openSnackbar } from 'store/slices/snackbar';
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn } from 'next-auth/react';
-import { TextField } from '@mui/material';
+import { FormControl, IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
+// import { useRouter } from 'next/navigation';
+// import { UserAccountStatus } from 'constants/user';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   // const router = useRouter();
+  const theme = useTheme();
 
   const dispatch = useDispatch();
   // const { login } = useAuth();
@@ -39,14 +43,14 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   // const [checked, setChecked] = React.useState(true);
 
-  // const [showPassword, setShowPassword] = React.useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
+  const [showPassword, setShowPassword] = React.useState(false);
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-  // const handleMouseDownPassword = (event: React.MouseEvent) => {
-  //   event.preventDefault()!;
-  // };
+  const handleMouseDownPassword = (event: React.MouseEvent) => {
+    event.preventDefault()!;
+  };
 
   return (
     <Formik
@@ -60,20 +64,22 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         password: Yup.string().max(255).required('Password is required')
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        setSubmitting(true);
         try {
           const res = await signIn('credentials', {
             email: values.email,
             password: values.password,
-            redirect: false,
             deviceId: generateDeviceId(),
+            redirect: false,
             callbackUrl: '/'
           });
           if (res?.ok) {
             dispatch(
               openSnackbar({
                 open: true,
-                message: 'Your registration has been successfully completed.',
+                message: 'Login successful',
                 variant: 'alert',
+                anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
                 alert: {
                   color: 'success'
                 },
@@ -85,22 +91,21 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               console.error(res.error);
               // errorSnack(res.error?.split(':')?.[1] || '');
             }
-            setSubmitting(false);
           }
+          setSubmitting(false);
         } catch (err: any) {
           console.error(err);
           dispatch(
             openSnackbar({
               open: true,
-              message: err.message || 'User registration failed',
-              anchorOrigin: { horizontal: 'center' },
+              message: err.message || 'Login failed',
+              anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
               variant: 'alert',
               alert: {
                 color: 'error'
               }
             })
           );
-          setSubmitting(false);
           // errorSnack(errorMessages.ERROR_IN_SIGNIN);
         }
       }}
@@ -109,25 +114,68 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         <form noValidate onSubmit={handleSubmit} {...others}>
           <Grid container gap={3}>
             <Grid item xs={12}>
-              <InputLabel htmlFor="email">Email</InputLabel>
-              <TextField
-                fullWidth
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={values.email}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-              {touched.email && errors.email && (
-                <FormHelperText error id="standard-weight-helper-text--register">
-                  {errors.email}
-                </FormHelperText>
-              )}
+              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+                <InputLabel htmlFor="email">Email</InputLabel>
+                <TextField
+                  fullWidth
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {touched.email && errors.email && (
+                  <FormHelperText error id="standard-weight-helper-text--register">
+                    {errors.email}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+                <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password-login"
+                  type={showPassword ? 'text' : 'password'}
+                  value={values.password}
+                  name="password"
+                  placeholder="password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                        size="large"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  inputProps={{}}
+                  label="Password"
+                />
+                {touched.password && errors.password && (
+                  <FormHelperText error id="standard-weight-helper-text-password-login">
+                    {errors.password}
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="primary" sx={{ textDecoration: 'none' }}>
-                Forgot your email?
+              <Typography
+                variant="body1"
+                fontWeight={500}
+                component={Link}
+                href={'/forgot-password'}
+                color="primary"
+                sx={{ textDecoration: 'none' }}
+              >
+                Forgot password?
               </Typography>
             </Grid>
           </Grid>
@@ -137,7 +185,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               <FormHelperText error>{errors.submit}</FormHelperText>
             </Box>
           )}
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: '34px' }}>
             <AnimateButton>
               <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
                 Sign in now

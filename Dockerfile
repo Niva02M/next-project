@@ -1,13 +1,11 @@
-FROM node:20.14.0-alpine AS base
+FROM 082670687034.dkr.ecr.ap-southeast-2.amazonaws.com/node:22.4.0-alpine AS base
 
 WORKDIR /webapp
 COPY package*.json ./
-RUN yarn
+RUN npm install
 
 COPY . .
-RUN yarn build
+RUN npm run build
 
 EXPOSE 3000
-
-CMD [ "yarn", "start" ]
-
+CMD [ "npm", "run", "start" ]
