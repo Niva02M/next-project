@@ -23,18 +23,24 @@ import { Formik } from 'formik';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
-import { dispatch } from 'store';
-import { openSnackbar } from 'store/slices/snackbar';
 import { REGISTER_MUTATION } from 'graphql/auth';
 import { useMutation } from '@apollo/client';
 import { generateDeviceId } from 'utils/deviceid.helper';
+import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
+import { IRegisterValues } from 'types/localStorageValues';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import pageRoutes from 'constants/routes';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
 const JWTRegister = ({ ...others }) => {
   // const theme = useTheme();
   const scriptedRef = useScriptRef();
+
+  const { setLocalStorage } = useLocalStorageCodeVerify();
+
   const router = useRouter();
+  const { successSnack, errorSnack } = useSuccErrSnack();
 
   const [registerUser] = useMutation(REGISTER_MUTATION);
 
@@ -63,7 +69,7 @@ const JWTRegister = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            await registerUser({
+            const { data } = await registerUser({
               variables: {
                 input: {
                   firstName: values.firstName,
@@ -71,7 +77,7 @@ const JWTRegister = ({ ...others }) => {
                   password: values.password,
                   email: values.email,
                   phoneNumber: {
-                    dialCode: '+977',
+                    dialCode: '+977', // TODO: take dial code from input or constant
                     number: values.phoneNumber
                   },
                   deviceId: generateDeviceId()
@@ -82,39 +88,20 @@ const JWTRegister = ({ ...others }) => {
             if (scriptedRef.current) {
               setStatus({ success: true });
               setSubmitting(false);
-              dispatch(
-                openSnackbar({
-                  open: true,
-                  message: 'User registration successfully completed',
-                  anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-                  variant: 'alert',
-                  alert: {
-                    color: 'success'
-                  }
-                })
-              );
+              setLocalStorage<IRegisterValues>('register', {
+                email: values.email,
+                expiryTime: new Date(data?.registerUser.expiry.expiresAt).getTime()
+              });
+              successSnack('Registration successful. OTP has been sent to your email');
 
-              setTimeout(() => {
-                router.push('/login');
-              }, 1500);
+              router.push(pageRoutes.verifyRegistration);
             }
           } catch (err: any) {
-            console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
               setErrors({ submit: err.message });
               setSubmitting(false);
-              dispatch(
-                openSnackbar({
-                  open: true,
-                  message: 'User registration failed',
-                  anchorOrigin: { horizontal: 'right', vertical: 'bottom' },
-                  variant: 'alert',
-                  alert: {
-                    color: 'error'
-                  }
-                })
-              );
+              errorSnack('User registration failed');
             }
           }
         }}
@@ -226,13 +213,14 @@ const JWTRegister = ({ ...others }) => {
                 <FormControlLabel
                   control={<Checkbox checked={values.termsChecked} onChange={handleChange} name="termsChecked" color="primary" />}
                   label={
-                    <Typography variant="subtitle1">
+                    <Typography variant="body1">
                       Do you agree to our &nbsp;
-                      <Typography variant="subtitle1" color="primary.main" component={Link} href="/">
+                      <Typography variant="body1" color="primary.main" component={Link} href="/">
                         terms & privacy policy.
                       </Typography>
                     </Typography>
                   }
+                  sx={{ my: '-9px' }}
                 />
                 {touched.termsChecked && errors.termsChecked && (
                   <FormHelperText error id="standard-weight-helper-text--register">

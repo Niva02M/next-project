@@ -7,6 +7,7 @@ import { ThemeMode } from 'types/config';
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 import { useMediaQuery } from '@mui/material';
+import { text } from 'stream/consumers';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
@@ -47,9 +48,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           backgroundImage: 'none',
           '.main-nav': {
             '&.scrollbar-container.ps': {
-              paddingBottom: 60,
-  
               '.MuiBox-root': {
+                position: 'relative',
+                paddingBottom: 60,
+                minHeight: '100%',
                 '>.MuiList-root': {
                   '&:last-of-type': {
                     position: 'absolute',
@@ -146,11 +148,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiFormControl: {
       styleOverrides: {
         root: {
+          marginTop: '0 !important',
           '.MuiInputLabel-root': {
             position: 'static',
             transform: 'none',
             fontSize: theme.typography.body2.fontSize,
-            textAlign: 'left',
+            marginBottom: 5,
 
             '+.MuiInputBase-formControl': {
               '.MuiInputBase-input': {
@@ -160,6 +163,15 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
               }
             }
           }
+        }
+      }
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: theme.typography.body2.fontSize,
+          color: theme.palette.grey[800],
+          marginBottom: 3
         }
       }
     },
@@ -192,7 +204,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         },
         input: {
           // fontWeight: 500,
-          padding: '15.5px 14px',
+          padding: '15px 14px',
           borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
             padding: '4px 14px',
@@ -463,16 +475,19 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           '&.main-nav': {
-            '.MuiDrawer-paperAnchorLeft': {
-              paddingBottom: downMD ? 60 : 0
-            },
-            '.MuiBox-root': {
-              '>.MuiList-root': {
-                '&:last-of-type': {
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 5,
-                  right: 5
+            '.mobile-nav': {
+              height: '100%',
+              '.MuiBox-root': {
+                position: 'relative',
+                minHeight: '100%',
+                paddingBottom: downMD ? 60 : 0,
+                '>.MuiList-root': {
+                  '&:last-of-type': {
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 5,
+                    right: 5
+                  }
                 }
               }
             }

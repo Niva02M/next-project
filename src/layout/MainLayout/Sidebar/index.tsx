@@ -35,7 +35,7 @@ const Sidebar = () => {
 
   const logo = useMemo(
     () => (
-      <Box sx={{ display: 'flex', p: 2 }}>
+      <Box sx={{ display: 'flex', p: 2, svg: { height: 45 } }}>
         <LogoSection />
       </Box>
     ),
@@ -66,7 +66,7 @@ const Sidebar = () => {
     return (
       <>
         {downMD ? (
-          <Box sx={drawerSX}>
+          <Box sx={drawerSX} className="mobile-nav">
             <MenuList />
           </Box>
         ) : (
