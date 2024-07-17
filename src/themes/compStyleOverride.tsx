@@ -7,6 +7,7 @@ import { ThemeMode } from 'types/config';
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 import { useMediaQuery } from '@mui/material';
+import { text } from 'stream/consumers';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
@@ -147,10 +148,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiFormControl: {
       styleOverrides: {
         root: {
+          marginTop: '0 !important',
           '.MuiInputLabel-root': {
             position: 'static',
             transform: 'none',
             fontSize: theme.typography.body2.fontSize,
+            marginBottom: 5,
 
             '+.MuiInputBase-formControl': {
               '.MuiInputBase-input': {
@@ -160,6 +163,15 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
               }
             }
           }
+        }
+      }
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: theme.typography.body2.fontSize,
+          color: theme.palette.grey[800],
+          marginBottom: 3
         }
       }
     },
@@ -192,7 +204,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         },
         input: {
           // fontWeight: 500,
-          padding: '15.5px 14px',
+          padding: '15px 14px',
           borderRadius: 0,
           '&.MuiInputBase-inputSizeSmall': {
             padding: '4px 14px',

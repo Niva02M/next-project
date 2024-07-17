@@ -73,7 +73,9 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     marginBottom: 1,
     '& > label': {
       fontSize: '0.875rem',
-      color: theme.palette.grey[800]
+      lineHeight: 'calc(20/14)',
+      color: theme.palette.grey[800],
+      marginBottom: 5
     },
     '& > div > input': {
       // padding: '30.5px 14px 11.5px !important'

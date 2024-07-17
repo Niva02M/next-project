@@ -213,13 +213,14 @@ const JWTRegister = ({ ...others }) => {
                 <FormControlLabel
                   control={<Checkbox checked={values.termsChecked} onChange={handleChange} name="termsChecked" color="primary" />}
                   label={
-                    <Typography variant="subtitle1">
+                    <Typography variant="body1">
                       Do you agree to our &nbsp;
-                      <Typography variant="subtitle1" color="primary.main" component={Link} href="/">
+                      <Typography variant="body1" color="primary.main" component={Link} href="/">
                         terms & privacy policy.
                       </Typography>
                     </Typography>
                   }
+                  sx={{ my: '-9px' }}
                 />
                 {touched.termsChecked && errors.termsChecked && (
                   <FormHelperText error id="standard-weight-helper-text--register">
