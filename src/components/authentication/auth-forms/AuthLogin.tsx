@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // material-ui
 import Box from '@mui/material/Box';
@@ -9,6 +10,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // third party
 import * as Yup from 'yup';
@@ -21,13 +23,12 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
+import { Divider, IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -46,6 +47,9 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const { status, data, update } = useSession();
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -54,7 +58,17 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     event.preventDefault()!;
   };
 
-  const { status, data, update } = useSession();
+  const handleFacebookClick = async () => {
+    await signIn('facebook', {
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+    });
+  };
+
+  const handleGoogleClick = async () => {
+    await signIn('google', {
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+    });
+  };
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {
@@ -206,6 +220,37 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               </Button>
             </AnimateButton>
           </Box>
+
+          <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
+            <Divider sx={{ width: '45%' }} />
+            <Typography sx={{ mx: '10px' }}>or</Typography>
+            <Divider sx={{ width: '45%' }} />
+          </Grid>
+
+          <Grid container gap={2}>
+            <Grid item xs={12}>
+              <Button
+                color="primary"
+                variant="outlined"
+                fullWidth
+                startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
+                onClick={handleFacebookClick}
+              >
+                Log in with Facebook
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                color="primary"
+                variant="outlined"
+                fullWidth
+                startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
+                onClick={handleGoogleClick}
+              >
+                Log in with Google
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       )}
     </Formik>

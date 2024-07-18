@@ -7,12 +7,14 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import {
   LOGIN_MUTATION,
-  FACEBOOK_SIGNIN_MUTATION
+  FACEBOOK_SIGNIN_MUTATION,
+  GOOGLE_SIGNIN_MUTATION
   //  GOOGLE_SIGNIN_MUTATION,
   // REFRESH_TOKEN_MUTATION
 } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
+import { generateDeviceId } from 'utils/deviceid.helper';
 
 export interface ILoginCredential {
   email: string;
@@ -107,20 +109,19 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID || '',
       clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET || '',
       profile: async (profile: any): Promise<any> => {
-        const { id, name, email } = profile;
+        const { accessToken } = profile;
         const response = await client.mutate({
           mutation: FACEBOOK_SIGNIN_MUTATION,
           variables: {
-            id,
-            name,
-            email
+            accessToken,
+            deviceId: generateDeviceId()
           }
         });
         if (response?.errors) {
           throw new Error(response?.errors[0].message);
         }
         if (response?.data) {
-          const returnData = response?.data?.facebookAuthLogin;
+          const returnData = response?.data?.loginWithFacebook;
 
           return {
             id: returnData?.user?._id || '',
@@ -130,18 +131,42 @@ export const authOptions: NextAuthOptions = {
             expires_at: returnData?.token?.accessTokenExpiresIn
           };
         }
+        return null;
       }
     }),
     GoogleProvider({
-      clientId: process.env.NEXT_GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET || '',
+      clientId: '33745285788-h2trccpbm5bu0kobr3jsb8jh6ni6pjr6.apps.googleusercontent.com',
+      clientSecret: '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',
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code'
+        }
+      },
       profile: async (profile: any): Promise<any> => {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture
-        };
+        const { idToken } = profile;
+        const response = await client.mutate({
+          mutation: GOOGLE_SIGNIN_MUTATION,
+          variables: {
+            idToken,
+            deviceId: generateDeviceId()
+          }
+        });
+        if (response?.errors) {
+          throw new Error(response?.errors[0].message);
+        }
+        if (response?.data) {
+          const returnData = response?.data?.loginWithGoogle;
+
+          return {
+            id: returnData?.user?._id || '',
+            user: returnData?.user,
+            access_token: returnData?.token?.accessToken,
+            refresh_token: returnData?.token?.refreshToken,
+            expires_at: returnData?.token?.accessTokenExpiresIn
+          };
+        }
       }
     })
   ],

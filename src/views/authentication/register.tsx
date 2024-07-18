@@ -67,8 +67,15 @@ const Register = () => {
                 <AuthRegister />
               </Grid>
               <Grid item xs={12}>
-                <Grid item container direction="column" xs={12}>
-                  <Typography component={Link} href={'/login'} variant="body1" color="primary" sx={{ textDecoration: 'none' }}>
+                <Grid item container direction="column" xs={12} sx={{ paddingTop: 4 }}>
+                  <Typography
+                    component={Link}
+                    href={'/login'}
+                    variant="body1"
+                    color="primary"
+                    fontWeight={500}
+                    sx={{ textDecoration: 'none' }}
+                  >
                     Already have an account? Log in
                   </Typography>
                 </Grid>
