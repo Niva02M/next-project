@@ -2,16 +2,12 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 
 // third party
@@ -23,16 +19,15 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 // import { DASHBOARD_PATH } from 'config';
 
 // assets
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { TextField } from '@mui/material';
+import { IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -42,8 +37,8 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 };
 
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
-  const theme = useTheme();
   const router = useRouter();
+  const theme = useTheme();
 
   // const dispatch = useDispatch();
 
@@ -133,21 +128,23 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
         <form noValidate onSubmit={handleSubmit} {...others}>
           <Grid container gap={3}>
             <Grid item xs={12}>
-              <InputLabel htmlFor="email">Email</InputLabel>
-              <TextField
-                fullWidth
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={values.email}
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
-              {touched.email && errors.email && (
-                <FormHelperText error id="standard-weight-helper-text--register">
-                  {errors.email}
-                </FormHelperText>
-              )}
+              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+                <InputLabel htmlFor="email">Email</InputLabel>
+                <TextField
+                  fullWidth
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={values.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                />
+                {touched.email && errors.email && (
+                  <FormHelperText error id="standard-weight-helper-text--register">
+                    {errors.email}
+                  </FormHelperText>
+                )}
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
@@ -184,7 +181,14 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               </FormControl>
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1" component={Link} href={'/forgot-password'} color="primary" sx={{ textDecoration: 'none' }}>
+              <Typography
+                variant="body1"
+                fontWeight={500}
+                component={Link}
+                href={'/forgot-password'}
+                color="primary"
+                sx={{ textDecoration: 'none' }}
+              >
                 Forgot password?
               </Typography>
             </Grid>
@@ -195,7 +199,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               <FormHelperText error>{errors.submit}</FormHelperText>
             </Box>
           )}
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: '34px' }}>
             <AnimateButton>
               <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
                 Sign in now
