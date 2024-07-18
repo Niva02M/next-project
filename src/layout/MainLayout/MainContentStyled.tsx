@@ -22,12 +22,11 @@ const MainContentStyled = styled('main', {
   backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[100],
   minWidth: '1%',
   width: '100%',
-  minHeight: 'calc(100vh - 88px)',
+  minHeight: 'calc(100vh - 61px)',
   flexGrow: 1,
   padding: 20,
-  marginTop: 88,
-  marginRight: 20,
-  borderRadius: `${borderRadius}px`,
+  marginTop: 61,
+  borderRadius: 0,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
   ...(!open && {
@@ -36,9 +35,9 @@ const MainContentStyled = styled('main', {
       duration: theme.transitions.duration.shorter + 200
     }),
     [theme.breakpoints.up('md')]: {
-      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? -(drawerWidth - 72) : 20,
+      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? -(drawerWidth - 61) : 0,
       width: `calc(100% - ${drawerWidth}px)`,
-      marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88
+      marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 61
     }
   }),
   ...(open && {
@@ -46,23 +45,23 @@ const MainContentStyled = styled('main', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.shorter + 200
     }),
-    marginLeft: menuOrientation === MenuOrientation.HORIZONTAL ? 20 : 0,
-    marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88,
+    marginLeft: menuOrientation === MenuOrientation.HORIZONTAL ? 0 : 0,
+    marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 61,
     width: `calc(100% - ${drawerWidth}px)`,
     [theme.breakpoints.up('md')]: {
-      marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88
+      marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 61
     }
   }),
   [theme.breakpoints.down('md')]: {
-    marginLeft: 20,
+    marginLeft: 0,
     padding: 16,
-    marginTop: 88,
+    marginTop: 61,
     ...(!open && {
       width: `calc(100% - ${drawerWidth}px)`
     })
   },
   [theme.breakpoints.down('sm')]: {
-    marginLeft: 10,
+    marginLeft: 0,
     marginRight: 10
   }
 }));

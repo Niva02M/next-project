@@ -24,10 +24,10 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import NotificationList from './NotificationList';
+import MessageList from './MessageList';
 
 // assets
-import { IconBell } from '@tabler/icons-react';
+import { IconMessage } from '@tabler/icons-react';
 
 // types
 import { ThemeMode } from 'types/config';
@@ -54,7 +54,7 @@ const status = [
 
 // ==============================|| NOTIFICATION ||============================== //
 
-const NotificationSection = () => {
+const MessageSection = () => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -92,11 +92,8 @@ const NotificationSection = () => {
     <>
       <Box
         sx={{
-          ml: 0,
+          ml: 1,
           mr: 1
-          // [theme.breakpoints.down('lg')]: {
-          //   mr: 2
-          // }
         }}
       >
         <Avatar
@@ -110,7 +107,7 @@ const NotificationSection = () => {
             border:
               theme.palette.mode === ThemeMode.DARK ? `1px solid ${theme.palette.secondary.main}` : `1px solid ${theme.palette.grey[200]}`,
             borderRadius: '50%',
-            '&:hover': {
+            '&[aria-controls="menu-list-grow"],&:hover': {
               bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.dark',
               color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'primary.light',
               border:
@@ -125,7 +122,8 @@ const NotificationSection = () => {
           onClick={handleToggle}
           color="inherit"
         >
-          <IconBell stroke={1.5} size="20px" />
+          {/* <IconBell stroke={1.5} size="20px" /> */}
+          <IconMessage stroke={1.5} size="20px" />
         </Avatar>
       </Box>
 
@@ -194,7 +192,7 @@ const NotificationSection = () => {
                               <Divider sx={{ my: 0 }} />
                             </Grid>
                           </Grid>
-                          <NotificationList />
+                          <MessageList />
                         </PerfectScrollbar>
                       </Grid>
                     </Grid>
@@ -214,4 +212,4 @@ const NotificationSection = () => {
   );
 };
 
-export default NotificationSection;
+export default MessageSection;

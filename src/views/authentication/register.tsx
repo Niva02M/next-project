@@ -44,8 +44,8 @@ const Register = () => {
       <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
         <Grid item md={6} display={'flex'} justifyContent={'center'}>
           <AuthCardWrapper>
-            <Grid container spacing={2} alignItems="center" justifyContent="center">
-              <Grid item sx={{ mb: 3 }}>
+            <Grid container spacing={3} alignItems="center" justifyContent="center">
+              <Grid item sx={{ mb: '1px' }}>
                 <Link href="#" aria-label="theme logo">
                   <Logo />
                 </Link>
@@ -54,7 +54,7 @@ const Register = () => {
                 <Grid container direction={{ xs: 'column-reverse', md: 'row' }} alignItems="center" justifyContent="center">
                   <Grid item>
                     <Stack alignItems="center" justifyContent="center" spacing={1}>
-                      <Typography color="grey.800" gutterBottom variant={downMD ? 'h3' : 'h2'}>
+                      <Typography color="grey.800" gutterBottom variant={downMD ? 'h2' : 'h1'}>
                         Sign me up!
                       </Typography>
                       <Typography color="grey.800" variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }}>
@@ -68,11 +68,8 @@ const Register = () => {
                 <AuthRegister />
               </Grid>
               <Grid item xs={12}>
-                <Divider />
-              </Grid>
-              <Grid item xs={12}>
-                <Grid item container direction="column" alignItems="center" xs={12}>
-                  <Typography component={Link} href={'/login'} variant="subtitle1" sx={{ textDecoration: 'none' }}>
+                <Grid item container direction="column" xs={12}>
+                  <Typography component={Link} href={'/login'} variant="body1" color="primary" sx={{ textDecoration: 'none' }}>
                     Already have an account? Log in
                   </Typography>
                 </Grid>

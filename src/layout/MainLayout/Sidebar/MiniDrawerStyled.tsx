@@ -26,7 +26,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   zIndex: 1099,
   background: theme.palette.background.default,
   overflowX: 'hidden',
-  width: 72,
+  width: 61,
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen + 200

@@ -42,7 +42,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
   const ref = useRef<HTMLSpanElement>(null);
 
   const pathname = usePathname();
-  const { mode, menuOrientation, borderRadius } = useConfig();
+  const { mode, menuOrientation } = useConfig();
 
   const { menuMaster } = useGetMenuMaster();
   const openItem = menuMaster.openedItem;
@@ -102,59 +102,63 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
           disableRipple={!drawerOpen}
           sx={{
             zIndex: 1201,
-            borderRadius: `${borderRadius}px`,
+            borderRadius: `2px`,
             mb: 0.5,
-            pl: drawerOpen ? `${level * 24}px` : 1.25,
+            pl: drawerOpen ? `${level * 13}px` : 1.25,
+            py: drawerOpen ? '9px' : 0,
             ...(drawerOpen &&
               level === 1 &&
               mode !== ThemeMode.DARK && {
                 '&:hover': {
-                  bgcolor: 'secondary.light'
+                  bgcolor: 'primary.light'
                 },
                 '&.Mui-selected': {
-                  bgcolor: 'secondary.light',
-                  color: iconSelectedColor,
+                  bgcolor: alpha(theme.palette.primary.main, 0.32),
+                  color: theme.palette.grey[800],
+                  borderRight: `4px solid ${theme.palette.primary.main}`,
                   '&:hover': {
-                    color: iconSelectedColor,
-                    bgcolor: 'secondary.light'
+                    color: theme.palette.grey[800],
+                    bgcolor: 'primary.light'
                   }
                 }
               }),
             ...((!drawerOpen || level !== 1) && {
               py: level === 1 ? 0 : 1,
               '&:hover': {
-                bgcolor: 'transparent'
+                bgcolor: 'primary.light'
               },
               '&.Mui-selected': {
                 '&:hover': {
-                  bgcolor: 'transparent'
+                  bgcolor: 'primary.light'
                 },
-                bgcolor: 'transparent'
+                bgcolor: alpha(theme.palette.primary.main, 0.32),
+                color: theme.palette.grey[800],
+                borderRight: `4px solid ${theme.palette.primary.main}`
               }
             })
           }}
           selected={isSelected}
           onClick={() => itemHandler()}
         >
-          <ButtonBase aria-label="theme-icon" sx={{ borderRadius: `${borderRadius}px` }} disableRipple={drawerOpen}>
+          <ButtonBase aria-label="theme-icon" sx={{ borderRadius: `2px` }} disableRipple={drawerOpen}>
             <ListItemIcon
               sx={{
-                minWidth: level === 1 ? 36 : 18,
-                color: isSelected ? iconSelectedColor : 'text.primary',
+                minWidth: level === 1 ? 30 : 18,
+                color: isSelected ? iconSelectedColor : 'text-primary',
                 ...(!drawerOpen &&
                   level === 1 && {
-                    borderRadius: `${borderRadius}px`,
-                    width: 46,
+                    borderRadius: `2px`,
+                    width: 30,
                     height: 46,
                     alignItems: 'center',
                     justifyContent: 'center',
                     '&:hover': {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light'
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent'
                     },
                     ...(isSelected && {
-                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'secondary.light',
+                      bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.25) : 'transparent',
                       '&:hover': {
-                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'secondary.light'
+                        bgcolor: mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.3) : 'transparent'
                       }
                     })
                   })
@@ -173,9 +177,9 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
                     noWrap
                     overflow="hidden"
                     textOverflow="ellipsis"
-                    variant={isSelected ? 'h5' : 'body1'}
-                    color="inherit"
-                    width={102}
+                    variant={'body1'}
+                    color="text.primary"
+                    // width={102}
                   >
                     {item.title}
                   </Typography>
@@ -208,11 +212,11 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
           target={itemTarget}
           disabled={item.disabled}
           sx={{
-            borderRadius: isParents ? `${borderRadius}px` : 0,
+            borderRadius: isParents ? `2px` : 0,
             mb: isParents ? 0 : 0.5,
             alignItems: 'flex-start',
-            bgcolor: level > 1 ? 'transparent !important' : 'inherit',
-            py: 1,
+            bgcolor: level > 1 ? 'primary.light' : 'inherit',
+            py: 1.1,
             pl: 2,
             mr: isParents ? 1 : 0
           }}
@@ -230,7 +234,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
 
           <ListItemText
             primary={
-              <Typography variant={isSelected ? 'h5' : 'body1'} color="inherit">
+              <Typography variant={'body1'} color="text.primary">
                 {item.title}
               </Typography>
             }
