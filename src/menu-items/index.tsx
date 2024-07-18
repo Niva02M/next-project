@@ -8,11 +8,12 @@ import { NavItemType } from 'types';
 import settingPage from './setting';
 import aboutUsPage from './about-us';
 import faqPage from './faq';
+import privacyPolicyPage from './privacy-policy';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, aboutUsPage, faqPage, settingPage]
+  items: [samplePage, pages, reports, aboutUsPage, faqPage, privacyPolicyPage, settingPage]
 };
 
 export default menuItems;
