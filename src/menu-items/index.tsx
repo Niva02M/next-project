@@ -9,11 +9,12 @@ import settingPage from './setting';
 import aboutUsPage from './about-us';
 import faqPage from './faq';
 import privacyPolicyPage from './privacy-policy';
+import termsConditionsPage from './terms-conditions';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, aboutUsPage, faqPage, privacyPolicyPage, settingPage]
+  items: [samplePage, pages, reports, aboutUsPage, faqPage, privacyPolicyPage, termsConditionsPage, settingPage]
 };
 
 export default menuItems;

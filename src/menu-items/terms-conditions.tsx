@@ -4,7 +4,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconBrandChrome } from '@tabler/icons-react';
+import { IconShieldLock } from '@tabler/icons-react';
 
 // type
 import { NavItemType } from 'types';
@@ -12,14 +12,14 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-  IconBrandChrome
+  IconShieldLock
 };
-const privacyPolicyPage: NavItemType = {
-  id: 'privacy-policy',
-  title: <FormattedMessage id="Privacy policy" />,
-  icon: icons.IconBrandChrome,
+const termsConditionsPage: NavItemType = {
+  id: 'terms-conditions',
+  title: <FormattedMessage id="Terms and conditions" />,
+  icon: icons.IconShieldLock,
   type: 'group',
-  url: '/pages/privacy-policy'
+  url: '/pages/terms-conditions'
 };
 
-export default privacyPolicyPage;
+export default termsConditionsPage;
