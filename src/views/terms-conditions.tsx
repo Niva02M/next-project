@@ -17,7 +17,7 @@ const headerBackground = '/assets/images/landing/bg-header.jpg';
 
 // ============================|| SAAS PAGES - PRIVCY POLICY ||============================ //
 
-const PrivacyPolicy = () => {
+const TermsCondition = () => {
   return (
     <Box
       sx={{
@@ -44,7 +44,7 @@ const PrivacyPolicy = () => {
                     mt: { xs: 10, md: 'auto' }
                   }}
                 >
-                  Privacy Policy
+                  Terms and Conditions
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -167,4 +167,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default TermsCondition;

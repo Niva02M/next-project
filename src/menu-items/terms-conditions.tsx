@@ -12,14 +12,14 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-    IconShieldLock
+  IconShieldLock
 };
-const privacyPolicyPage: NavItemType = {
-  id: 'privacy-policy',
-  title: <FormattedMessage id="Privacy policy" />,
+const termsConditionsPage: NavItemType = {
+  id: 'terms-conditions',
+  title: <FormattedMessage id="Terms and conditions" />,
   icon: icons.IconShieldLock,
   type: 'group',
-  url: '/pages/privacy-policy'
+  url: '/pages/terms-conditions'
 };
 
-export default privacyPolicyPage;
+export default termsConditionsPage;

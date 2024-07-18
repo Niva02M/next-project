@@ -6,12 +6,12 @@ import reports from './reports';
 // types
 import { NavItemType } from 'types';
 import settingPage from './setting';
-import privacyPolicyPage from './privacy-policy';
+import termsConditionsPage from './terms-conditions';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, privacyPolicyPage, settingPage]
+  items: [samplePage, pages, reports, termsConditionsPage, settingPage]
 };
 
 export default menuItems;
