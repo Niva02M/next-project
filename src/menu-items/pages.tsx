@@ -84,8 +84,7 @@ const pages: NavItemType = {
       title: <FormattedMessage id="contact-us" />,
       type: 'item',
       icon: icons.IconPhoneCall,
-      url: '/pages/contact-us',
-      target: true
+      url: '/pages/contact-us'
     }
   ]
 };
