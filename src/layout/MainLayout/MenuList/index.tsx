@@ -60,7 +60,7 @@ const MenuList = () => {
         if (item.url && item.id !== lastItemId) {
           return (
             <List disablePadding key={item.id}>
-              {!isHorizontal && index !== 0 && <Divider sx={{ py: 0.5 }} />}
+              {/* {!isHorizontal && index !== 0 && <Divider sx={{ py: 0.5 }} />} */}
               <NavItem item={item} level={1} isParents setSelectedID={() => setSelectedID('')} />
             </List>
           );
