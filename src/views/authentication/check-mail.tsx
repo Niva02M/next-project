@@ -11,7 +11,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
-import AuthFooter from 'ui-component/cards/AuthFooter';
 import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';

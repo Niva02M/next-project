@@ -14,7 +14,6 @@ import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
-import { Box } from '@mui/material';
 
 // ============================|| AUTH - FORGOT PASSWORD ||============================ //
 

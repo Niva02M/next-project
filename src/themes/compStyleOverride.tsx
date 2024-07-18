@@ -7,7 +7,6 @@ import { ThemeMode } from 'types/config';
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 import { useMediaQuery } from '@mui/material';
-import { text } from 'stream/consumers';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;

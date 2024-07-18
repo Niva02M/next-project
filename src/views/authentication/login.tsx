@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 // material-ui
 import { Theme } from '@mui/material/styles';
-import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -15,8 +14,8 @@ import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthLogin from 'components/authentication/auth-forms/AuthLogin';
 import AuthSlider from 'ui-component/cards/AuthSlider';
-import { Box } from '@mui/material';
 import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
+import { AuthSliderProps } from 'types';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
