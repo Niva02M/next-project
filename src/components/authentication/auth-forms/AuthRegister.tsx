@@ -3,6 +3,8 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
+import { signIn } from 'next-auth/react';
 
 // material-ui
 // import { useTheme } from '@mui/material/styles';
@@ -15,6 +17,7 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { Divider } from '@mui/material';
 
 // third party
 import * as Yup from 'yup';
@@ -43,6 +46,18 @@ const JWTRegister = ({ ...others }) => {
   const { successSnack, errorSnack } = useSuccErrSnack();
 
   const [registerUser] = useMutation(REGISTER_MUTATION);
+
+  const handleFacebookClick = async () => {
+    await signIn('facebook', {
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+    });
+  };
+
+  const handleGoogleClick = async () => {
+    await signIn('google', {
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+    });
+  };
 
   return (
     <>
@@ -235,13 +250,43 @@ const JWTRegister = ({ ...others }) => {
               </Box>
             )}
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: '34px' }}>
               <AnimateButton>
                 <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
                   Create your account
                 </Button>
               </AnimateButton>
             </Box>
+            <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
+              <Divider sx={{ width: '45%' }} />
+              <Typography sx={{ mx: '10px' }}>or</Typography>
+              <Divider sx={{ width: '45%' }} />
+            </Grid>
+
+            <Grid container gap={2}>
+              <Grid item xs={12}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  fullWidth
+                  startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
+                  onClick={handleFacebookClick}
+                >
+                  Log in with Facebook
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  fullWidth
+                  startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
+                  onClick={handleGoogleClick}
+                >
+                  Log in with Google
+                </Button>
+              </Grid>
+            </Grid>
           </form>
         )}
       </Formik>

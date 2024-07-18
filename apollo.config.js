@@ -12,7 +12,7 @@ const httpLink = createHttpLink({
   // eslint-disable-next-line no-undef
   uri: process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://dev-et-api.draftserver.com/api'
   // uri: 'http://localhost:3000/api'
-  // uri: 'https://a153-202-166-198-75.ngrok-free.app/api'
+  // uri: 'https://6b38-202-166-198-75.ngrok-free.app/api'
 });
 
 function isRefreshRequest(operation) {

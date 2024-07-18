@@ -64,7 +64,7 @@ export const FACEBOOK_SIGNIN_MUTATION = gql`
 `;
 
 export const GOOGLE_SIGNIN_MUTATION = gql`
-  mutation loginWithGoogle($body: LoginGoogleInput!) {
+  mutation loginWithGoogle($body: GoogleLoginInput!) {
     loginWithGoogle(body: $body) {
       message
       expiry {
