@@ -32,14 +32,14 @@ const basicData = [
   },
   {
     id: 'basic3',
-    title: 'Is Berry Support TypeScript?',
-    content: 'Yes, Berry Support the TypeScript and it is only available in Plus and Extended License.'
+    title: 'Is Ebtheme Support TypeScript?',
+    content: 'Yes, Ebtheme Support the TypeScript and it is only available in Plus and Extended License.'
   },
   {
     id: 'basic4',
-    title: 'Is there any RoadMap for Berry?',
+    title: 'Is there any RoadMap for Ebtheme?',
     content:
-      'Berry is our flagship React Dashboard Template and we always add the new features for the long run. You can check the Roadmap in Documentation.'
+      'Ebtheme is our flagship React Dashboard Template and we always add the new features for the long run. You can check the Roadmap in Documentation.'
   }
 ];
 
@@ -98,7 +98,7 @@ const Faqs = () => {
                 animation: '5s wings ease-in-out infinite'
               }}
             >
-              <Image src={mailImg} alt="Berry Dashboard" width={400} height={270} style={{ maxWidth: '100%', height: 'auto' }} />
+              <Image src={mailImg} alt="Mail" width={400} height={270} style={{ maxWidth: '100%', height: 'auto' }} />
             </Box>
           </Grid>
           <Grid item xs={12}>

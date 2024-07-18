@@ -5,7 +5,7 @@ import { Poppins } from 'next/font/google';
 import { ConfigProps, MenuOrientation, ThemeDirection, ThemeMode } from 'types/config';
 
 // basename: only at build time to set, and Don't add '/' at end off BASENAME for breadcrumbs, also Don't put only '/' use blank('') instead,
-// like '/berry-material-react/react/default'
+// like '/ebtheme/react/default'
 export const BASE_PATH = '';
 
 export const DASHBOARD_PATH = '/sample-page';

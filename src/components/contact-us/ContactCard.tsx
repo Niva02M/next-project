@@ -114,7 +114,7 @@ const ContactCard = () => {
               animation: '5s wings ease-in-out infinite'
             }}
           >
-            <Image src={mailImg} alt="Berry Dashboard" width={400} height={270} style={{ maxWidth: '100%', height: 'auto' }} />
+            <Image src={mailImg} alt="mail" width={400} height={270} style={{ maxWidth: '100%', height: 'auto' }} />
           </Box>
         </Grid>
         <Grid item xs={10} sx={{ mb: -37.5 }}>

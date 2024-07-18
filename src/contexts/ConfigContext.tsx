@@ -33,7 +33,7 @@ type ConfigProviderProps = {
 };
 
 function ConfigProvider({ children }: ConfigProviderProps) {
-  const [config, setConfig] = useLocalStorage('berry-config-next-ts', {
+  const [config, setConfig] = useLocalStorage('ebtheme-config-next-ts', {
     menuOrientation: initialState.menuOrientation,
     miniDrawer: initialState.miniDrawer,
     fontFamily: initialState.fontFamily,

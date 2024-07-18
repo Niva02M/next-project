@@ -15,7 +15,7 @@ interface Props extends BoxProps {
 const Page = forwardRef<HTMLDivElement, Props>(({ children, title = '', meta, ...other }: Props, ref: Ref<HTMLDivElement>) => (
   <>
     <Head>
-      <title>{`${title} | Berry - React Material Admin Dashboard Template`}</title>
+      <title>{`${title} | Ebtheme - React Material Admin Dashboard Template`}</title>
       <meta name="description" content="Checkout our cool page" key="desc" />
       <meta property="og:title" content="Social Title for Cool Page" />
       <meta property="og:description" content="And a social description for our cool page" />

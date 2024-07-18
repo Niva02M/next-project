@@ -8,7 +8,7 @@ import ProviderWrapper from 'store/ProviderWrapper';
 export const metadata: Metadata = {
   title: 'Ebtheme web',
   description:
-    'Start your next React project with Berry admin template. It build with Reactjs, Material-UI, Redux, and Hook for faster web development.'
+    'Start your next project with Ebtheme template. It build with Reactjs, Material-UI, Redux, and Hook for faster web development.'
 };
 
 // ==============================|| ROOT LAYOUT ||============================== //

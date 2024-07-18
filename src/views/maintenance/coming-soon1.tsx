@@ -187,7 +187,7 @@ const ComingSoon1 = () => {
           >
             <Image
               src={theme.palette.mode === ThemeMode.DARK ? logoDark : logo}
-              alt="Berry"
+              alt="Logo"
               width="100"
               height={35}
               style={{ maxWidth: '100%', height: 'auto' }}
@@ -223,7 +223,7 @@ const ComingSoon1 = () => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <Typography variant="h1">Berry - The React Admin Template</Typography>
+                      <Typography variant="h1">Ebtheme - The React Admin Template</Typography>
                     </Grid>
                     <Grid item xs={12}>
                       <Typography sx={{ fontSize: '1.125rem' }}>
@@ -369,7 +369,7 @@ const ComingSoon1 = () => {
                               </Typography>
                             </Grid>
                             <Grid item>
-                              <Image src={companyLogo} alt="Berry" width={128} height={27} style={{ maxWidth: '100%', height: 'auto' }} />
+                              <Image src={companyLogo} alt="Logo" width={128} height={27} style={{ maxWidth: '100%', height: 'auto' }} />
                             </Grid>
                           </Grid>
                         </Grid>
