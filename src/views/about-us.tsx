@@ -53,8 +53,8 @@ const AboutUs = () => {
                   sx={{ fontWeight: 400, lineHeight: 1.4, my: { xs: 0, md: 'auto' }, mx: { xs: 12.5, md: 'auto' } }}
                   color="white"
                 >
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
-                  dummy text ever since the 1500s.
+                  {`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+                  dummy text ever since the 1500s.`}
                 </Typography>
               </Grid>
             </Grid>
@@ -63,10 +63,10 @@ const AboutUs = () => {
             <MainCard elevation={4} border={false} boxShadow shadow={4} sx={{ mb: 3 }}>
               <Stack spacing={2} sx={{ textAlign: 'left' }}>
                 <Typography>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+                  {`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
                   dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
                   book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
-                  unchanged.
+                  unchanged.`}
                   <Link href="#" underline="none">
                     www.demos.org
                   </Link>{' '}

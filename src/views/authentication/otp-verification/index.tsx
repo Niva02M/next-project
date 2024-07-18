@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Stack, Typography, Box, useMediaQuery } from '@mui/material';
+import { Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 import Link from 'next/link';

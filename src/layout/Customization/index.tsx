@@ -8,13 +8,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
 // third-party
@@ -32,11 +30,10 @@ import SidebarDrawer from './SidebarDrawer';
 import MenuOrientation from './MenuOrientation';
 
 import MainCard from 'ui-component/cards/MainCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import useConfig from 'hooks/useConfig';
 
 // assets
-import { IconSettings, IconPlus, IconTextSize, IconColorSwatch } from '@tabler/icons-react';
+import { IconPlus, IconTextSize, IconColorSwatch } from '@tabler/icons-react';
 
 // types
 import { ThemeMode } from 'types/config';
@@ -88,7 +85,6 @@ const Customization = () => {
 
   return (
     <>
-
       <Drawer anchor="right" onClose={handleToggle} open={open} PaperProps={{ sx: { width: 375 } }}>
         {open && (
           <PerfectScrollbar>

@@ -7,11 +7,12 @@ import reports from './reports';
 import { NavItemType } from 'types';
 import settingPage from './setting';
 import aboutUsPage from './about-us';
+import faqPage from './faq';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, aboutUsPage, settingPage]
+  items: [samplePage, pages, reports, aboutUsPage, faqPage, settingPage]
 };
 
 export default menuItems;
