@@ -1,23 +1,23 @@
 'use client';
 
-import Link from 'next/link';
+// import Link from 'next/link';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // project imports
-import { DASHBOARD_PATH } from 'config';
-import AnimateButton from 'ui-component/extended/AnimateButton';
+// import { DASHBOARD_PATH } from 'config';
+// import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+// import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 
 const imageBackground = '/assets/images/maintenance/img-error-bg.svg';
 const imageDarkBackground = '/assets/images/maintenance/img-error-bg-dark.svg';
@@ -69,11 +69,11 @@ const Error = () => {
           <Typography variant="body2" align="center">
             The page you are looking was moved, removed, renamed, or might never exist!
           </Typography>
-          <AnimateButton>
+          {/* <AnimateButton>
             <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
               <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
             </Button>
-          </AnimateButton>
+          </AnimateButton> */}
         </Stack>
       </Grid>
     </Grid>
