@@ -2,7 +2,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconShieldLock } from '@tabler/icons-react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 // type
 import { NavItemType } from 'types';
@@ -10,12 +10,12 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-  IconShieldLock
+  IconInfoCircle
 };
 const aboutUsPage: NavItemType = {
   id: 'about-us',
   title: <FormattedMessage id="About-us" />,
-  icon: icons.IconShieldLock,
+  icon: icons.IconInfoCircle,
   type: 'group',
   url: '/pages/about-us'
 };

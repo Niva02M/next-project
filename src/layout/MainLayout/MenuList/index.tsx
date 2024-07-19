@@ -3,7 +3,7 @@ import { memo, useState } from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
+// import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -60,7 +60,7 @@ const MenuList = () => {
         if (item.url && item.id !== lastItemId) {
           return (
             <List disablePadding key={item.id}>
-              {!isHorizontal && index !== 0 && <Divider sx={{ py: 0.5 }} />}
+              {/* {!isHorizontal && index !== 0 && <Divider />} */}
               <NavItem item={item} level={1} isParents setSelectedID={() => setSelectedID('')} />
             </List>
           );
