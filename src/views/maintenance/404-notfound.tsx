@@ -69,11 +69,11 @@ const Error = () => {
           <Typography variant="body2" align="center">
             The page you are looking was moved, removed, renamed, or might never exist!
           </Typography>
-          <AnimateButton>
+          {/* <AnimateButton>
             <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
               <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
             </Button>
-          </AnimateButton>
+          </AnimateButton> */}
         </Stack>
       </Grid>
     </Grid>
