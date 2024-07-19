@@ -1,23 +1,23 @@
 'use client';
 
-import Link from 'next/link';
+// import Link from 'next/link';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // project imports
-import { DASHBOARD_PATH } from 'config';
-import AnimateButton from 'ui-component/extended/AnimateButton';
+// import { DASHBOARD_PATH } from 'config';
+// import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
+// import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 
 const imageBackground = '/assets/images/maintenance/img-error-bg.svg';
 const imageDarkBackground = '/assets/images/maintenance/img-error-bg-dark.svg';
