@@ -70,22 +70,22 @@ const AppBar = ({ ...others }) => {
       <MuiAppBar>
         <Container>
           <Toolbar sx={{ py: 2.5, px: `0 !important` }}>
-            <Typography sx={{ flexGrow: 1, textAlign: 'left', svg: { width: 'auto' } }}>
+            <Typography sx={{ flexGrow: 1, textAlign: 'left', svg: { width: 'auto', height: 45 } }}>
               <Logo />
             </Typography>
             <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={{ xs: 1.5, md: 2.5 }}>
               <Button color="inherit" component={Link} href="#">
                 Home
               </Button>
-              <Button color="inherit" component={Link} href="login" target="_blank">
-                Dashboard
+              <Button color="inherit" component={Link} href="/pages/about-us" target="_blank">
+                About us
               </Button>
-              <Button color="inherit" component={Link} href="https://codedthemes.gitbook.io/berry" target="_blank">
-                Documentation
+              <Button color="inherit" component={Link} href="/pages/contact-us" target="_blank">
+                Contact us
               </Button>
-              <Button component={Link} href="https://links.codedthemes.com/hsqll" disableElevation variant="contained" color="secondary">
-                Purchase Now
-              </Button>
+              <Button component={Link} href="/login" disableElevation variant="contained" color="secondary">
+                Login
+              </Button> 
             </Stack>
             <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
               <IconButton color="inherit" onClick={drawerToggler(true)} size="large">

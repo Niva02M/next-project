@@ -7,6 +7,8 @@ import AppBar from 'ui-component/extended/AppBar';
 
 // project import
 import Customization from 'layout/Customization';
+import AuthFooter from 'ui-component/cards/AuthFooter';
+import { Container } from '@mui/material';
 
 // ==============================|| LAYOUTS - STRUCTURE ||============================== //
 
@@ -29,10 +31,15 @@ interface Props {
 
 export default function Layout({ children }: Props) {
   return (
-    <HeaderWrapper>
-      <AppBar />
-      {children}
-      <Customization />
-    </HeaderWrapper>
+    <>
+      <HeaderWrapper>
+        <AppBar />
+        {children}
+        <Customization />
+      </HeaderWrapper>
+      <Container sx={{ py: 2 }}>
+        <AuthFooter />
+      </Container>
+    </>
   );
 }
