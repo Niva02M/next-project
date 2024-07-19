@@ -14,7 +14,7 @@ import termsConditionsPage from './terms-conditions';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, aboutUsPage, faqPage, privacyPolicyPage, termsConditionsPage, settingPage]
+  items: [samplePage, aboutUsPage, faqPage, privacyPolicyPage, termsConditionsPage, pages, reports, settingPage]
 };
 
 export default menuItems;
