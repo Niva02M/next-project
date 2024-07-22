@@ -23,8 +23,8 @@ const CheckMail = () => {
 
   return (
     <AuthWrapper1>
-      <Grid container justifyContent="center" sx={{ minHeight: '100vh' }}>
-        <Grid item container justifyContent="center" md={6} lg={7} sx={{ my: 3 }}>
+      <Grid container justifyContent="center">
+        <Grid item container justifyContent="center" md={6} lg={7}>
           <AuthCardWrapper>
             <Grid container spacing={2} alignItems="center" justifyContent="center">
               <Grid item sx={{ mb: 3 }}>
@@ -35,7 +35,7 @@ const CheckMail = () => {
               <Grid item xs={12}>
                 <Grid container alignItems="center" justifyContent="center" textAlign="center" spacing={2}>
                   <Grid item xs={12}>
-                    <Typography color="secondary.main" gutterBottom variant={downMD ? 'h3' : 'h2'}>
+                    <Typography gutterBottom variant={downMD ? 'h2' : 'h1'}>
                       Hi, Check Your Mail
                     </Typography>
                   </Grid>

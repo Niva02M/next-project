@@ -16,7 +16,7 @@ const icons = {
 };
 const faqPage: NavItemType = {
   id: 'faq',
-  title: <FormattedMessage id="Faqs" />,
+  title: <FormattedMessage id="faqs" />,
   icon: icons.IconQuestionMark,
   type: 'group',
   url: '/pages/faqs'

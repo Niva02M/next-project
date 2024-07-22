@@ -40,8 +40,8 @@ const Register = () => {
 
   return (
     <AuthWrapper1>
-      <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
-        <Grid item md={6} display={'flex'} justifyContent={'center'}>
+      <Grid container sx={{ minHeight: 'calc(100vh - 68px)' }}>
+        <Grid item container justifyContent="center" md={6} lg={7}>
           <AuthCardWrapper>
             <Grid container spacing={3} alignItems="center" justifyContent="center">
               <Grid item sx={{ mb: '1px' }}>
@@ -83,7 +83,7 @@ const Register = () => {
             </Grid>
           </AuthCardWrapper>
         </Grid>
-        <Grid item md={6} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
+        <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
           <BackgroundPattern pageType={PageType.AUTH}>
             <Grid item container alignItems="flex-end" justifyContent="center" spacing={3}>
               <Grid item xs={12}>

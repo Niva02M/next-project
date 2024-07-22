@@ -14,7 +14,7 @@ const icons = {
 };
 const settingPage: NavItemType = {
   id: 'setting',
-  title: <FormattedMessage id="Settings" />,
+  title: <FormattedMessage id="settings" />,
   icon: icons.IconBrandChrome,
   type: 'group',
   url: '/setting'

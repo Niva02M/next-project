@@ -20,6 +20,7 @@ import { IconMenu2 } from '@tabler/icons-react';
 // types
 import { MenuOrientation, ThemeMode } from 'types/config';
 import MessageSection from './MessageSection';
+import { Stack } from '@mui/material';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -36,49 +37,58 @@ const Header = () => {
   return (
     <>
       {/* logo & toggler button */}
-      <Box sx={{ width: 'auto', display: 'flex' }}>
+      <Stack direction="row" justifyContent={'space-between'} alignItems={'center'} sx={{ width: '234px' }}>
         <Box component="span" sx={{ svg: { height: 45 } }}>
           <LogoSection />
         </Box>
-      </Box>
-
-      <Box ml={3}>
-        {!isHorizontal && (
-          <Avatar
-            variant="rounded"
-            sx={{
-              ...theme.typography.commonAvatar,
-              ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
-              overflow: 'hidden',
-              transition: 'all .2s ease-in-out',
-              bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'transparent',
-              color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.main',
-              border:
-                theme.palette.mode === ThemeMode.DARK
-                  ? `1px solid ${theme.palette.secondary.main}`
-                  : `1px solid ${theme.palette.grey[200]}`,
-              borderRadius: '50%',
-              '&:hover': {
-                bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.dark',
-                color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'primary.light',
+        <Box ml={3}>
+          {!isHorizontal && (
+            <Avatar
+              variant="rounded"
+              sx={{
+                ...theme.typography.commonAvatar,
+                ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
+                overflow: 'hidden',
+                transition: 'all .2s ease-in-out',
+                bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'transparent',
+                color: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.main',
                 border:
                   theme.palette.mode === ThemeMode.DARK
-                    ? `1px solid ${theme.palette.secondary.light}`
-                    : `1px solid ${theme.palette.primary.light}`
-              }
-            }}
-            onClick={() => handlerDrawerOpen(!drawerOpen)}
-            color="inherit"
-          >
-            <IconMenu2 stroke={1.5} size="20px" />
-          </Avatar>
-        )}
-      </Box>
+                    ? `1px solid ${theme.palette.secondary.main}`
+                    : `1px solid ${theme.palette.grey[200]}`,
+                borderRadius: '50%',
+                '&:hover': {
+                  bgcolor: theme.palette.mode === ThemeMode.DARK ? 'secondary.main' : 'primary.dark',
+                  color: theme.palette.mode === ThemeMode.DARK ? 'secondary.light' : 'primary.light',
+                  border:
+                    theme.palette.mode === ThemeMode.DARK
+                      ? `1px solid ${theme.palette.secondary.light}`
+                      : `1px solid ${theme.palette.primary.light}`
+                }
+              }}
+              onClick={() => handlerDrawerOpen(!drawerOpen)}
+              color="inherit"
+            >
+              <IconMenu2 stroke={1.5} size="20px" />
+            </Avatar>
+          )}
+        </Box>
+      </Stack>
 
+      {downMD && (
+        <>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
+        </>
+      )}
       {/* header search */}
       <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ flexGrow: 1 }} />
+      {!downMD && (
+        <>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
+        </>
+      )}
 
       {/* mega-menu */}
       {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>

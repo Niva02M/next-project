@@ -16,7 +16,7 @@ const icons = {
 };
 const termsConditionsPage: NavItemType = {
   id: 'terms-conditions',
-  title: <FormattedMessage id="Terms and conditions" />,
+  title: <FormattedMessage id="terms-and-condition" />,
   icon: icons.IconShieldLock,
   type: 'group',
   url: '/pages/terms-conditions'
