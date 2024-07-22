@@ -14,7 +14,7 @@ const icons = {
 };
 const aboutUsPage: NavItemType = {
   id: 'about-us',
-  title: <FormattedMessage id="About-us" />,
+  title: <FormattedMessage id="about-us" />,
   icon: icons.IconInfoCircle,
   type: 'group',
   url: '/pages/about-us'

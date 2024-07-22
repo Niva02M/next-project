@@ -23,7 +23,7 @@ const reports: NavItemType = {
   children: [
     {
       id: 'Report',
-      title: <FormattedMessage id="Report" />,
+      title: <FormattedMessage id="reports" />,
       type: 'item',
       icon: icons.ReportIcon,
       url: '/'
