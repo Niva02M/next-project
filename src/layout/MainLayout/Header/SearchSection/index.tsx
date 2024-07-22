@@ -122,7 +122,7 @@ const SearchSection = () => {
         <PopupState variant="popper" popupId="demo-popup-popper">
           {(popupState) => (
             <>
-              <Box sx={{ ml: 2 }}>
+              <Box sx={{ ml: 1 }}>
                 <HeaderAvatar variant="rounded" {...bindToggle(popupState)}>
                   <IconSearch stroke={1.5} size="19px" />
                 </HeaderAvatar>
@@ -183,7 +183,7 @@ const SearchSection = () => {
           inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
           sx={{
             width: { md: 250, lg: 306 },
-            ml: { xs: 2, md: 6.4 },
+            ml: { xs: 1, md: 2.5 },
             pl: 1,
             pr: 2,
             '.MuiOutlinedInput-notchedOutline': { borderRadius: '20px' }
