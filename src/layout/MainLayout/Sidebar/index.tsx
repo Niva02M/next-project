@@ -35,7 +35,7 @@ const Sidebar = () => {
 
   const logo = useMemo(
     () => (
-      <Box sx={{ display: 'flex', p: 2, svg: { height: 45 } }}>
+      <Box sx={{ display: 'flex', p: '5px 16px', svg: { height: 45 } }}>
         <LogoSection />
       </Box>
     ),

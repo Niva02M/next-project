@@ -6,15 +6,12 @@ import { ThemeMode } from 'types/config';
 
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
-import { useMediaQuery } from '@mui/material';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
-  // const bgColor = mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[50];
   const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
   const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.dark;
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   return {
     MuiButton: {
@@ -51,6 +48,9 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                 position: 'relative',
                 paddingBottom: 60,
                 minHeight: '100%',
+                marginTop: 0,
+                paddingTop: 12,
+
                 '>.MuiList-root': {
                   '&:last-of-type': {
                     position: 'absolute',
@@ -479,7 +479,11 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
               '.MuiBox-root': {
                 position: 'relative',
                 minHeight: '100%',
-                paddingBottom: downMD ? 60 : 0,
+                marginTop: 0,
+                paddingTop: 12,
+                [theme.breakpoints.down('md')]: {
+                  paddingBottom: 60
+                },
                 '>.MuiList-root': {
                   '&:last-of-type': {
                     position: 'absolute',
