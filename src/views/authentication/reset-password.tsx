@@ -23,8 +23,8 @@ const ResetPassword = () => {
 
   return (
     <AuthWrapper1>
-      <Grid container justifyContent="space-between" alignItems="center" sx={{ minHeight: '100vh' }}>
-        <Grid item container justifyContent="center" md={6} lg={7} sx={{ my: 3 }}>
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Grid item container justifyContent="center" md={6} lg={7}>
           <AuthCardWrapper>
             <Grid container spacing={3} alignItems="center" justifyContent="center">
               <Grid item sx={{ mb: 3 }}>

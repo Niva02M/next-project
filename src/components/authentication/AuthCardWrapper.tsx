@@ -11,7 +11,10 @@ const AuthCardWrapper = ({ children, ...other }: MainCardProps) => (
     sx={{
       maxWidth: { xs: 400, lg: 642 },
       minHeight: { lg: 690 },
-      margin: { xs: 2.5, md: 3 },
+      margin: { xs: '20px', md: '24px' },
+      display: 'flex',
+      alignItems: 'center',
+
       '& > *': {
         flexGrow: 1,
         flexBasis: '50%'
@@ -20,7 +23,16 @@ const AuthCardWrapper = ({ children, ...other }: MainCardProps) => (
     content={false}
     {...other}
   >
-    <Box sx={{ p: { xs: 2, sm: 3, lg: '45px 79px' }, height: '100%', display: 'flex', alignItems: 'center' }}>{children}</Box>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3, lg: '45px 79px' },
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center'
+      }}
+    >
+      {children}
+    </Box>
   </MainCard>
 );
 
