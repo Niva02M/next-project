@@ -14,7 +14,7 @@ import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthLogin from 'components/authentication/auth-forms/AuthLogin';
 import AuthSlider from 'ui-component/cards/AuthSlider';
-import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
+import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPattern';
 import { AuthSliderProps } from 'types';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
@@ -81,7 +81,7 @@ const Login = () => {
           </AuthCardWrapper>
         </Grid>
         <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-          <BackgroundPattern1>
+          <BackgroundPattern pageType={PageType.AUTH}>
             <Grid item container alignItems="flex-end" justifyContent="center" spacing={3}>
               <Grid item xs={12}>
                 <Grid item container justifyContent="center" sx={{ pb: 8 }}>
@@ -91,7 +91,7 @@ const Login = () => {
                 </Grid>
               </Grid>
             </Grid>
-          </BackgroundPattern1>
+          </BackgroundPattern>
         </Grid>
       </Grid>
     </AuthWrapper1>

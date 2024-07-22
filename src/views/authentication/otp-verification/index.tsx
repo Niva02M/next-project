@@ -7,7 +7,7 @@ import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import Logo from 'ui-component/Logo';
 import OTPTimer from '../otpTimer';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
-import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
+import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPattern';
 
 interface IOtpVerificationScreenProps {
   otpInputComponent: React.ReactNode;
@@ -73,9 +73,7 @@ export default function OtpVerificationScreen({
           </AuthCardWrapper>
         </Grid>
         <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-          <BackgroundPattern1>
-            <></>
-          </BackgroundPattern1>
+          <BackgroundPattern pageType={PageType.OTP_VERIFICATION} />
         </Grid>
       </Grid>
     </AuthWrapper1>

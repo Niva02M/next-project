@@ -42,24 +42,7 @@ const Header = () => {
         </Box>
       </Box>
 
-      {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ flexGrow: 1 }} />
-
-      {/* mega-menu */}
-      {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <MegaMenuSection />
-      </Box> */}
-      <MessageSection />
-
-      {/* notification */}
-      <NotificationSection />
-
-      {/* profile */}
-      <ProfileSection />
-
-      <Box ml={1}>
+      <Box ml={3}>
         {!isHorizontal && (
           <Avatar
             variant="rounded"
@@ -91,6 +74,23 @@ const Header = () => {
           </Avatar>
         )}
       </Box>
+
+      {/* header search */}
+      <SearchSection />
+      <Box sx={{ flexGrow: 1 }} />
+      <Box sx={{ flexGrow: 1 }} />
+
+      {/* mega-menu */}
+      {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <MegaMenuSection />
+      </Box> */}
+      <MessageSection />
+
+      {/* notification */}
+      <NotificationSection />
+
+      {/* profile */}
+      <ProfileSection />
     </>
   );
 };

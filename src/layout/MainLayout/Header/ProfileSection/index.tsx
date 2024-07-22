@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { signOut } from 'next-auth/react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -28,6 +29,8 @@ import Transitions from 'ui-component/extended/Transitions';
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
 import { IconButton, useMediaQuery } from '@mui/material';
+import LogoutModal from './logoutModal';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
 const User1 = '/assets/images/users/user-round.svg';
 
@@ -39,21 +42,32 @@ const ProfileSection = () => {
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
   // const navigate = useNavigate();
 
-  // const [sdm, setSdm] = useState(true);
-  // const [value, setValue] = useState('');
-  // const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  // const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { errorSnack } = useSuccErrSnack();
+
+  const closeLogoutModal = () => {
+    setIsLogoutOpen(false);
+  };
+
+  const openLogoutModal = () => {
+    setIsLogoutOpen(true);
+  };
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef<any>(null);
   const handleLogout = async () => {
     try {
-      // await logout();
+      setIsLoading(true);
+      localStorage.clear();
+      await signOut({ callbackUrl: '/login' });
     } catch (err) {
-      console.error(err);
+      errorSnack('Error logging out');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,7 +108,7 @@ const ProfileSection = () => {
           alt="user-images"
           sx={{
             ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
@@ -248,7 +262,11 @@ const ProfileSection = () => {
                               }
                             />
                           </ListItemButton>
-                          <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} selected={selectedIndex === 4} onClick={handleLogout}>
+                          <ListItemButton
+                            sx={{ borderRadius: `${borderRadius}px` }}
+                            selected={selectedIndex === 4}
+                            onClick={openLogoutModal}
+                          >
                             <ListItemIcon>
                               <IconLogout stroke={1.5} size="20px" />
                             </ListItemIcon>
@@ -270,6 +288,7 @@ const ProfileSection = () => {
           </ClickAwayListener>
         )}
       </Popper>
+      <LogoutModal isOpen={isLogoutOpen} isLoading={isLoading} handleClose={closeLogoutModal} onLogout={handleLogout} />
     </>
   );
 };

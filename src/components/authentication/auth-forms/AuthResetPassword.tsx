@@ -20,12 +20,8 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-// import useAuth from 'hooks/useAuth';
-import useScriptRef from 'hooks/useScriptRef';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 
-import { dispatch } from 'store';
-import { openSnackbar } from 'store/slices/snackbar';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
@@ -34,18 +30,31 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // types
 import { StringColorProps } from 'types';
+import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
+import { IForgotpasswordValues } from 'types/localStorageValues';
+import useListBackendErrors from 'hooks/useShowBackEndError';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { useRouter } from 'next/navigation';
+import pageRoutes from 'constants/routes';
+import { useMutation } from '@apollo/client';
+import { RESET_PASSWORD_MUTATION } from 'graphql/auth';
 
 // ========================|| FIREBASE - RESET PASSWORD ||======================== //
 
 const AuthResetPassword = ({ ...others }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
   const [showPassword, setShowPassword] = React.useState(false);
   const [strength, setStrength] = React.useState(0);
   const [level, setLevel] = React.useState<StringColorProps>();
 
-  // const { isLoggedIn } = useAuth();
-  const isLoggedIn = true;
+  const { getLocalStorage, removeItem } = useLocalStorageCodeVerify();
+  const forgotPasswordDetail = getLocalStorage<IForgotpasswordValues>('forgotPassword');
+
+  const { handleError } = useListBackendErrors();
+  const { successSnack } = useSuccErrSnack();
+  const router = useRouter();
+
+  const [resetPassword] = useMutation(RESET_PASSWORD_MUTATION);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -81,45 +90,36 @@ const AuthResetPassword = ({ ...others }) => {
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
           // password reset
-          if (scriptedRef.current) {
-            setStatus({ success: true });
-            setSubmitting(false);
+          await resetPassword({
+            variables: {
+              body: {
+                email: forgotPasswordDetail?.email || '',
+                password: values.password,
+                verificationCode: forgotPasswordDetail?.otp || ''
+              }
+            }
+          });
 
-            dispatch(
-              openSnackbar({
-                open: true,
-                message: 'Successfuly reset password.',
-                variant: 'alert',
-                alert: {
-                  color: 'success'
-                },
-                close: false
-              })
-            );
-
-            setTimeout(() => {
-              window.location.replace(isLoggedIn ? '/pages/authentication/auth3/login' : '/login');
-            }, 1500);
-          }
+          setStatus({ success: true });
+          setSubmitting(false);
+          removeItem('forgotPassword');
+          successSnack('Password reset successfully');
+          router.push(pageRoutes.login);
         } catch (err: any) {
-          console.error(err);
-          if (scriptedRef.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
+          handleError(err, 'Error on password reset');
         }
       }}
     >
       {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
         <form noValidate onSubmit={handleSubmit} {...others}>
-          <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+          <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput, mb: 2.5 }}>
             <InputLabel htmlFor="outlined-adornment-password-reset">New Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password-reset"
               type={showPassword ? 'text' : 'password'}
               value={values.password}
               name="password"
+              placeholder="New password"
               onBlur={handleBlur}
               onChange={(e) => {
                 handleChange(e);
@@ -184,6 +184,7 @@ const AuthResetPassword = ({ ...others }) => {
               value={values.confirmPassword}
               name="confirmPassword"
               label="Confirm Password"
+              placeholder="Repeat password"
               onBlur={handleBlur}
               onChange={handleChange}
               inputProps={{}}
@@ -214,8 +215,8 @@ const AuthResetPassword = ({ ...others }) => {
             }}
           >
             <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="secondary">
-                Reset password and login
+              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                Reset Password
               </Button>
             </AnimateButton>
           </Box>
