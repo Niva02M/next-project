@@ -1,8 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
-#### First, run the development server:
+### Prerequisite
+
+- nodejs
+- docker
+- `npm` or `yarn` globally installed
+- updated `.env`
+
+#### Run the development server:
 
 ```bash
 npm run dev
@@ -18,31 +23,36 @@ docker run -d --name <container_name> -p <container_port>:<app_port> <image_name
 
 #### Or, running with docker compose:
 
-```
+```bash
 docker compose up
-
-# to add
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### install node_modules in docker environment:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+docker compose run <container_name> yarn
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+#### build the project in docker environment:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+docker compose run <container_name> yarn build
+```
 
-## Learn More
+#### preview the build project in docker environment:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker compose run <container_name> yarn preview
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### remove node_modules folder from docker environment:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+docker compose run <container_name> rm -rf node_modules
+```
 
-## Deploy on Vercel
+### Next Steps
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- To add modules like menus, pages, or faqs on seed version, please follow this [document.](https://docs.google.com/document/d/14SeG1WAdBP2J-qLgIUHfREy696BuWWuM0ubwsLEpA6E/edit#heading=h.pa6qk8h30wl4)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Browse to `localhost:<container_port>` to view the application

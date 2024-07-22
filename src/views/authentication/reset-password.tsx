@@ -14,7 +14,7 @@ import AuthResetPassword from 'components/authentication/auth-forms/AuthResetPas
 import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
-import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
+import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPattern';
 
 // ============================|| AUTH1 - RESET PASSWORD ||============================ //
 
@@ -37,7 +37,7 @@ const ResetPassword = () => {
                   <Grid item>
                     <Stack alignItems="center" justifyContent="center" spacing={1}>
                       <Typography color="grey.800" gutterBottom variant={downMD ? 'h2' : 'h1'}>
-                      Choose a new password
+                        Choose a new password
                       </Typography>
                     </Stack>
                   </Grid>
@@ -50,9 +50,7 @@ const ResetPassword = () => {
           </AuthCardWrapper>
         </Grid>
         <Grid item md={6} lg={5} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-          <BackgroundPattern1>
-            <></>
-          </BackgroundPattern1>
+          <BackgroundPattern pageType={PageType.RESET_PASSWORD} />
         </Grid>
       </Grid>
     </AuthWrapper1>

@@ -141,6 +141,14 @@ export const RESEND_VERIFY_EMAIL_OTP_MUTATION = gql`
   }
 `;
 
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation resetPassword($body: ResetPasswordInput!) {
+    resetPassword(body: $body) {
+      message
+    }
+  }
+`;
+
 export const REFRESH_TOKEN_MUTATION = gql`
   mutation RefreshToken($refreshToken: String!) {
     refresh(refreshToken: $refreshToken) {

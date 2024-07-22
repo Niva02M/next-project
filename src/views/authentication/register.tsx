@@ -14,7 +14,7 @@ import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthRegister from 'components/authentication/auth-forms/AuthRegister';
-import BackgroundPattern1 from 'ui-component/cards/BackgroundPattern1';
+import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPattern';
 import AuthSlider from 'ui-component/cards/AuthSlider';
 import { AuthSliderProps } from 'types';
 
@@ -84,7 +84,7 @@ const Register = () => {
           </AuthCardWrapper>
         </Grid>
         <Grid item md={6} sx={{ position: 'relative', alignSelf: 'stretch', display: { xs: 'none', md: 'block' } }}>
-          <BackgroundPattern1>
+          <BackgroundPattern pageType={PageType.AUTH}>
             <Grid item container alignItems="flex-end" justifyContent="center" spacing={3}>
               <Grid item xs={12}>
                 <Grid item container justifyContent="center" sx={{ pb: 8 }}>
@@ -94,7 +94,7 @@ const Register = () => {
                 </Grid>
               </Grid>
             </Grid>
-          </BackgroundPattern1>
+          </BackgroundPattern>
         </Grid>
       </Grid>
     </AuthWrapper1>
