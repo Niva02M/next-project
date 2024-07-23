@@ -37,9 +37,6 @@ export default function Layout({ children }: Props) {
         {children}
         <Customization />
       </HeaderWrapper>
-      <Container sx={{ py: 2 }}>
-        <AuthFooter />
-      </Container>
     </>
   );
 }

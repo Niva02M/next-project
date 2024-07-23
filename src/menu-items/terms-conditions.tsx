@@ -19,7 +19,7 @@ const termsConditionsPage: NavItemType = {
   title: <FormattedMessage id="terms-and-condition" />,
   icon: icons.IconShieldLock,
   type: 'group',
-  url: '/pages/terms-conditions'
+  url: '/terms-conditions'
 };
 
 export default termsConditionsPage;

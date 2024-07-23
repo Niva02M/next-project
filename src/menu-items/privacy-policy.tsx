@@ -19,7 +19,7 @@ const privacyPolicyPage: NavItemType = {
   title: <FormattedMessage id="privacy-policy" />,
   icon: icons.IconShieldLock,
   type: 'group',
-  url: '/pages/privacy-policy'
+  url: '/privacy-policy'
 };
 
 export default privacyPolicyPage;

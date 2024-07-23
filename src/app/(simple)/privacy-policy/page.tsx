@@ -1,4 +1,4 @@
-import Privacy from 'views/privacy-policy';
+import Privacy from 'views/privacy-policy/';
 
 // ==============================|| PAGE ||============================== //
 

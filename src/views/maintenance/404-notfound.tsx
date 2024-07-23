@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // project imports
-import { DASHBOARD_PATH } from 'config';
+import { HOMEPAGE_PATH } from 'config';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
@@ -70,7 +70,7 @@ const Error = () => {
             The page you are looking was moved, removed, renamed, or might never exist!
           </Typography>
           <AnimateButton>
-            <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
+            <Button variant="contained" size="large" component={Link} href={HOMEPAGE_PATH}>
               <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
             </Button>
           </AnimateButton>

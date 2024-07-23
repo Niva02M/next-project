@@ -10,11 +10,13 @@ import aboutUsPage from './about-us';
 import faqPage from './faq';
 import privacyPolicyPage from './privacy-policy';
 import termsConditionsPage from './terms-conditions';
+import cookiesPolicyPage from './cookies-policy';
+import homePage from './homepage';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, aboutUsPage, faqPage, privacyPolicyPage, termsConditionsPage, pages, reports, settingPage]
+  items: [homePage, samplePage, aboutUsPage, faqPage, cookiesPolicyPage, privacyPolicyPage, termsConditionsPage, pages, reports, settingPage]
 };
 
 export default menuItems;

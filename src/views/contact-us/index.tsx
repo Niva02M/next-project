@@ -9,7 +9,7 @@ const headerBackground = '/assets/images/landing/bg-header.jpg';
 
 // ============================|| CONTACT US MAIN ||============================ //
 
-const ContactUsPage = () => (
+const Contact = () => (
   <Box
     sx={{
       backgroundImage: `url(${headerBackground})`,
@@ -24,4 +24,4 @@ const ContactUsPage = () => (
   </Box>
 );
 
-export default ContactUsPage;
+export default Contact;
