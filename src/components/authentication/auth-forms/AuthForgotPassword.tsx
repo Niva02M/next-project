@@ -14,7 +14,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { useMutation } from '@apollo/client';
 import { FORGOT_PASSWORD_MUTATION } from 'graphql/auth';
@@ -102,11 +101,9 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
           )}
 
           <Box sx={{ mt: 2 }}>
-            <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                Please send me the link!
-              </Button>
-            </AnimateButton>
+            <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+              Please send me the link!
+            </Button>
           </Box>
         </form>
       )}

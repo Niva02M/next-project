@@ -24,7 +24,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import useScriptRef from 'hooks/useScriptRef';
 import { REGISTER_MUTATION } from 'graphql/auth';
 import { useMutation } from '@apollo/client';
@@ -251,11 +250,9 @@ const JWTRegister = ({ ...others }) => {
             )}
 
             <Box sx={{ mt: '34px' }}>
-              <AnimateButton>
                 <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
                   Create your account
                 </Button>
-              </AnimateButton>
             </Box>
             <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
               <Divider sx={{ width: '45%' }} />

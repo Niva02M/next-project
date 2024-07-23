@@ -10,14 +10,18 @@ import { ThemeMode } from 'types/config';
 
 const AuthWrapper1 = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.background.default : theme.palette.grey[100],
-  // minHeight: '100vh',
-  height: '100vh',
-  overflow: 'hidden',
+  minHeight: '100vh',
 
-  '>.MuiGrid-container > .MuiGrid-item': {
-    height: '100vh',
-    overflowY: 'auto',
-    alignItems: 'center'
+  '>.MuiGrid-container >.MuiGrid-item:last-child': {
+    [theme.breakpoints.up('md')]: {
+      maxHeight: '100vh',
+      position: 'fixed',
+      top: 0,
+      right: 0,
+      overflow: 'hidden',
+      width: '100%',
+      height: '100%'
+    }
   }
 }));
 

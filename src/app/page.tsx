@@ -1,13 +1,16 @@
 // project import
 import MinimalLayout from 'layout/MinimalLayout';
-import Login from 'views/authentication/login';
+import AppBar from 'ui-component/extended/AppBar';
+// import Login from 'views/authentication/login';
+import Homepage from 'views/homepage';
 
 // ==============================|| HOME PAGE ||============================== //
 
 export default function HomePage() {
   return (
     <MinimalLayout>
-      <Login />
+      <AppBar />
+      <Homepage />
     </MinimalLayout>
   );
 }

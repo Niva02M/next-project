@@ -10,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
 import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
@@ -47,11 +46,9 @@ const CheckMail = () => {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                <AnimateButton>
-                  <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="secondary">
-                    Open Mail
-                  </Button>
-                </AnimateButton>
+                <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
+                  Open Mail
+                </Button>
               </Grid>
             </Grid>
           </AuthCardWrapper>
