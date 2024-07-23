@@ -57,7 +57,7 @@ const MainLayout: FC<Props> = ({ children }) => {
     <Box sx={{ display: 'flex' }}>
       {/* header */}
       <AppBar enableColorOnDark position="fixed" color="inherit" elevation={0} sx={{ bgcolor: 'background.default' }}>
-        <Toolbar sx={{ p: isHorizontal ? 1.25 : '5px 16px', borderBottom: `1px solid ${theme.palette.grey[200]}`  }}>
+        <Toolbar sx={{ p: isHorizontal ? 1.25 : '5px 16px', borderBottom: `1px solid ${theme.palette.grey[200]}` }}>
           <Header />
         </Toolbar>
       </AppBar>

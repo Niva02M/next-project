@@ -12,7 +12,7 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-    IconShieldLock
+  IconShieldLock
 };
 const privacyPolicyPage: NavItemType = {
   id: 'privacy-policy',

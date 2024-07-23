@@ -85,7 +85,7 @@ const AppBar = ({ ...others }) => {
               </Button>
               <Button component={Link} href="/login" disableElevation variant="contained" color="secondary">
                 Login
-              </Button> 
+              </Button>
             </Stack>
             <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
               <IconButton color="inherit" onClick={drawerToggler(true)} size="large">

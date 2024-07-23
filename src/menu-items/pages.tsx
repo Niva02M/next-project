@@ -76,7 +76,7 @@ const pages: NavItemType = {
           type: 'item',
           url: '/pages/maintenance/under-construction',
           target: true
-        },
+        }
       ]
     },
     {

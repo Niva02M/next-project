@@ -7,9 +7,6 @@ import AppBar from 'ui-component/extended/AppBar';
 
 // project import
 import Customization from 'layout/Customization';
-import AuthFooter from 'ui-component/cards/AuthFooter';
-import { Container } from '@mui/material';
-
 // ==============================|| LAYOUTS - STRUCTURE ||============================== //
 
 const headerBackground = '/assets/images/landing/bg-header.jpg';
