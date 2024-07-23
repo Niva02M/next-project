@@ -8,4 +8,5 @@ cd /home/ebpearls/dev
 docker-compose pull web_dev
 docker-compose rm -s -f web_dev
 docker-compose up -d web_dev
+docker system prune -f
 
