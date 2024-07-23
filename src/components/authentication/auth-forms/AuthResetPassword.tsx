@@ -19,9 +19,6 @@ import Typography from '@mui/material/Typography';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-// project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
-
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
@@ -214,11 +211,9 @@ const AuthResetPassword = ({ ...others }) => {
               mt: 1
             }}
           >
-            <AnimateButton>
-              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                Reset Password
-              </Button>
-            </AnimateButton>
+            <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+              Reset Password
+            </Button>
           </Box>
         </form>
       )}

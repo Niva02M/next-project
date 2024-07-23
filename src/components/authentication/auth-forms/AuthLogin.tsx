@@ -16,10 +16,6 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-// project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
-// import { DASHBOARD_PATH } from 'config';
-
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, signOut, useSession } from 'next-auth/react';
@@ -214,11 +210,9 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
             </Box>
           )}
           <Box sx={{ mt: '34px' }}>
-            <AnimateButton>
-              <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
-                Sign in now
-              </Button>
-            </AnimateButton>
+            <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+              Sign in now
+            </Button>
           </Box>
 
           <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>

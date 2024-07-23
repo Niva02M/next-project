@@ -18,6 +18,9 @@ const AuthCardWrapper = ({ children, ...other }: MainCardProps) => (
       '& > *': {
         flexGrow: 1,
         flexBasis: '50%'
+      },
+      '[aria-label="logo"] svg, [aria-label="theme logo"] svg': {
+        height: 75
       }
     }}
     content={false}
