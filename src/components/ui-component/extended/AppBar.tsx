@@ -74,18 +74,18 @@ const AppBar = ({ ...others }) => {
               <Logo />
             </Typography>
             <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={{ xs: 1.5, md: 2.5 }}>
-              <Button color="inherit" component={Link} href="#">
+              <Button color="inherit" component={Link} href="/homepage">
                 Home
               </Button>
-              <Button color="inherit" component={Link} href="/pages/about-us" target="_blank">
+              <Button color="inherit" component={Link} href="/about-us" target="_blank">
                 About us
               </Button>
-              <Button color="inherit" component={Link} href="/pages/contact-us" target="_blank">
+              <Button color="inherit" component={Link} href="/contact-us" target="_blank">
                 Contact us
               </Button>
               <Button component={Link} href="/login" disableElevation variant="contained" color="secondary">
                 Login
-              </Button> 
+              </Button>
             </Stack>
             <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
               <IconButton color="inherit" onClick={drawerToggler(true)} size="large">

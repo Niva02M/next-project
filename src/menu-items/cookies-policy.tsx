@@ -4,7 +4,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconQuestionMark } from '@tabler/icons-react';
+import { IconShieldLock } from '@tabler/icons-react';
 
 // type
 import { NavItemType } from 'types';
@@ -12,14 +12,14 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-  IconQuestionMark
+  IconShieldLock
 };
-const faqPage: NavItemType = {
-  id: 'faq',
-  title: <FormattedMessage id="faqs" />,
-  icon: icons.IconQuestionMark,
+const cookiesPolicyPage: NavItemType = {
+  id: 'cookies-policy',
+  title: <FormattedMessage id="cookies-policy" />,
+  icon: icons.IconShieldLock,
   type: 'group',
-  url: '/faqs'
+  url: '/cookies-policy'
 };
 
-export default faqPage;
+export default cookiesPolicyPage;

@@ -12,12 +12,12 @@ import { NavItemType } from 'types';
 const icons = {
   IconInfoCircle
 };
-const aboutUsPage: NavItemType = {
-  id: 'about-us',
-  title: <FormattedMessage id="about-us" />,
+const homePage: NavItemType = {
+  id: 'homepage',
+  title: <FormattedMessage id="homepage" />,
   icon: icons.IconInfoCircle,
   type: 'group',
-  url: '/about-us'
+  url: '/homepage'
 };
 
-export default aboutUsPage;
+export default homePage;

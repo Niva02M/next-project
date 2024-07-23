@@ -200,11 +200,11 @@ const ContactCard = () => {
                     <Grid item sm zeroMinWidth>
                       <Typography align="left" variant="body2">
                         By submitting this, you agree to the
-                        <Typography variant="subtitle1" component={Link} href="#" color="primary" sx={{ mx: 0.5 }}>
+                        <Typography variant="subtitle1" component={Link} href="/privacy-policy" color="primary" sx={{ mx: 0.5 }}>
                           Privacy Policy
                         </Typography>
                         and
-                        <Typography variant="subtitle1" component={Link} href="#" color="primary" sx={{ ml: 0.5 }}>
+                        <Typography variant="subtitle1" component={Link} href="/cookies-policy" color="primary" sx={{ ml: 0.5 }}>
                           Cookie Policy
                         </Typography>
                       </Typography>

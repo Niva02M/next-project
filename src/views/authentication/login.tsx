@@ -40,7 +40,7 @@ const Login = () => {
 
   return (
     <AuthWrapper1>
-      <Grid container justifyContent="space-between" alignItems="center" sx={{ height: '100vh'}}>
+      <Grid container justifyContent="space-between" alignItems="center" sx={{ height: '100vh' }}>
         <Grid item container justifyContent="center" md={6} lg={7}>
           <AuthCardWrapper>
             <Grid container spacing={2.5} alignItems="center" justifyContent="center">
