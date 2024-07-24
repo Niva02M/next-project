@@ -238,7 +238,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
               zIndex: 1201,
               borderRadius: `2px`,
               mb: 0.5,
-              pl: drawerOpen ? `${level * 24}px` : 1.25,
+              pl: drawerOpen ? `${level * 13}px` : 1.25,
               ...(drawerOpen &&
                 level === 1 &&
                 mode !== ThemeMode.DARK && {
@@ -269,7 +269,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
               <ListItemIcon
                 sx={{
                   minWidth: level === 1 ? 30 : 18,
-                  color: isSelected ? iconSelectedColor : 'text.primary',
+                  color: isSelected ? iconSelectedColor : 'secondary.main',
                   ...(!drawerOpen &&
                     level === 1 && {
                       borderRadius: `2px`,

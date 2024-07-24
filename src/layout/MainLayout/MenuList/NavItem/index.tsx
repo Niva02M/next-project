@@ -138,7 +138,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
             <ListItemIcon
               sx={{
                 minWidth: level === 1 ? 30 : 18,
-                color: isSelected ? iconSelectedColor : 'text-primary',
+                color: isSelected ? iconSelectedColor : 'secondary.main',
                 ...(!drawerOpen &&
                   level === 1 && {
                     borderRadius: `2px`,
