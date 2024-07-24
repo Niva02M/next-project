@@ -9,7 +9,7 @@ import { ConfigProps, MenuOrientation, ThemeDirection, ThemeMode } from 'types/c
 export const BASE_PATH = '';
 
 export const DASHBOARD_PATH = '/sample-page';
-export const HOMEPAGE_PATH = '/homepage';
+export const HOMEPAGE_PATH = '/home';
 export const HORIZONTAL_MAX_ITEM = 7;
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] });

@@ -25,7 +25,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 // types
 import { MenuOrientation, ThemeMode } from 'types/config';
-import { LinkTarget, NavItemType } from 'types';
+import { NavItemType } from 'types';
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
@@ -70,11 +70,6 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
     <FiberManualRecordIcon sx={{ width: isSelected ? 8 : 6, height: isSelected ? 8 : 6 }} fontSize={level > 0 ? 'inherit' : 'medium'} />
   );
 
-  let itemTarget: LinkTarget = '_self';
-  if (item.target) {
-    itemTarget = '_blank';
-  }
-
   const itemHandler = () => {
     if (downMD) handlerDrawerOpen(false);
 
@@ -97,7 +92,6 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
         <ListItemButton
           component={Link}
           href={item.url!}
-          target={itemTarget}
           disabled={item.disabled}
           disableRipple={!drawerOpen}
           sx={{
@@ -144,7 +138,7 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
             <ListItemIcon
               sx={{
                 minWidth: level === 1 ? 30 : 18,
-                color: isSelected ? iconSelectedColor : 'text-primary',
+                color: isSelected ? iconSelectedColor : 'secondary.main',
                 ...(!drawerOpen &&
                   level === 1 && {
                     borderRadius: `2px`,
@@ -209,7 +203,6 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
         <ListItemButton
           component={Link}
           href={item.url!}
-          target={itemTarget}
           disabled={item.disabled}
           sx={{
             borderRadius: isParents ? `2px` : 0,

@@ -74,16 +74,16 @@ const AppBar = ({ ...others }) => {
               <Logo />
             </Typography>
             <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={{ xs: 1.5, md: 2.5 }}>
-              <Button color="inherit" component={Link} href="/homepage">
+              <Button color="inherit" component={Link} href="/home">
                 Home
               </Button>
-              <Button color="inherit" component={Link} href="/about-us" target="_blank">
+              <Button color="inherit" component={Link} href="/about-us">
                 About us
               </Button>
-              <Button color="inherit" component={Link} href="/contact-us" target="_blank">
+              <Button color="inherit" component={Link} href="/contact-us">
                 Contact us
               </Button>
-              <Button component={Link} href="/login" disableElevation variant="contained" color="secondary">
+              <Button component={Link} href="/login" disableElevation variant="contained" color="primary">
                 Login
               </Button>
             </Stack>
@@ -95,38 +95,24 @@ const AppBar = ({ ...others }) => {
                 {drawerToggle && (
                   <Box sx={{ width: 'auto' }} role="presentation" onClick={drawerToggler(false)} onKeyDown={drawerToggler(false)}>
                     <List>
-                      <Link sx={{ textDecoration: 'none' }} href="#" target="_blank">
-                        <ListItemButton component="a">
-                          <ListItemIcon>
-                            <IconHome2 />
-                          </ListItemIcon>
+                      <Link sx={{ textDecoration: 'none' }} href="/home">
+                        <ListItemButton>
                           <ListItemText primary="Home" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="/login" target="_blank">
-                        <ListItemButton component="a">
-                          <ListItemIcon>
-                            <IconDashboard />
-                          </ListItemIcon>
-                          <ListItemText primary="Dashboard" />
+                      <Link sx={{ textDecoration: 'none' }} href="/about-us">
+                        <ListItemButton>
+                          <ListItemText primary="About us" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="https://codedthemes.gitbook.io/berry" target="_blank">
-                        <ListItemButton component="a">
-                          <ListItemIcon>
-                            <IconBook />
-                          </ListItemIcon>
-                          <ListItemText primary="Documentation" />
+                      <Link sx={{ textDecoration: 'none' }} href="/contact-us">
+                        <ListItemButton>
+                          <ListItemText primary="Contact us" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll" target="_blank">
-                        <ListItemButton component="a">
-                          <ListItemIcon>
-                            <IconCreditCard />
-                          </ListItemIcon>
-                          <ListItemText primary="Purchase Now" />
-                        </ListItemButton>
-                      </Link>
+                      <Button component={Link} href="/login" disableElevation variant="contained" color="primary" sx={{ mx: 2 }}>
+                        Login
+                      </Button>
                     </List>
                   </Box>
                 )}

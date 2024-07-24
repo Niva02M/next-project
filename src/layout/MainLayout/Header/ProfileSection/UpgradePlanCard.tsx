@@ -68,7 +68,7 @@ const UpgradePlanCard = () => {
           <Grid item>
             <Stack direction="row">
               <AnimateButton>
-                <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll" target="_blank">
+                <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll">
                   <Button variant="contained" color="warning" sx={{ boxShadow: 'none' }}>
                     Go Premium
                   </Button>

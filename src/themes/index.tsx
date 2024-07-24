@@ -131,6 +131,7 @@ export default function ThemeCustomization({ children }: Props) {
   );
 
   const themes: Theme = createTheme(themeOptions);
+  // @ts-ignore
   themes.components = useMemo(() => componentStyleOverrides(themes, borderRadius, outlinedFilled), [themes, borderRadius, outlinedFilled]);
 
   return (

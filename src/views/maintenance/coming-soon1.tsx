@@ -288,7 +288,7 @@ const ComingSoon1 = () => {
                         <Grid item xs={12}>
                           <Grid container justifyContent="flex-end" spacing={1}>
                             <Grid item>
-                              <ButtonBase component={Link} href="https://links.codedthemes.com/HTIBc" aria-label="blog" target="_blank">
+                              <ButtonBase component={Link} href="https://links.codedthemes.com/HTIBc" aria-label="blog">
                                 <Avatar
                                   sx={{
                                     ...theme.typography.commonAvatar,
@@ -304,7 +304,7 @@ const ComingSoon1 = () => {
                               </ButtonBase>
                             </Grid>
                             <Grid item>
-                              <ButtonBase component={Link} href="https://www.facebook.com/codedthemes" target="_blank">
+                              <ButtonBase component={Link} href="https://www.facebook.com/codedthemes">
                                 <Avatar
                                   sx={{
                                     ...theme.typography.commonAvatar,
@@ -318,7 +318,7 @@ const ComingSoon1 = () => {
                               </ButtonBase>
                             </Grid>
                             <Grid item>
-                              <ButtonBase component={Link} href="https://twitter.com/codedthemes" target="_blank">
+                              <ButtonBase component={Link} href="https://twitter.com/codedthemes">
                                 <Avatar
                                   sx={{
                                     ...theme.typography.commonAvatar,
@@ -332,7 +332,7 @@ const ComingSoon1 = () => {
                               </ButtonBase>
                             </Grid>
                             <Grid item>
-                              <ButtonBase component={Link} href="https://github.com/codedthemes" target="_blank">
+                              <ButtonBase component={Link} href="https://github.com/codedthemes">
                                 <Avatar
                                   sx={{
                                     ...theme.typography.commonAvatar,
@@ -346,7 +346,7 @@ const ComingSoon1 = () => {
                               </ButtonBase>
                             </Grid>
                             <Grid item>
-                              <ButtonBase component={Link} href="https://dribbble.com/codedthemes" target="_blank">
+                              <ButtonBase component={Link} href="https://dribbble.com/codedthemes">
                                 <Avatar
                                   sx={{
                                     ...theme.typography.commonAvatar,

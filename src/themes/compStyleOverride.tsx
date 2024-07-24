@@ -10,7 +10,7 @@ import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
   const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
-  const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.dark;
+  const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.main;
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
   return {
@@ -18,7 +18,8 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '36px'
+          borderRadius: '36px',
+          textTransform: 'none'
         },
         sizeMedium: {
           padding: '9px 24px',
@@ -109,6 +110,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           color: theme.palette.text.primary,
           paddingTop: '10px',
           paddingBottom: '10px',
+          //second level dropmenu paddingleft
+          '.MuiCollapse-wrapperInner .MuiCollapse-wrapperInner &': {
+            paddingLeft: 26
+          },
           '&.Mui-selected': {
             color: menuSelected,
             backgroundColor: menuSelectedBack,
@@ -153,6 +158,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
             transform: 'none',
             fontSize: theme.typography.body2.fontSize,
             marginBottom: 5,
+            textAlign: 'left',
 
             '+.MuiInputBase-formControl': {
               '.MuiInputBase-input': {

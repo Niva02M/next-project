@@ -250,9 +250,9 @@ const JWTRegister = ({ ...others }) => {
             )}
 
             <Box sx={{ mt: '34px' }}>
-                <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                  Create your account
-                </Button>
+              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                Create your account
+              </Button>
             </Box>
             <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
               <Divider sx={{ width: '45%' }} />
