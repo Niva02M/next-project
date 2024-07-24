@@ -5,9 +5,7 @@ import { signOut } from 'next-auth/react';
 import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -26,7 +24,7 @@ import Transitions from 'ui-component/extended/Transitions';
 // types
 
 // assets
-import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
 import { IconButton, useMediaQuery } from '@mui/material';
 import LogoutModal from './logoutModal';

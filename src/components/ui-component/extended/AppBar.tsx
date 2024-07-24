@@ -13,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
@@ -24,7 +23,6 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Logo from '../Logo';
 
 // assets
-import { IconBook, IconCreditCard, IconDashboard, IconHome2 } from '@tabler/icons-react';
 import MenuIcon from '@mui/icons-material/Menu';
 
 // types
