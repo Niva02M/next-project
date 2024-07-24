@@ -16,7 +16,7 @@ import Sidebar from './Sidebar';
 import HorizontalBar from './HorizontalBar';
 import MainContentStyled from './MainContentStyled';
 import Loader from 'ui-component/Loader';
-import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
+// import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
 import useConfig from 'hooks/useConfig';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';

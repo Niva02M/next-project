@@ -43,6 +43,7 @@ const AuthCardWrapper = ({ children, ...other }: MainCardProps) => {
         {children}
       </Box>
     </MainCard>
-  );};
+  );
+};
 
 export default AuthCardWrapper;

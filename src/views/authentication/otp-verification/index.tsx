@@ -29,7 +29,7 @@ export default function OtpVerificationScreen({
   return (
     <AuthWrapper1>
       <Grid container alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
-        <Grid item container alignItems={"center"} justifyContent="center" md={6} lg={7}>
+        <Grid item container alignItems="center" justifyContent="center" md={6} lg={7}>
           <AuthCardWrapper>
             <Grid container spacing={2} alignItems="center" justifyContent="center">
               <Grid item>
