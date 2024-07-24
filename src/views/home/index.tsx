@@ -44,7 +44,7 @@ const Homepage = () => {
                     mt: { xs: 10, md: 'auto' }
                   }}
                 >
-                  Homepage
+                  Home
                 </Typography>
               </Grid>
               <Grid item xs={12}>

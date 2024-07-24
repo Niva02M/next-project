@@ -1,4 +1,4 @@
-import Homepage from 'views/homepage';
+import Homepage from 'views/home';
 
 // ==============================|| PAGE ||============================== //
 

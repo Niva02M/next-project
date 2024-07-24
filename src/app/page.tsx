@@ -1,8 +1,7 @@
 // project import
 import MinimalLayout from 'layout/MinimalLayout';
 import AppBar from 'ui-component/extended/AppBar';
-// import Login from 'views/authentication/login';
-import Homepage from 'views/homepage';
+import Homepage from 'views/home';
 
 // ==============================|| HOME PAGE ||============================== //
 
