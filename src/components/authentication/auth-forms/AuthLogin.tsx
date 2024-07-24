@@ -164,7 +164,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                   type={showPassword ? 'text' : 'password'}
                   value={values.password}
                   name="password"
-                  placeholder="password"
+                  placeholder="Password"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   endAdornment={

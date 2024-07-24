@@ -78,13 +78,6 @@ const pages: NavItemType = {
           target: true
         }
       ]
-    },
-    {
-      id: 'contact-us',
-      title: <FormattedMessage id="contact-us" />,
-      type: 'item',
-      icon: icons.IconPhoneCall,
-      url: '/contact-us'
     }
   ]
 };

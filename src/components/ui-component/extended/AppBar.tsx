@@ -77,10 +77,10 @@ const AppBar = ({ ...others }) => {
               <Button color="inherit" component={Link} href="/homepage">
                 Home
               </Button>
-              <Button color="inherit" component={Link} href="/about-us" target="_blank">
+              <Button color="inherit" component={Link} href="/about-us">
                 About us
               </Button>
-              <Button color="inherit" component={Link} href="/contact-us" target="_blank">
+              <Button color="inherit" component={Link} href="/contact-us">
                 Contact us
               </Button>
               <Button component={Link} href="/login" disableElevation variant="contained" color="secondary">
@@ -95,7 +95,7 @@ const AppBar = ({ ...others }) => {
                 {drawerToggle && (
                   <Box sx={{ width: 'auto' }} role="presentation" onClick={drawerToggler(false)} onKeyDown={drawerToggler(false)}>
                     <List>
-                      <Link sx={{ textDecoration: 'none' }} href="#" target="_blank">
+                      <Link sx={{ textDecoration: 'none' }} href="#">
                         <ListItemButton component="a">
                           <ListItemIcon>
                             <IconHome2 />
@@ -103,7 +103,7 @@ const AppBar = ({ ...others }) => {
                           <ListItemText primary="Home" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="/login" target="_blank">
+                      <Link sx={{ textDecoration: 'none' }} href="/login">
                         <ListItemButton component="a">
                           <ListItemIcon>
                             <IconDashboard />
@@ -111,7 +111,7 @@ const AppBar = ({ ...others }) => {
                           <ListItemText primary="Dashboard" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="https://codedthemes.gitbook.io/berry" target="_blank">
+                      <Link sx={{ textDecoration: 'none' }} href="https://codedthemes.gitbook.io/berry">
                         <ListItemButton component="a">
                           <ListItemIcon>
                             <IconBook />
@@ -119,7 +119,7 @@ const AppBar = ({ ...others }) => {
                           <ListItemText primary="Documentation" />
                         </ListItemButton>
                       </Link>
-                      <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll" target="_blank">
+                      <Link sx={{ textDecoration: 'none' }} href="https://links.codedthemes.com/hsqll">
                         <ListItemButton component="a">
                           <ListItemIcon>
                             <IconCreditCard />

@@ -18,7 +18,8 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
       styleOverrides: {
         root: {
           fontWeight: 500,
-          borderRadius: '36px'
+          borderRadius: '36px',
+          textTransform: 'none'
         },
         sizeMedium: {
           padding: '9px 24px',
