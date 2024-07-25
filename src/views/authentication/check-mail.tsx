@@ -41,8 +41,8 @@ const CheckMail = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }} color="grey.600">
-                      We have sent you a link to reset your password. If you don't get it please check your junk email folder just in case
-                      it ends up in there by mistake.
+                      {`We have sent you a link to reset your password. If you don't get it please check your junk email folder just in case
+                      it ends up in there by mistake.`}
                     </Typography>
                   </Grid>
                 </Grid>
