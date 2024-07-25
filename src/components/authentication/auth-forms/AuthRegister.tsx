@@ -20,7 +20,6 @@ import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
 
 // third party
-import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
