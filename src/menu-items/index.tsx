@@ -1,5 +1,5 @@
 // menu import
-import samplePage from './sample-page';
+import dashboard from './dashboard';
 import pages from './pages';
 import reports from './reports';
 
@@ -10,7 +10,7 @@ import settingPage from './setting';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [samplePage, pages, reports, settingPage]
+  items: [dashboard, pages, reports, settingPage]
 };
 
 export default menuItems;

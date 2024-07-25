@@ -56,13 +56,13 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   const handleFacebookClick = async () => {
     await signIn('facebook', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
     });
   };
 
   const handleGoogleClick = async () => {
     await signIn('google', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
     });
   };
 
@@ -96,7 +96,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
     if (status === 'authenticated' && payload?.user?.status === UserAccountStatus.email_verified) {
       setTokens(payload?.access_token, payload?.refresh_token);
-      return router.push('/sample-page');
+      return router.push('/dashboard');
     }
   }, [status, data, router]);
 

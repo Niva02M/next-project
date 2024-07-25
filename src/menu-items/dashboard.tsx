@@ -14,12 +14,12 @@ import { NavItemType } from 'types';
 const icons = {
   IconBrandChrome
 };
-const samplePage: NavItemType = {
-  id: 'sample-page',
-  title: <FormattedMessage id="sample-page" />,
+const dashboard: NavItemType = {
+  id: 'dashboard',
+  title: <FormattedMessage id="dashboard" />,
   icon: icons.IconBrandChrome,
   type: 'group',
-  url: '/sample-page'
+  url: '/dashboard'
 };
 
-export default samplePage;
+export default dashboard;

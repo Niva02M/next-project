@@ -41,7 +41,7 @@ const AuthGuard = ({ children }: GuardProps) => {
       if (payload?.user?.status === UserAccountStatus.email_verified) {
         setTokens(payload?.access_token, payload?.refresh_token);
 
-        router.push('/sample-page');
+        router.push('/dashboard');
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
