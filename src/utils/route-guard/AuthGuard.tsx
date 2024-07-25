@@ -1,6 +1,7 @@
 'use client';
 
 import { Grid } from '@mui/material';
+import pageRoutes from 'constants/routes';
 import { UserAccountStatus } from 'constants/user';
 //import useAuth from 'hooks/useAuth';
 import { useSession } from 'next-auth/react';
@@ -41,7 +42,7 @@ const AuthGuard = ({ children }: GuardProps) => {
       if (payload?.user?.status === UserAccountStatus.email_verified) {
         setTokens(payload?.access_token, payload?.refresh_token);
 
-        router.push('/dashboard');
+        router.push(pageRoutes.dashboard);
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);

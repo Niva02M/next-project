@@ -48,7 +48,7 @@ const CheckMail = () => {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary" href={pageRoutes.login}>
+                <Button fullWidth size="large" type="submit" variant="contained" color="primary" href={pageRoutes.login}>
                   Return to login
                 </Button>
               </Grid>
