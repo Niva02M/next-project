@@ -20,7 +20,6 @@ import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
 
 // third party
-import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
@@ -32,6 +31,7 @@ import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IRegisterValues } from 'types/localStorageValues';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
+import { validationSchemaRegistration } from '../constants';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
@@ -48,13 +48,13 @@ const JWTRegister = ({ ...others }) => {
 
   const handleFacebookClick = async () => {
     await signIn('facebook', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
     });
   };
 
   const handleGoogleClick = async () => {
     await signIn('google', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/sample-page'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
     });
   };
 
@@ -71,16 +71,7 @@ const JWTRegister = ({ ...others }) => {
           termsChecked: false,
           submit: null
         }}
-        validationSchema={Yup.object().shape({
-          email: Yup.string().email().max(255).required().label('Email'),
-          password: Yup.string().max(255).required().label('Password'),
-          confirmPassword: Yup.string()
-            .max(255)
-            .required()
-            .oneOf([Yup.ref('password')], 'Passwords must match')
-            .label('Confirm Password'),
-          termsChecked: Yup.bool().oneOf([true], 'The terms and conditions must be accepted.')
-        })}
+        validationSchema={validationSchemaRegistration}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             const { data } = await registerUser({
@@ -149,9 +140,9 @@ const JWTRegister = ({ ...others }) => {
                   onBlur={handleBlur}
                   onChange={handleChange}
                 />
-                {touched.firstName && errors.firstName && (
-                  <FormHelperText error id="firstName-error">
-                    {errors.firstName}
+                {touched.lastName && errors.lastName && (
+                  <FormHelperText error id="lastName-error">
+                    {errors.lastName}
                   </FormHelperText>
                 )}
               </Grid>

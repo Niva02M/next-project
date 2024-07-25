@@ -14,6 +14,7 @@ import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPattern';
+import pageRoutes from 'constants/routes';
 
 // ==============================|| AUTH3 - CHECK MAIL ||============================== //
 
@@ -35,19 +36,20 @@ const CheckMail = () => {
                 <Grid container alignItems="center" justifyContent="center" textAlign="center" spacing={2}>
                   <Grid item xs={12}>
                     <Typography gutterBottom variant={downMD ? 'h2' : 'h1'}>
-                      Hi, Check Your Mail
+                      Please check your email.
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }}>
-                      We have sent a password recover instructions to your email.
+                    <Typography variant="caption" fontSize="16px" textAlign={{ xs: 'center', md: 'inherit' }} color="grey.600">
+                      We have sent you a link to reset your password. If you don't get it please check your junk email folder just in case
+                      it ends up in there by mistake.
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
-                  Open Mail
+                <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary" href={pageRoutes.login}>
+                  Return to login
                 </Button>
               </Grid>
             </Grid>

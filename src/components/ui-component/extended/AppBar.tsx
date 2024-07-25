@@ -27,6 +27,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // types
 import { ThemeMode } from 'types/config';
+import pageRoutes from 'constants/routes';
 
 // elevation scroll
 interface ElevationScrollProps {
@@ -81,7 +82,7 @@ const AppBar = ({ ...others }) => {
               <Button color="inherit" component={Link} href="/contact-us">
                 Contact us
               </Button>
-              <Button component={Link} href="/login" disableElevation variant="contained" color="primary">
+              <Button component={Link} href={pageRoutes.login} disableElevation variant="contained" color="primary">
                 Login
               </Button>
             </Stack>
@@ -108,7 +109,7 @@ const AppBar = ({ ...others }) => {
                           <ListItemText primary="Contact us" />
                         </ListItemButton>
                       </Link>
-                      <Button component={Link} href="/login" disableElevation variant="contained" color="primary" sx={{ mx: 2 }}>
+                      <Button component={Link} href={pageRoutes.login} disableElevation variant="contained" color="primary" sx={{ mx: 2 }}>
                         Login
                       </Button>
                     </List>

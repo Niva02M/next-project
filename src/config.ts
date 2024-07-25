@@ -8,7 +8,7 @@ import { ConfigProps, MenuOrientation, ThemeDirection, ThemeMode } from 'types/c
 // like '/ebtheme/react/default'
 export const BASE_PATH = '';
 
-export const DASHBOARD_PATH = '/sample-page';
+export const DASHBOARD_PATH = '/dashboard';
 export const HOMEPAGE_PATH = '/home';
 export const HORIZONTAL_MAX_ITEM = 7;
 
