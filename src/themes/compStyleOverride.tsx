@@ -15,6 +15,10 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
 
   return {
     MuiButton: {
+      defaultProps: {
+        disableRipple: true,
+        disableElevation: true
+      },
       styleOverrides: {
         root: {
           fontWeight: 500,

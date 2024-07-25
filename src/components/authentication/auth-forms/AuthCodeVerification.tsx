@@ -58,7 +58,6 @@ const AuthCodeVerification = ({ handleContinue, remainingTimer, isLoading }: IAu
       <Grid item xs={12}>
         <LoadingButton
           loading={!!isLoading}
-          disableElevation
           disabled={!otp || !remainingTimer || otp.length < otpLength}
           onClick={onContinue}
           fullWidth

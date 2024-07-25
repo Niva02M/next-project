@@ -26,6 +26,7 @@ import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
+import { LoadingButton } from '@mui/lab';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -57,13 +58,13 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   const handleFacebookClick = async () => {
     await signIn('facebook', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
     });
   };
 
   const handleGoogleClick = async () => {
     await signIn('google', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + '/dashboard'
+      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
     });
   };
 
@@ -97,9 +98,10 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
     if (status === 'authenticated' && payload?.user?.status === UserAccountStatus.email_verified) {
       setTokens(payload?.access_token, payload?.refresh_token);
-      return router.push('/dashboard');
+      return router.push(pageRoutes.dashboard);
     }
   }, [status, data, router]);
+
 
   return (
     <Formik
@@ -211,9 +213,17 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
             </Box>
           )}
           <Box sx={{ mt: '34px' }}>
-            <Button color="primary" disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained">
+            <LoadingButton
+              loading={status === 'loading' && true}
+              disabled={isSubmitting}
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
+              className="gradient"
+            >
               Sign in now
-            </Button>
+            </LoadingButton>
           </Box>
 
           <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
