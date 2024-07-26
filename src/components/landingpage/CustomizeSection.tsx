@@ -54,7 +54,7 @@ const CustomizeSection = () => {
                   width: { xs: '100%', sm: '100%', md: 'calc(100% - 20%)' }
                 }}
               >
-                Berry has made it easy for developers of any skill level to use their product.
+                Ebtheme has made it easy for developers of any skill level to use their product.
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -126,8 +126,7 @@ const CustomizeSection = () => {
                         sx={{ boxShadow: 'none', my: 4 }}
                         variant="contained"
                         component={Link}
-                        href="https://www.figma.com/file/2u2TmauA6lanVMYiywzS1o/berry-figma-v3.0?node-id=0%3A1"
-                        target="_blank"
+                        href="https://www.figma.com/design/B6B2xgNZ5MguMG8JGWCHTo/Wepapp-Starter?node-id=28-100511&m=dev"
                       >
                         Explore Figma
                       </Button>

@@ -63,7 +63,7 @@ const HeaderSection = () => {
     () => (
       <HeaderAnimationImage
         src={mode === ThemeMode.DARK ? BgDark : BgLight}
-        alt="Berry"
+        alt="Ebtheme"
         sx={{
           display: { xs: 'none', md: 'flex' },
           position: 'absolute',
@@ -92,7 +92,7 @@ const HeaderSection = () => {
               >
                 <Stack spacing={1}>
                   <Typography textAlign={{ xs: 'center', md: 'left' }} variant="h1" sx={headerSX}>
-                    Use Berry to Power Your Next
+                    Use Ebtheme to Power Your Next
                   </Typography>
                   <Typography textAlign={{ xs: 'center', md: 'left' }} variant="h1" color="primary" sx={headerSX}>
                     React Project
@@ -112,7 +112,7 @@ const HeaderSection = () => {
                   variant="body1"
                   sx={{ fontSize: { xs: '1rem', md: '1.125rem' } }}
                 >
-                  Berry is React based Dashboard template which helps you to build faster and beautiful web applications.
+                  Ebtheme is React based Dashboard template which helps you to build faster and beautiful web applications.
                 </Typography>
               </motion.div>
             </Grid>
@@ -156,7 +156,7 @@ const HeaderSection = () => {
                   <CardMedia
                     component="img"
                     image={mode === ThemeMode.DARK ? TechDark : TechLight}
-                    alt="Berry Tech"
+                    alt="Ebtheme Tech"
                     sx={{ width: { xs: '75%', sm: '50%', md: '75%' } }}
                   />
                 </Stack>
@@ -166,7 +166,7 @@ const HeaderSection = () => {
         </Grid>
         <Grid item xs={12} md={7} sx={{ display: { xs: 'none', md: 'flex' } }}>
           <Box sx={{ position: 'relative', mt: 8.75, zIndex: 9 }}>
-            <HeaderImage src={dashboard} alt="Berry" />
+            <HeaderImage src={dashboard} alt="Ebtheme" />
             <Box
               sx={{
                 position: 'absolute',
@@ -181,7 +181,7 @@ const HeaderSection = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 150, damping: 30, delay: 0.2 }}
               >
-                <HeaderAnimationImage src={widget1} alt="Berry" />
+                <HeaderAnimationImage src={widget1} alt="Ebtheme" />
               </motion.div>
             </Box>
             <Box
@@ -199,7 +199,7 @@ const HeaderSection = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 150, damping: 30, delay: 0.4 }}
               >
-                <HeaderAnimationImage src={widget2} alt="Berry" />
+                <HeaderAnimationImage src={widget2} alt="Ebtheme" />
               </motion.div>
             </Box>
           </Box>

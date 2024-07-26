@@ -57,7 +57,7 @@ const Typography = (theme: Theme, borderRadius: number, fontFamily: FontFamily):
     fontSize: '0.875rem',
     letterSpacing: '0em',
     fontWeight: 400,
-    lineHeight: '0.875rem'
+    lineHeight: '1.125rem'
   },
   body3: {
     fontSize: '1.125rem'

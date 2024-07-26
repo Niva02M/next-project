@@ -2,7 +2,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { SettingIcon } from 'components/icons'; 
+import { SettingIcon } from 'components/icons';
 
 // type
 import { NavItemType } from 'types';

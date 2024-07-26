@@ -26,10 +26,9 @@ import Transitions from 'ui-component/extended/Transitions';
 // assets
 import { IconLogout, IconSettings } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
-import { Divider, IconButton, Stack, useMediaQuery } from '@mui/material';
+import { IconButton, useMediaQuery } from '@mui/material';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import GenericModal from 'ui-component/modal/GenericModal';
-import { LoadingButton } from '@mui/lab';
 import { InfoIcon } from 'components/icons';
 
 const User1 = '/assets/images/users/user-round.svg';
@@ -197,6 +196,8 @@ const ProfileSection = () => {
         btnDirection="column"
         btnTextYes="Logout"
         btnTextNo="Cancel"
+        handleYes={handleLogout}
+        isLoading={isLoading}
         titleIcon={<InfoIcon />}
         closeModal={(close: any) => {
           if (close) {

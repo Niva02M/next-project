@@ -177,7 +177,7 @@ const PreBuildDashBoard = () => {
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h4" sx={{ fontWeight: 400 }} align="center">
-              Berry has conceptul working apps like Chat, Inbox, E-commerce, Invoice, Kanban, and Calendar
+              Ebtheme has conceptul working apps like Chat, Inbox, E-commerce, Invoice, Kanban, and Calendar
             </Typography>
           </Grid>
         </Grid>

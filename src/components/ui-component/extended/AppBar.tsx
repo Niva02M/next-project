@@ -72,7 +72,24 @@ const AppBar = ({ ...others }) => {
             <Typography sx={{ flexGrow: 1, textAlign: 'left', svg: { width: 'auto', height: 45 } }}>
               <Logo />
             </Typography>
-            <Stack direction="row" sx={{ display: { xs: 'none', sm: 'block' } }} spacing={{ xs: 1.5, md: 2.5 }}>
+            <Stack
+              direction="row"
+              sx={{
+                display: {
+                  xs: 'none',
+                  sm: 'block',
+                  '.MuiLink-root': {
+                    paddingLeft: 0,
+                    paddingRight: 0,
+                    minWidth: 'auto',
+                    '&:hover': {
+                      backgroundColor: 'transparent'
+                    }
+                  }
+                }
+              }}
+              spacing={{ xs: 1.5, md: 3 }}
+            >
               <Button color="inherit" component={Link} href="/home">
                 Home
               </Button>
@@ -82,7 +99,10 @@ const AppBar = ({ ...others }) => {
               <Button color="inherit" component={Link} href="/contact-us">
                 Contact us
               </Button>
-              <Button component={Link} href={pageRoutes.login} disableElevation variant="contained" color="primary">
+              <Button color="inherit" component={Link} href="/faqs">
+                Faq
+              </Button>
+              <Button href={pageRoutes.login} disableElevation variant="contained" color="primary">
                 Login
               </Button>
             </Stack>
@@ -109,7 +129,12 @@ const AppBar = ({ ...others }) => {
                           <ListItemText primary="Contact us" />
                         </ListItemButton>
                       </Link>
-                      <Button component={Link} href={pageRoutes.login} disableElevation variant="contained" color="primary" sx={{ mx: 2 }}>
+                      <Link sx={{ textDecoration: 'none' }} href="/faqs">
+                        <ListItemButton>
+                          <ListItemText primary="Faq" />
+                        </ListItemButton>
+                      </Link>
+                      <Button component={Link} href={pageRoutes.login} disableElevation variant="contained" color="primary" sx={{ m: 2 }}>
                         Login
                       </Button>
                     </List>
