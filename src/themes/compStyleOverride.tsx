@@ -507,6 +507,15 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           }
         }
       }
+    },
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }
+      }
     }
   };
 }
