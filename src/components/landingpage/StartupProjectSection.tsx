@@ -76,7 +76,7 @@ const RtlInfoSection = () => {
                   mt: { xs: 2, sm: 3.75, md: 5.5, xl: 7 }
                 }}
               >
-                Choose Berry for
+                Choose Ebtheme for
               </Typography>
             </Box>
             <Slider {...settings}>

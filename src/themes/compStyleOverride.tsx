@@ -60,8 +60,8 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                   '&:last-of-type': {
                     position: 'absolute',
                     bottom: 0,
-                    left: 5,
-                    right: 5
+                    left: 0,
+                    right: 0
                   }
                 }
               }
@@ -498,13 +498,22 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                   '&:last-of-type': {
                     position: 'absolute',
                     bottom: 0,
-                    left: 5,
-                    right: 5
+                    left: 0,
+                    right: 0
                   }
                 }
               }
             }
           }
+        }
+      }
+    },
+    MuiModal: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
         }
       }
     }

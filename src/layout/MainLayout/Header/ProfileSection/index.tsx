@@ -27,8 +27,9 @@ import Transitions from 'ui-component/extended/Transitions';
 import { IconLogout, IconSettings } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
 import { IconButton, useMediaQuery } from '@mui/material';
-import LogoutModal from './logoutModal';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import GenericModal from 'ui-component/modal/GenericModal';
+import { InfoIcon } from 'components/icons';
 
 const User1 = '/assets/images/users/user-round.svg';
 
@@ -38,20 +39,14 @@ const ProfileSection = () => {
   const theme = useTheme();
   const { borderRadius } = useConfig();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
-  // const navigate = useNavigate();
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { errorSnack } = useSuccErrSnack();
 
-  const closeLogoutModal = () => {
-    setIsLogoutOpen(false);
-  };
-
   const openLogoutModal = () => {
-    setIsLogoutOpen(true);
+    setOpenModal(true);
   };
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -80,10 +75,6 @@ const ProfileSection = () => {
   const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number, route: string = '') => {
     setSelectedIndex(index);
     handleClose(event);
-
-    // if (route && route !== '') {
-    //     navigate(route);
-    // }
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -97,6 +88,8 @@ const ProfileSection = () => {
 
     prevOpen.current = open;
   }, [open]);
+
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <>
@@ -193,7 +186,28 @@ const ProfileSection = () => {
           </ClickAwayListener>
         )}
       </Popper>
-      <LogoutModal isOpen={isLogoutOpen} isLoading={isLoading} handleClose={closeLogoutModal} onLogout={handleLogout} />
+      {console.log('setOpen ==>', setOpen)}
+      {/* Logout modal start */}
+      <GenericModal
+        open={open}
+        setOpen={setOpen}
+        title="Are you sure you want to logout Ebtheme web?"
+        openModal={openModal}
+        btnDirection="column"
+        btnTextYes="Logout"
+        btnTextNo="Cancel"
+        handleYes={handleLogout}
+        isLoading={isLoading}
+        titleIcon={<InfoIcon />}
+        closeModal={(close: any) => {
+          if (close) {
+            setOpenModal(false);
+          }
+        }}
+      >
+        <Typography>You are about to logout from Ebtheme. Are you sure you want to logout ?</Typography>
+      </GenericModal>
+      {/* Logout modal ends */}
     </>
   );
 };

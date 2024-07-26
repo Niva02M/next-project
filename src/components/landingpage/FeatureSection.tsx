@@ -46,7 +46,7 @@ const OfferCard = ({ title, caption, image }: OfferCardProps) => {
           <Avatar variant="rounded" sx={AvaterSx}>
             <CardMedia component="img" src={image} alt="Beautiful User Interface" />
           </Avatar>
-          <Stack spacing={2}>
+          <Stack spacing={2} textAlign={'left'}>
             <Typography variant="h3" sx={{ fontWeight: 500 }}>
               {title}
             </Typography>
@@ -63,16 +63,16 @@ const OfferCard = ({ title, caption, image }: OfferCardProps) => {
 const FeatureSection = () => (
   <Container>
     <Grid container spacing={7.5} justifyContent="center">
-      <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
+      <Grid item xs={12} md={6}>
         <Grid container spacing={1.5}>
           <Grid item xs={12}>
             <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
-              What does Berry offer?
+              What does Ebtheme offer?
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body2" sx={{ fontSize: '1rem' }}>
-              Berry is a reliable choice for your admin panel needs, offering a wide range of features to easily manage your backend panel
+              Ebtheme is a reliable choice for your admin panel needs, offering a wide range of features to easily manage your backend panel
             </Typography>
           </Grid>
         </Grid>
@@ -82,42 +82,42 @@ const FeatureSection = () => (
           <Grid item md={4} sm={6}>
             <OfferCard
               title="Beautiful User Interface"
-              caption="Berry can improve the user experience of your web application by providing a clear and intuitive layout, and consistent look and feel."
+              caption="Ebtheme can improve the user experience of your web application by providing a clear and intuitive layout, and consistent look and feel."
               image={Offer1}
             />
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
               title="Time and Cost Savings"
-              caption="Berry can save developers time and effort by providing a pre-built user interface, allowing them to focus on other aspects of the project."
+              caption="Ebtheme can save developers time and effort by providing a pre-built user interface, allowing them to focus on other aspects of the project."
               image={Offer2}
             />
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
               title="Reduce Development Complexity"
-              caption="Berry simplifies admin panel development with easy theme setup and clear code with flexible layouts options."
+              caption="Ebtheme simplifies admin panel development with easy theme setup and clear code with flexible layouts options."
               image={Offer3}
             />
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
               title="Improved Scalability"
-              caption="Berry uses scalable technologies and resources to ensure that your admin panel remains efficient and effective as your needs evolve."
+              caption="Ebtheme uses scalable technologies and resources to ensure that your admin panel remains efficient and effective as your needs evolve."
               image={Offer4}
             />
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
               title=" Well-Documented and Supported"
-              caption="With a range of resources including user guides, tutorials, and FAQs to help users understand and effectively use the Berry."
+              caption="With a range of resources including user guides, tutorials, and FAQs to help users understand and effectively use the Ebtheme."
               image={Offer5}
             />
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
               title="Performance Centric"
-              caption="Berry is a performance-centric dashboard template that is designed to deliver optimal performance for your admin panel."
+              caption="Ebtheme is a performance-centric dashboard template that is designed to deliver optimal performance for your admin panel."
               image={Offer6}
             />
           </Grid>

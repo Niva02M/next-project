@@ -2,7 +2,7 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconBrandChrome } from '@tabler/icons-react';
+import { SettingIcon } from 'components/icons';
 
 // type
 import { NavItemType } from 'types';
@@ -10,12 +10,12 @@ import { NavItemType } from 'types';
 // ==============================|| MENU ITEMS - SAMPLE PAGE ||============================== //
 
 const icons = {
-  IconBrandChrome
+  SettingIcon
 };
 const settingPage: NavItemType = {
   id: 'setting',
   title: <FormattedMessage id="settings" />,
-  icon: icons.IconBrandChrome,
+  icon: icons.SettingIcon,
   type: 'group',
   url: '/setting'
 };

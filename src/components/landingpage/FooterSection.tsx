@@ -46,11 +46,11 @@ const FooterSection = () => {
               <Grid item xs={12} md={4}>
                 <Stack spacing={{ xs: 2, md: 5 }}>
                   <Typography variant="h4" color={textColor} sx={{ fontWeight: 500 }}>
-                    About Berry
+                    About Ebtheme
                   </Typography>
                   <Typography variant="body2" color={textColor}>
-                    Berry React is a dashboard template that utilizes the Material-UI framework and the React JavaScript library. It offers
-                    a range of features and customization options to help you create a powerful and user-friendly admin panel.
+                    Ebtheme React is a dashboard template that utilizes the Material-UI framework and the React JavaScript library. It
+                    offers a range of features and customization options to help you create a powerful and user-friendly admin panel.
                   </Typography>
                 </Stack>
               </Grid>
@@ -102,7 +102,7 @@ const FooterSection = () => {
                   <Grid item xs={6} sm={3}>
                     <Stack spacing={{ xs: 3, md: 5 }}>
                       <Typography variant="h4" color={textColor} sx={{ fontWeight: 500 }}>
-                        Berry Eco-System
+                        Ebtheme Eco-System
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
                         {frameworks.map((item, index) => (
@@ -150,13 +150,19 @@ const FooterSection = () => {
             spacing={{ xs: 1.5, sm: 1, md: 3 }}
           >
             <Typography color="text.secondary">
-              © Berry is managed by{' '}
+              © Ebtheme is managed by{' '}
               <Link href="https://codedthemes.com/" target="_blank" underline="hover">
                 CodedThemes
               </Link>
             </Typography>
             <Stack direction="row" alignItems="center" spacing={{ xs: 3, sm: 1.5, md: 2 }}>
-              <IconButton size="small" aria-label="Berry Blog" component={Link} href="https://links.codedthemes.com/HTIBc" target="_blank">
+              <IconButton
+                size="small"
+                aria-label="Ebtheme Blog"
+                component={Link}
+                href="https://links.codedthemes.com/HTIBc"
+                target="_blank"
+              >
                 <PublicIcon sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }} />
               </IconButton>
               <IconButton
