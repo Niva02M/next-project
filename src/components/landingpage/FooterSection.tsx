@@ -49,8 +49,8 @@ const FooterSection = () => {
                     About Ebtheme
                   </Typography>
                   <Typography variant="body2" color={textColor}>
-                    Ebtheme React is a dashboard template that utilizes the Material-UI framework and the React JavaScript library. It offers
-                    a range of features and customization options to help you create a powerful and user-friendly admin panel.
+                    Ebtheme React is a dashboard template that utilizes the Material-UI framework and the React JavaScript library. It
+                    offers a range of features and customization options to help you create a powerful and user-friendly admin panel.
                   </Typography>
                 </Stack>
               </Grid>
@@ -102,7 +102,7 @@ const FooterSection = () => {
                   <Grid item xs={6} sm={3}>
                     <Stack spacing={{ xs: 3, md: 5 }}>
                       <Typography variant="h4" color={textColor} sx={{ fontWeight: 500 }}>
-                      Ebtheme Eco-System
+                        Ebtheme Eco-System
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
                         {frameworks.map((item, index) => (
@@ -156,7 +156,13 @@ const FooterSection = () => {
               </Link>
             </Typography>
             <Stack direction="row" alignItems="center" spacing={{ xs: 3, sm: 1.5, md: 2 }}>
-              <IconButton size="small" aria-label="Ebtheme Blog" component={Link} href="https://links.codedthemes.com/HTIBc" target="_blank">
+              <IconButton
+                size="small"
+                aria-label="Ebtheme Blog"
+                component={Link}
+                href="https://links.codedthemes.com/HTIBc"
+                target="_blank"
+              >
                 <PublicIcon sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }} />
               </IconButton>
               <IconButton
