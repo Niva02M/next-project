@@ -55,6 +55,7 @@ function ElevationScroll({ children, window }: ElevationScrollProps) {
 // ==============================|| MINIMAL LAYOUT APP BAR ||============================== //
 
 const AppBar = ({ ...others }) => {
+  const theme = useTheme();
   const [drawerToggle, setDrawerToggle] = useState<boolean>(false);
 
   const drawerToggler = (open: boolean) => (event: any) => {
@@ -83,7 +84,8 @@ const AppBar = ({ ...others }) => {
                     paddingRight: 0,
                     minWidth: 'auto',
                     '&:hover': {
-                      backgroundColor: 'transparent'
+                      backgroundColor: 'transparent',
+                      color: theme.palette.primary.dark
                     }
                   }
                 }

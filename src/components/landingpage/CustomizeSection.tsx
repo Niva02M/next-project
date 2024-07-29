@@ -41,7 +41,7 @@ const CustomizeSection = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Grid container spacing={2.5}>
-            <Grid item xs={12}>
+            <Grid item xs={12} textAlign={'left'}>
               <Typography variant="h5" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' }, mb: 2 }}>
                 Easy Developer Experience
               </Typography>
@@ -79,7 +79,7 @@ const CustomizeSection = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} textAlign={'left'}>
           <Grid container spacing={2.5} direction={{ xs: 'column-reverse', md: 'row' }}>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2.5}>

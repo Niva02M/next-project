@@ -136,7 +136,7 @@ const FrameworkSection = () => {
           </Typography>
           <Typography variant="body2" align="center" sx={{ pt: 1 }}>
             Each framework is sold separately on different platforms. Click to{' '}
-            <Link href="https://codedthemes.gitbook.io/berry/berry-eco-system" target="_blank" underline="hover">
+            <Link href="/" target="_blank" underline="hover">
               learn more.
             </Link>
           </Typography>
@@ -207,7 +207,7 @@ const FrameworkSection = () => {
               >
                 <Box
                   component={Link}
-                  href={item.link}
+                  href={'/'}
                   target="_blank"
                   underline="none"
                   sx={{

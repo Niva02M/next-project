@@ -52,7 +52,7 @@ const PeopleSection = () => {
               {cardResult}
             </Masonry>
             <Box>
-              <Button variant="outlined" component={Link} href="https://links.codedthemes.com/hsqll" target="_blank">
+              <Button variant="outlined" component={Link} href="/" target="_blank">
                 Read more
               </Button>
             </Box>

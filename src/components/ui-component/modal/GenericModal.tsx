@@ -52,14 +52,14 @@ export default function GenericModal({
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Paper sx={{ width: { xs: '90%', md: '100%' }, maxWidth: maxWidth ? maxWidth : 830, p: 3 }}>
+        <Paper sx={{ width: { xs: '90%', md: '100%' }, maxWidth: maxWidth ? maxWidth : 830, p: '27px 20px' }}>
           {title && (
-            <Stack direction="row" alignItems="center" justifyContent="space-between" columnGap={2} mb={2}>
+            <Stack direction="row" alignItems="flex-start" justifyContent="space-between" columnGap={2} mb={2}>
               {titleIcon ? (
                 <Stack
                   direction="row"
                   spacing={2.5}
-                  alignItems="center"
+                  alignItems="flex-start"
                   sx={{
                     svg: {
                       width: 24,
@@ -77,7 +77,7 @@ export default function GenericModal({
               ) : (
                 <Typography variant="h3">{title}</Typography>
               )}
-              <IconButton className="close" onClick={handleClose}>
+              <IconButton className="close" onClick={handleClose} sx={{ p: 0 }}>
                 <CloseIcon />
               </IconButton>
             </Stack>
