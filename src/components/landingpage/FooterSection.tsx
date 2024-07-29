@@ -62,16 +62,16 @@ const FooterSection = () => {
                         Help
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
-                        <FooterLink href="https://links.codedthemes.com/HTIBc" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Blog
                         </FooterLink>
-                        <FooterLink href="https://codedthemes.gitbook.io/berry/" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Documentation
                         </FooterLink>
-                        <FooterLink href="https://codedthemes.gitbook.io/berry/changelog" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Change Log
                         </FooterLink>
-                        <FooterLink href="https://codedthemes.support-hub.io/" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Support
                         </FooterLink>
                       </Stack>
@@ -83,17 +83,13 @@ const FooterSection = () => {
                         Store Help
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
-                        <FooterLink href="https://mui.com/store/license/" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           License
                         </FooterLink>
-                        <FooterLink href="https://mui.com/store/customer-refund-policy/" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Refund Policy
                         </FooterLink>
-                        <FooterLink
-                          href="https://support.mui.com/hc/en-us/sections/360002564979-For-customers"
-                          target="_blank"
-                          underline="none"
-                        >
+                        <FooterLink href="/" underline="none">
                           Submit a Request
                         </FooterLink>
                       </Stack>
@@ -106,7 +102,7 @@ const FooterSection = () => {
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
                         {frameworks.map((item, index) => (
-                          <FooterLink href={item.link} target="_blank" underline="none" key={index}>
+                          <FooterLink href={'/'} underline="none" key={index}>
                             {item.title}
                             {item.isUpcoming && <Chip variant="outlined" size="small" label="Upcoming" sx={{ ml: 0.5 }} />}
                           </FooterLink>
@@ -120,16 +116,16 @@ const FooterSection = () => {
                         Free Versions
                       </Typography>
                       <Stack spacing={{ xs: 1.5, md: 2.5 }}>
-                        <FooterLink href="https://links.codedthemes.com/Yfkxg" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Free React MUI
                         </FooterLink>
-                        <FooterLink href="https://links.codedthemes.com/epTmN" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Free Bootstrap 5
                         </FooterLink>
-                        <FooterLink href="https://links.codedthemes.com/seQKN" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Free Angular
                         </FooterLink>
-                        <FooterLink href="https://links.codedthemes.com/Wfbiy" target="_blank" underline="none">
+                        <FooterLink href="/" underline="none">
                           Free Django
                         </FooterLink>
                       </Stack>
@@ -151,36 +147,18 @@ const FooterSection = () => {
           >
             <Typography color="text.secondary">
               © Ebtheme is managed by{' '}
-              <Link href="https://codedthemes.com/" target="_blank" underline="hover">
-                CodedThemes
+              <Link href="/" underline="hover">
+                EbThemes
               </Link>
             </Typography>
             <Stack direction="row" alignItems="center" spacing={{ xs: 3, sm: 1.5, md: 2 }}>
-              <IconButton
-                size="small"
-                aria-label="Ebtheme Blog"
-                component={Link}
-                href="https://links.codedthemes.com/HTIBc"
-                target="_blank"
-              >
+              <IconButton size="small" aria-label="Ebtheme Blog" component={Link} href="/">
                 <PublicIcon sx={{ color: 'text.secondary', '&:hover': { color: 'error.main' } }} />
               </IconButton>
-              <IconButton
-                size="small"
-                aria-label="codedTheme Twitter"
-                component={Link}
-                href="https://twitter.com/codedthemes"
-                target="_blank"
-              >
+              <IconButton size="small" aria-label="codedTheme Twitter" component={Link} href="/">
                 <TwitterIcon sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }} />
               </IconButton>
-              <IconButton
-                size="small"
-                aria-label="codedTheme Dribble"
-                component={Link}
-                href="https://dribbble.com/codedthemes"
-                target="_blank"
-              >
+              <IconButton size="small" aria-label="codedTheme Dribble" component={Link} href="/">
                 <SportsBasketballIcon sx={{ color: 'text.secondary', '&:hover': { color: 'warning.main' } }} />
               </IconButton>
             </Stack>

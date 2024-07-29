@@ -138,11 +138,6 @@ const HeaderSection = () => {
                       </Button>
                     </AnimateButton>
                   </Grid>
-                  <Grid item>
-                    <Button component={Link} href="https://links.codedthemes.com/hsqll" target="_blank" size="large">
-                      Purchase Now
-                    </Button>
-                  </Grid>
                 </Grid>
               </motion.div>
             </Grid>
