@@ -6,7 +6,7 @@ const pageRoutes = {
   forgotPassword: '/forgot-password',
   privacyPolicy: '/pages/privacy-policy',
   dashboard: '/dashboard',
-  contactUs: '/dashboard/contact-us',
+  contactUs: '/contact-us',
   faqs: '/pages/faqs',
   verifyRegistration: '/verify-registration',
   forgotPasswordVerification: '/forgot-password/code-verification',
