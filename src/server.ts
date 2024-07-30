@@ -106,8 +106,8 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     FacebookProvider({
-      clientId: process.env.NEXT_FACEBOOK_CLIENT_ID || '',
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET || '',
+      clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
       profile: async (profile: any): Promise<any> => {
         const { accessToken } = profile;
         const response = await client.mutate({
@@ -135,8 +135,8 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     GoogleProvider({
-      clientId: '33745285788-h2trccpbm5bu0kobr3jsb8jh6ni6pjr6.apps.googleusercontent.com',
-      clientSecret: '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',
+      clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
           prompt: 'consent',
