@@ -102,7 +102,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
   }, [status, data, router]);
 
-
   return (
     <Formik
       initialValues={{
