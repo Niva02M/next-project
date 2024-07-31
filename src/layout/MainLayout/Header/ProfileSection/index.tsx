@@ -186,7 +186,6 @@ const ProfileSection = () => {
           </ClickAwayListener>
         )}
       </Popper>
-      {console.log('setOpen ==>', setOpen)}
       {/* Logout modal start */}
       <GenericModal
         open={open}

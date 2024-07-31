@@ -14,7 +14,7 @@ import {
 } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
-import { generateDeviceId } from 'utils/deviceid.helper';
+// import { generateDeviceId } from 'utils/deviceid.helper';
 
 export interface ILoginCredential {
   email: string;
@@ -46,6 +46,72 @@ export interface IDecodedToken {
 //     throw new Error('RefreshTokenError');
 //   }
 // }
+
+const handleProvider = async (account: any) => {
+  switch (account?.provider) {
+    case 'google':
+      try {
+        const responseGoogle = await client.mutate({
+          mutation: GOOGLE_SIGNIN_MUTATION,
+          variables: {
+            idToken: account.id_token,
+            // deviceId: generateDeviceId()
+            deviceId: '123456'
+          }
+        });
+        if (responseGoogle?.errors) {
+          throw new Error(responseGoogle?.errors[0].message);
+        }
+        if (responseGoogle?.data) {
+          const returnData = responseGoogle?.data?.loginWithGoogle;
+
+          return {
+            id: returnData?.user?._id || '',
+            user: returnData?.user,
+            access_token: returnData?.token?.accessToken,
+            refresh_token: returnData?.token?.refreshToken,
+            expires_at: returnData?.token?.accessTokenExpiresIn
+          };
+        }
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        return false;
+      }
+      break;
+    case 'facebook':
+      try {
+        const responseFacebook = await client.mutate({
+          mutation: FACEBOOK_SIGNIN_MUTATION,
+          variables: {
+            accessToken: account.access_token,
+            // deviceId: generateDeviceId()
+            deviceId: '123456'
+          }
+        });
+        if (responseFacebook?.errors) {
+          throw new Error(responseFacebook?.errors[0].message);
+        }
+        if (responseFacebook?.data) {
+          const returnData = responseFacebook?.data?.loginWithFacebook;
+
+          return {
+            id: returnData?.user?._id || '',
+            user: returnData?.user,
+            access_token: returnData?.token?.accessToken,
+            refresh_token: returnData?.token?.refreshToken,
+            expires_at: returnData?.token?.accessTokenExpiresIn
+          };
+        }
+      } catch (error) {
+        console.error('Facebook sign-in error:', error);
+        return false;
+      }
+      break;
+    // Add more cases here for other providers
+    default:
+      return false;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -107,32 +173,7 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
-      profile: async (profile: any): Promise<any> => {
-        const { accessToken } = profile;
-        const response = await client.mutate({
-          mutation: FACEBOOK_SIGNIN_MUTATION,
-          variables: {
-            accessToken,
-            deviceId: generateDeviceId()
-          }
-        });
-        if (response?.errors) {
-          throw new Error(response?.errors[0].message);
-        }
-        if (response?.data) {
-          const returnData = response?.data?.loginWithFacebook;
-
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
-        return null;
-      }
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -143,38 +184,19 @@ export const authOptions: NextAuthOptions = {
           access_type: 'offline',
           response_type: 'code'
         }
-      },
-      profile: async (profile: any): Promise<any> => {
-        const { idToken } = profile;
-        const response = await client.mutate({
-          mutation: GOOGLE_SIGNIN_MUTATION,
-          variables: {
-            idToken,
-            deviceId: generateDeviceId()
-          }
-        });
-        if (response?.errors) {
-          throw new Error(response?.errors[0].message);
-        }
-        if (response?.data) {
-          const returnData = response?.data?.loginWithGoogle;
-
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
       }
     })
   ],
 
   callbacks: {
+    async signIn({ user, account, profile }) {
+      await handleProvider(account);
+      return true; // Return true to allow sign-in, return false to deny
+    },
     async jwt({ token, user }: any) {
       if (user) {
         const userDetail = user as ISignInResponseFormat;
+
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
