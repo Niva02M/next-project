@@ -219,7 +219,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           )}
           <Box sx={{ mt: '34px' }}>
             <LoadingButton
-              loading={status === 'loading' && true}
+              loading={isSubmitting}
               disabled={isSubmitting}
               fullWidth
               size="large"

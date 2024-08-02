@@ -55,7 +55,6 @@ const handleProvider = async (account: any) => {
           mutation: GOOGLE_SIGNIN_MUTATION,
           variables: {
             idToken: account.id_token,
-            // deviceId: generateDeviceId()
             deviceId: '123456'
           }
         });
@@ -84,7 +83,6 @@ const handleProvider = async (account: any) => {
           mutation: FACEBOOK_SIGNIN_MUTATION,
           variables: {
             accessToken: account.access_token,
-            // deviceId: generateDeviceId()
             deviceId: '123456'
           }
         });
