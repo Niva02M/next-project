@@ -29,7 +29,7 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
   const theme = useTheme();
   const router = useRouter();
 
-  const { successSnack } = useSuccErrSnack();
+  const { successSnack, errorSnack } = useSuccErrSnack();
   const { setLocalStorage } = useLocalStorageCodeVerify();
   const { handleError } = useListBackendErrors();
 
@@ -68,6 +68,8 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
             router.push(pageRoutes.forgotPasswordVerification);
           }, 1500);
         } catch (err: any) {
+          console.log('err ===>', err.extensions);
+          errorSnack(err.message);
           handleError(err);
         }
       }}

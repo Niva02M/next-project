@@ -44,6 +44,7 @@ const useListBackendErrors = () => {
       }
     }
     const message = err.message || defaultMessage;
+    console.log('message ===>', message);
     errorSnack(message);
     return;
   };
