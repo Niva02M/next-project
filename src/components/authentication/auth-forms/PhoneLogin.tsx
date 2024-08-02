@@ -1,12 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { Box, FormControl, FormHelperText, Grid, InputLabel, TextField, useTheme } from '@mui/material';
+import { Box, FormControl, FormHelperText, Grid, InputLabel, useTheme } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import PhoneInput, {  isValidPhoneNumber } from 'react-phone-number-input'
+
+import 'react-phone-number-input/style.css';
+import { signIn } from 'next-auth/react';
+import { generateDeviceId } from 'utils/deviceid.helper';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
 function PhoneLogin() {
   const theme = useTheme();
-  const handleFormSubmit = () => {};
+  const { errorSnack, successSnack } = useSuccErrSnack();
+
+  const handleFormSubmit = async() => {
+    try {
+      const res = await signIn('credentials', {
+        phone: values.phone,
+        deviceId: generateDeviceId(),
+        redirect: false,
+        callbackUrl: '/'
+      });
+      if (res?.ok) {
+        successSnack('Login successful');
+      } else {
+        if (res?.error?.includes(':')) {
+          errorSnack(res.error?.split(':')?.[1] || '');
+        }
+      }
+    } catch (err: any) {
+      errorSnack(err.message || 'Login failed');
+    }
+  };
+  const [value, setValue] = useState();
+
   return (
     <Formik
       initialValues={{
@@ -21,9 +49,32 @@ function PhoneLogin() {
         <form onSubmit={handleSubmit}>
           <Grid container gap={3}>
             <Grid item xs={12}>
-              <FormControl fullWidth error={Boolean(touched.phone && errors.phone)} sx={{ ...theme.typography.customInput }}>
+              <FormControl
+                fullWidth
+                error={Boolean(touched.phone && errors.phone)}
+                sx={{
+                  ...theme.typography.customInput,
+                  '.PhoneInput': {
+                    position: 'relative'
+                  },
+                  '.PhoneInputInput': {
+                    height: 53,
+                    fontSize: theme.typography.body1.fontSize,
+                    borderRadius: 0,
+                    appearance: 'none',
+                    border: `1px solid ${theme.palette.grey[500]}`,
+                    paddingLeft: '54px',
+                    outline: 'none',
+                  },
+                  '.PhoneInputCountry': {
+                    position: 'absolute',
+                    top: 18,
+                    left: 12
+                  }
+                }}
+              >
                 <InputLabel htmlFor="phone">Phone</InputLabel>
-                <TextField
+                {/* <TextField
                   fullWidth
                   name="phone"
                   type="phone"
@@ -31,6 +82,12 @@ function PhoneLogin() {
                   value={values.phone}
                   onBlur={handleBlur}
                   onChange={handleChange}
+                /> */}
+                <PhoneInput
+                  placeholder="Enter phone number"
+                  value={value}
+                  onChange={() => setValue}
+                  error={value ? (isValidPhoneNumber(value) ? undefined : 'Invalid phone number') : 'Phone number required'}
                 />
                 {touched.phone && errors.phone && (
                   <FormHelperText error id="standard-weight-helper-text--register">

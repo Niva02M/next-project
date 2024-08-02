@@ -153,3 +153,35 @@ export const REFRESH_TOKEN_MUTATION = gql`
     }
   }
 `;
+
+export const REQUEST_PHONE_LOGIN_MUTATION = gql`
+  mutation RequestPhoneLoginOTP($body: RequestPhoneLoginOTPInput!) {
+    requestPhoneLoginOTP(body: $body) {
+      expiry {
+        expiresAt
+        expiresBy
+      }
+      message
+    }
+  }
+`;
+
+export const PHONE_LOGIN_WITH_OTP_MUTATION = gql`
+  mutation PhoneLoginWithOTP($body: PhoneLoginWithOTPInput!) {
+    phoneLoginWithOTP(body: $body) {
+      token {
+        accessToken
+        accessTokenExpiresIn
+        refreshToken
+        refreshTokenExpiresIn
+      }
+      user {
+        _id
+        cometAuthToken
+        email
+        loginType
+      }
+      message
+    }
+  }
+`;

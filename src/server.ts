@@ -8,7 +8,8 @@ import GoogleProvider from 'next-auth/providers/google';
 import {
   LOGIN_MUTATION,
   FACEBOOK_SIGNIN_MUTATION,
-  GOOGLE_SIGNIN_MUTATION
+  GOOGLE_SIGNIN_MUTATION,
+  REQUEST_PHONE_LOGIN_MUTATION
   //  GOOGLE_SIGNIN_MUTATION,
   // REFRESH_TOKEN_MUTATION
 } from 'graphql/auth';
@@ -27,6 +28,12 @@ export interface IDecodedToken {
   sub: string;
   registrationStatus: string;
   jti: string;
+}
+
+export interface IPhoneLoginCredential {
+  phoneNumber: string;
+  dailCode: string;
+  deviceId?: string;
 }
 
 // async function refreshAccessToken(tokenObject: any) {
@@ -184,7 +191,51 @@ export const authOptions: NextAuthOptions = {
           response_type: 'code'
         }
       }
-    })
+    }),
+    CredentialsProvider({
+      name: 'phone',
+      credentials: {
+        phoneNumber: {},
+        dailCode: {},
+        deviceId: {}      },
+      async authorize(credentials) {
+        if (!credentials) return null;
+
+        const { phoneNumber, dailCode, deviceId } = credentials as IPhoneLoginCredential;
+        try {
+          const res = await client.mutate<{ requestPhoneLoginOTP: ISignInResponse }>({
+            mutation: REQUEST_PHONE_LOGIN_MUTATION,
+            variables: {
+              body: {
+                phoneNumber,
+                dailCode,
+                deviceId
+              }
+            }
+          });
+
+          if (res?.errors) {
+            throw new Error(res?.errors[0].message);
+          }
+
+          if (res?.data?.requestPhoneLoginOTP?.token) {
+            const data = res.data.requestPhoneLoginOTP;
+
+            return {
+              id: data.user?._id || '',
+              user: data.user,
+              access_token: data.token.accessToken,
+              refresh_token: data.token.refreshToken,
+              expires_at: data.token.accessTokenExpiresIn
+            };
+          }
+
+          return null;
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      }
+    }),
   ],
 
   callbacks: {
@@ -202,7 +253,6 @@ export const authOptions: NextAuthOptions = {
       return true; // Deny sign-in
     },
     async jwt({ token, user }: any) {
-      console.log('user ====>', user);
       if (user && user.returnData) {
         const userDetail = user as ISignInResponseFormat;
         return {
