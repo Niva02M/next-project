@@ -41,13 +41,29 @@ export const LOGIN_MUTATION = gql`
 `;
 
 export const FACEBOOK_SIGNIN_MUTATION = gql`
-  mutation loginWithFacebook($body: LoginFacebookInput!) {
-    loginWithFacebook(body: $body) {
+  # mutation loginWithFacebook($body: LoginFacebookInput!) {
+  #   loginWithFacebook(body: $body) {
+  #     message
+  #     expiry {
+  #       expiresBy
+  #       expiresAt
+  #     }
+  #     token {
+  #       accessToken
+  #       accessTokenExpiresIn
+  #       refreshToken
+  #       refreshTokenExpiresIn
+  #     }
+  #     user {
+  #       _id
+  #       email
+  #       status
+  #     }
+  #   }
+  # }
+  mutation LoginWithFacebook($accessToken: String!, $deviceId: String!) {
+    loginWithFacebook(accessToken: $accessToken, deviceId: $deviceId) {
       message
-      expiry {
-        expiresBy
-        expiresAt
-      }
       token {
         accessToken
         accessTokenExpiresIn
@@ -56,21 +72,38 @@ export const FACEBOOK_SIGNIN_MUTATION = gql`
       }
       user {
         _id
+        cometAuthToken
         email
-        status
+        loginType
       }
     }
   }
 `;
 
 export const GOOGLE_SIGNIN_MUTATION = gql`
-  mutation loginWithGoogle($body: GoogleLoginInput!) {
-    loginWithGoogle(body: $body) {
+  # mutation loginWithGoogle($body: GoogleLoginInput!) {
+  #   loginWithGoogle(body: $body) {
+  #     message
+  #     expiry {
+  #       expiresBy
+  #       expiresAt
+  #     }
+  #     token {
+  #       accessToken
+  #       accessTokenExpiresIn
+  #       refreshToken
+  #       refreshTokenExpiresIn
+  #     }
+  #     user {
+  #       _id
+  #       email
+  #       status
+  #     }
+  #   }
+  # }
+  mutation LoginWithGoogle($idToken: String!, $deviceId: String!) {
+    loginWithGoogle(idToken: $idToken, deviceId: $deviceId) {
       message
-      expiry {
-        expiresBy
-        expiresAt
-      }
       token {
         accessToken
         accessTokenExpiresIn
@@ -79,8 +112,9 @@ export const GOOGLE_SIGNIN_MUTATION = gql`
       }
       user {
         _id
+        cometAuthToken
         email
-        status
+        loginType
       }
     }
   }

@@ -14,6 +14,7 @@ import {
 } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
+import { use } from 'react';
 // import { generateDeviceId } from 'utils/deviceid.helper';
 
 export interface ILoginCredential {
@@ -47,15 +48,14 @@ export interface IDecodedToken {
 //   }
 // }
 
-const handleProvider = async (account: any) => {
+const handleProvider = async (account: any, user:any) => {
   switch (account?.provider) {
     case 'google':
       try {
         const responseGoogle = await client.mutate({
           mutation: GOOGLE_SIGNIN_MUTATION,
           variables: {
-            idToken: account.id_token,
-            // deviceId: generateDeviceId()
+            idToken: account?.id_token,
             deviceId: '123456'
           }
         });
@@ -64,14 +64,14 @@ const handleProvider = async (account: any) => {
         }
         if (responseGoogle?.data) {
           const returnData = responseGoogle?.data?.loginWithGoogle;
-
-          return {
+          const obj= {
             id: returnData?.user?._id || '',
             user: returnData?.user,
             access_token: returnData?.token?.accessToken,
             refresh_token: returnData?.token?.refreshToken,
             expires_at: returnData?.token?.accessTokenExpiresIn
           };
+          // user['retrunData']=obj;
         }
       } catch (error) {
         console.error('Google sign-in error:', error);
@@ -190,20 +190,26 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }) {
-      await handleProvider(account);
+      await handleProvider(account, user);
+
       return true; // Return true to allow sign-in, return false to deny
     },
     async jwt({ token, user }: any) {
-      if (user) {
+      console.log('user ====>', user);
+      if (user && user.returnData) {
         const userDetail = user as ISignInResponseFormat;
-
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
           expires_at: userDetail?.expires_at,
           expiry: userDetail?.expiry,
-          user: userDetail?.user
+          user: userDetail?.user,
+          returnData: user.retrunData
         };
+      } else {
+        if (user) {
+          return user.user;
+        }
       }
       return token;
     },

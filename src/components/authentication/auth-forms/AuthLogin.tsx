@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -11,7 +11,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
-import { Phone, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Email, Phone, Visibility, VisibilityOff } from '@mui/icons-material';
 
 // third party
 import * as Yup from 'yup';
@@ -44,7 +44,8 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const { setLocalStorage } = useLocalStorageCodeVerify();
 
   const { errorSnack, successSnack } = useSuccErrSnack();
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [phoneLogin, setPhoneLogin] = useState(false);
 
   const { status, data, update } = useSession();
 
@@ -261,8 +262,14 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <Button color="primary" variant="outlined" fullWidth startIcon={<Phone width={24} height={24} />} onClick={handlePhoneClick}>
-                Log in with Phone
+              <Button
+                color="primary"
+                variant="outlined"
+                fullWidth
+                startIcon={phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
+                onClick={() => setPhoneLogin(!phoneLogin)}
+              >
+                {phoneLogin ? 'Log in with Phone' : 'Log in with Email'}
               </Button>
             </Grid>
           </Grid>
