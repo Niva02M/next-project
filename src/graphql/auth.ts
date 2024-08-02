@@ -41,26 +41,6 @@ export const LOGIN_MUTATION = gql`
 `;
 
 export const FACEBOOK_SIGNIN_MUTATION = gql`
-  # mutation loginWithFacebook($body: LoginFacebookInput!) {
-  #   loginWithFacebook(body: $body) {
-  #     message
-  #     expiry {
-  #       expiresBy
-  #       expiresAt
-  #     }
-  #     token {
-  #       accessToken
-  #       accessTokenExpiresIn
-  #       refreshToken
-  #       refreshTokenExpiresIn
-  #     }
-  #     user {
-  #       _id
-  #       email
-  #       status
-  #     }
-  #   }
-  # }
   mutation LoginWithFacebook($accessToken: String!, $deviceId: String!) {
     loginWithFacebook(accessToken: $accessToken, deviceId: $deviceId) {
       message
@@ -81,26 +61,6 @@ export const FACEBOOK_SIGNIN_MUTATION = gql`
 `;
 
 export const GOOGLE_SIGNIN_MUTATION = gql`
-  # mutation loginWithGoogle($body: GoogleLoginInput!) {
-  #   loginWithGoogle(body: $body) {
-  #     message
-  #     expiry {
-  #       expiresBy
-  #       expiresAt
-  #     }
-  #     token {
-  #       accessToken
-  #       accessTokenExpiresIn
-  #       refreshToken
-  #       refreshTokenExpiresIn
-  #     }
-  #     user {
-  #       _id
-  #       email
-  #       status
-  #     }
-  #   }
-  # }
   mutation LoginWithGoogle($idToken: String!, $deviceId: String!) {
     loginWithGoogle(idToken: $idToken, deviceId: $deviceId) {
       message

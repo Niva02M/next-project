@@ -104,175 +104,178 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
   }, [status, data, router]);
 
-  phoneLogin ? (
-    <PhoneLogin />
-  ) : (
-    <Formik
-      initialValues={{
-        email: '',
-        password: '',
-        submit: null
-      }}
-      validationSchema={Yup.object().shape({
-        email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-        password: Yup.string().max(255).required('Password is required')
-      })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        setSubmitting(true);
-        try {
-          const res = await signIn('credentials', {
-            email: values.email,
-            password: values.password,
-            deviceId: generateDeviceId(),
-            redirect: false,
-            callbackUrl: '/'
-          });
-          if (res?.ok) {
-            successSnack('Login successful');
-          } else {
-            if (res?.error?.includes(':')) {
-              errorSnack(res.error?.split(':')?.[1] || '');
+  return (
+    <>
+      {phoneLogin ? (
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+            submit: null
+          }}
+          validationSchema={Yup.object().shape({
+            email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+            password: Yup.string().max(255).required('Password is required')
+          })}
+          onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              const res = await signIn('credentials', {
+                email: values.email,
+                password: values.password,
+                deviceId: generateDeviceId(),
+                redirect: false,
+                callbackUrl: '/'
+              });
+              if (res?.ok) {
+                successSnack('Login successful');
+              } else {
+                if (res?.error?.includes(':')) {
+                  errorSnack(res.error?.split(':')?.[1] || '');
+                }
+              }
+              setSubmitting(false);
+            } catch (err: any) {
+              errorSnack(err.message || 'Login failed');
             }
-          }
-          setSubmitting(false);
-        } catch (err: any) {
-          errorSnack(err.message || 'Login failed');
-        }
-      }}
-    >
-      {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-        <form noValidate onSubmit={handleSubmit} {...others}>
-          <Grid container gap={3}>
-            <Grid item xs={12}>
-              <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                <InputLabel htmlFor="email">Email</InputLabel>
-                <TextField
+          }}
+        >
+          {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+            <form noValidate onSubmit={handleSubmit} {...others}>
+              <Grid container gap={3}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <TextField
+                      fullWidth
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={values.email}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                    {touched.email && errors.email && (
+                      <FormHelperText error id="standard-weight-helper-text--register">
+                        {errors.email}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
+                    <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-password-login"
+                      type={showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      name="password"
+                      placeholder="Password"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                            size="large"
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      inputProps={{}}
+                      label="Password"
+                    />
+                    {touched.password && errors.password && (
+                      <FormHelperText error id="standard-weight-helper-text-password-login">
+                        {errors.password}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="body1"
+                    fontWeight={500}
+                    component={Link}
+                    href={'/forgot-password'}
+                    color="primary"
+                    sx={{ textDecoration: 'none' }}
+                  >
+                    Forgot password?
+                  </Typography>
+                </Grid>
+              </Grid>
+
+              {errors.submit && (
+                <Box sx={{ mt: 3 }}>
+                  <FormHelperText error>{errors.submit}</FormHelperText>
+                </Box>
+              )}
+
+              <Box sx={{ mt: '34px' }}>
+                <LoadingButton
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
                   fullWidth
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={values.email}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.email}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
-                <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-password-login"
-                  type={showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  name="password"
-                  placeholder="Password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                        size="large"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  }
-                  inputProps={{}}
-                  label="Password"
-                />
-                {touched.password && errors.password && (
-                  <FormHelperText error id="standard-weight-helper-text-password-login">
-                    {errors.password}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item>
-              <Typography
-                variant="body1"
-                fontWeight={500}
-                component={Link}
-                href={'/forgot-password'}
-                color="primary"
-                sx={{ textDecoration: 'none' }}
-              >
-                Forgot password?
-              </Typography>
-            </Grid>
-          </Grid>
-
-          {errors.submit && (
-            <Box sx={{ mt: 3 }}>
-              <FormHelperText error>{errors.submit}</FormHelperText>
-            </Box>
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  className="gradient"
+                >
+                  Sign in now
+                </LoadingButton>
+              </Box>
+            </form>
           )}
-          <Box sx={{ mt: '34px' }}>
-            <LoadingButton
-              loading={status === 'loading' && true}
-              disabled={isSubmitting}
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              className="gradient"
-            >
-              Sign in now
-            </LoadingButton>
-          </Box>
-
-          <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
-            <Divider sx={{ width: '45%' }} />
-            <Typography sx={{ mx: '10px' }}>or</Typography>
-            <Divider sx={{ width: '45%' }} />
-          </Grid>
-
-          <Grid container gap={2}>
-            <Grid item xs={12}>
-              <Button
-                color="primary"
-                variant="outlined"
-                fullWidth
-                startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
-                onClick={handleFacebookClick}
-              >
-                Log in with Facebook
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                color="primary"
-                variant="outlined"
-                fullWidth
-                startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
-                onClick={handleGoogleClick}
-              >
-                Log in with Google
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                color="primary"
-                variant="outlined"
-                fullWidth
-                startIcon={phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
-                onClick={() => setPhoneLogin(!phoneLogin)}
-              >
-                {phoneLogin ? 'Log in with Phone' : 'Log in with Email'}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
+        </Formik>
+      ) : (
+        <PhoneLogin />
       )}
-    </Formik>
+      <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
+        <Divider sx={{ width: '45%' }} />
+        <Typography sx={{ mx: '10px' }}>or</Typography>
+        <Divider sx={{ width: '45%' }} />
+      </Grid>
+      <Grid container gap={2}>
+        <Grid item xs={12}>
+          <Button
+            color="primary"
+            variant="outlined"
+            fullWidth
+            startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
+            onClick={handleFacebookClick}
+          >
+            Log in with Facebook
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            color="primary"
+            variant="outlined"
+            fullWidth
+            startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
+            onClick={handleGoogleClick}
+          >
+            Log in with Google
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            color="primary"
+            variant="outlined"
+            fullWidth
+            startIcon={phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
+            onClick={() => setPhoneLogin(!phoneLogin)}
+          >
+            {phoneLogin ? 'Log in with Phone' : 'Log in with Email'}
+          </Button>
+        </Grid>
+      </Grid>
+    </>
   );
 };
 
