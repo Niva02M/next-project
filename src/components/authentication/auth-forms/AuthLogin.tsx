@@ -27,6 +27,7 @@ import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { LoadingButton } from '@mui/lab';
+import PhoneLogin from './PhoneLogin';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -45,7 +46,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneLogin, setPhoneLogin] = useState(false);
+  const [phoneLogin, setPhoneLogin] = useState(true);
 
   const { status, data, update } = useSession();
 
@@ -67,12 +68,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     await signIn('google', {
       callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
     });
-  };
-
-  const handlePhoneClick = async () => {
-    // await signIn('phone', {
-    //   callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
-    // });
   };
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
@@ -109,7 +104,9 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
   }, [status, data, router]);
 
-  return (
+  phoneLogin ? (
+    <PhoneLogin />
+  ) : (
     <Formik
       initialValues={{
         email: '',
