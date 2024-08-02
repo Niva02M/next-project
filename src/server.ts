@@ -55,7 +55,6 @@ const handleProvider = async (account: any) => {
           mutation: GOOGLE_SIGNIN_MUTATION,
           variables: {
             idToken: account.id_token,
-            // deviceId: generateDeviceId()
             deviceId: '123456'
           }
         });
@@ -84,7 +83,6 @@ const handleProvider = async (account: any) => {
           mutation: FACEBOOK_SIGNIN_MUTATION,
           variables: {
             accessToken: account.access_token,
-            // deviceId: generateDeviceId()
             deviceId: '123456'
           }
         });
@@ -111,7 +109,7 @@ const handleProvider = async (account: any) => {
     default:
       return false;
   }
-}
+};
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -189,9 +187,18 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }) {
-      await handleProvider(account);
-      return true; // Return true to allow sign-in, return false to deny
+    async signIn({ user, account, profile }: any) {
+      const providerData = await handleProvider(account);
+      if (providerData) {
+        user.id = providerData.id;
+        user.user = providerData.user;
+        user.access_token = providerData.access_token;
+        user.refresh_token = providerData.refresh_token;
+        user.expires_at = providerData.expires_at;
+
+        return true;
+      }
+      return true; // Deny sign-in
     },
     async jwt({ token, user }: any) {
       if (user) {

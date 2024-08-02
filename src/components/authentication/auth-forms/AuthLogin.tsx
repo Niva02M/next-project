@@ -11,7 +11,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Phone, Visibility, VisibilityOff } from '@mui/icons-material';
 
 // third party
 import * as Yup from 'yup';
@@ -66,6 +66,12 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     await signIn('google', {
       callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
     });
+  };
+
+  const handlePhoneClick = async () => {
+    // await signIn('phone', {
+    //   callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
+    // });
   };
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
@@ -213,7 +219,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           )}
           <Box sx={{ mt: '34px' }}>
             <LoadingButton
-              loading={status === 'loading' && true}
+              loading={isSubmitting}
               disabled={isSubmitting}
               fullWidth
               size="large"
@@ -252,6 +258,11 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 onClick={handleGoogleClick}
               >
                 Log in with Google
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button color="primary" variant="outlined" fullWidth startIcon={<Phone width={24} height={24} />} onClick={handlePhoneClick}>
+                Log in with Phone
               </Button>
             </Grid>
           </Grid>
