@@ -7,8 +7,8 @@ import GoogleProvider from 'next-auth/providers/google';
 
 import {
   LOGIN_MUTATION,
-  FACEBOOK_SIGNIN_MUTATION,
-  GOOGLE_SIGNIN_MUTATION
+  // FACEBOOK_SIGNIN_MUTATION,
+  // GOOGLE_SIGNIN_MUTATION
   //  GOOGLE_SIGNIN_MUTATION,
   // REFRESH_TOKEN_MUTATION
 } from 'graphql/auth';
@@ -47,69 +47,69 @@ export interface IDecodedToken {
 //   }
 // }
 
-const handleProvider = async (account: any) => {
-  switch (account?.provider) {
-    case 'google':
-      try {
-        const responseGoogle = await client.mutate({
-          mutation: GOOGLE_SIGNIN_MUTATION,
-          variables: {
-            idToken: account.id_token,
-            deviceId: '123456'
-          }
-        });
-        if (responseGoogle?.errors) {
-          throw new Error(responseGoogle?.errors[0].message);
-        }
-        if (responseGoogle?.data) {
-          const returnData = responseGoogle?.data?.loginWithGoogle;
+// const handleProvider = async (account: any) => {
+//   switch (account?.provider) {
+//     case 'google':
+//       try {
+//         const responseGoogle = await client.mutate({
+//           mutation: GOOGLE_SIGNIN_MUTATION,
+//           variables: {
+//             idToken: account.id_token,
+//             deviceId: '123456'
+//           }
+//         });
+//         if (responseGoogle?.errors) {
+//           throw new Error(responseGoogle?.errors[0].message);
+//         }
+//         if (responseGoogle?.data) {
+//           const returnData = responseGoogle?.data?.loginWithGoogle;
 
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
-      } catch (error) {
-        console.error('Google sign-in error:', error);
-        return false;
-      }
-      break;
-    case 'facebook':
-      try {
-        const responseFacebook = await client.mutate({
-          mutation: FACEBOOK_SIGNIN_MUTATION,
-          variables: {
-            accessToken: account.access_token,
-            deviceId: '123456'
-          }
-        });
-        if (responseFacebook?.errors) {
-          throw new Error(responseFacebook?.errors[0].message);
-        }
-        if (responseFacebook?.data) {
-          const returnData = responseFacebook?.data?.loginWithFacebook;
+//           return {
+//             id: returnData?.user?._id || '',
+//             user: returnData?.user,
+//             access_token: returnData?.token?.accessToken,
+//             refresh_token: returnData?.token?.refreshToken,
+//             expires_at: returnData?.token?.accessTokenExpiresIn
+//           };
+//         }
+//       } catch (error) {
+//         console.error('Google sign-in error:', error);
+//         return false;
+//       }
+//       break;
+//     case 'facebook':
+//       try {
+//         const responseFacebook = await client.mutate({
+//           mutation: FACEBOOK_SIGNIN_MUTATION,
+//           variables: {
+//             accessToken: account.access_token,
+//             deviceId: '123456'
+//           }
+//         });
+//         if (responseFacebook?.errors) {
+//           throw new Error(responseFacebook?.errors[0].message);
+//         }
+//         if (responseFacebook?.data) {
+//           const returnData = responseFacebook?.data?.loginWithFacebook;
 
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
-      } catch (error) {
-        console.error('Facebook sign-in error:', error);
-        return false;
-      }
-      break;
-    // Add more cases here for other providers
-    default:
-      return false;
-  }
-};
+//           return {
+//             id: returnData?.user?._id || '',
+//             user: returnData?.user,
+//             access_token: returnData?.token?.accessToken,
+//             refresh_token: returnData?.token?.refreshToken,
+//             expires_at: returnData?.token?.accessTokenExpiresIn
+//           };
+//         }
+//       } catch (error) {
+//         console.error('Facebook sign-in error:', error);
+//         return false;
+//       }
+//       break;
+//     // Add more cases here for other providers
+//     default:
+//       return false;
+//   }
+// };
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -188,6 +188,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }: any) {
+      console.log(account,user,"=========")
       // const providerData = await handleProvider(account);
       // if (providerData) {
       //   user.id = providerData.id;
