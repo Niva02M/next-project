@@ -76,7 +76,6 @@ const handleProvider = async (account: any) => {
         console.error('Google sign-in error:', error);
         return false;
       }
-      break;
     case 'facebook':
       try {
         const responseFacebook = await client.mutate({
@@ -104,8 +103,6 @@ const handleProvider = async (account: any) => {
         console.error('Facebook sign-in error:', error);
         return false;
       }
-      break;
-    // Add more cases here for other providers
     default:
       return false;
   }
@@ -175,14 +172,14 @@ export const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           scope: 'email,public_profile',
-          response_type: 'code'
+          response_type: 'code',
+          prompt: 'consent'
         }
       }
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
       clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET!,
-      idToken: true,
       authorization: {
         params: {
           prompt: 'consent',
@@ -195,6 +192,10 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }: any) {
+      if (account.provider === 'credentials') {
+        return true;
+      }
+
       const providerData = await handleProvider(account);
       if (providerData) {
         user.id = providerData.id;
