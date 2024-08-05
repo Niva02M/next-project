@@ -169,13 +169,15 @@ export const authOptions: NextAuthOptions = {
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
-      authorization: {
-        params: {
-          scope: 'email,public_profile',
-          response_type: 'code',
-          prompt: 'consent'
-        }
-      }
+      authorization: { params: { scope: 'email,public_profile' } },
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture.data.url,
+        };
+      },
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -191,7 +193,9 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }: any) {
+    async signIn({ user, account, profile, email, credentials }: any) {
+      console.log('signIn callback:', { user, account, profile, email, credentials });
+
       if (account.provider === 'credentials') {
         return true;
       }
