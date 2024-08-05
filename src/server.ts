@@ -171,7 +171,13 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,client: {
+        callback: async (tokens:any, profile:any) => {
+          console.log(tokens, profile,"ooooooooooooooooooooooooooo")
+          // Handle the tokens and profile here
+          return { tokens, profile };
+        },
+      }
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
