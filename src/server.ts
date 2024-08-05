@@ -2,19 +2,14 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
-// import { JWT } from 'next-auth/jwt';
-// import { jwtDecode } from 'jwt-decode';
 
 import {
   LOGIN_MUTATION,
   FACEBOOK_SIGNIN_MUTATION,
   GOOGLE_SIGNIN_MUTATION
-  //  GOOGLE_SIGNIN_MUTATION,
-  // REFRESH_TOKEN_MUTATION
 } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
-// import { generateDeviceId } from 'utils/deviceid.helper';
 
 export interface ILoginCredential {
   email: string;
@@ -27,25 +22,6 @@ export interface IDecodedToken {
   registrationStatus: string;
   jti: string;
 }
-
-// async function refreshAccessToken(tokenObject: any) {
-//   try {
-//     const { data } = await client.mutate({
-//       mutation: REFRESH_TOKEN_MUTATION,
-//       variables: {
-//         refreshToken: tokenObject.refresh_token
-//       }
-//     });
-
-//     return {
-//       expires_at: data?.refresh?.accessTokenExpiresIn,
-//       refresh_token: data?.refresh?.refreshToken,
-//       access_token: data?.refresh?.accessToken
-//     };
-//   } catch (error) {
-//     throw new Error('RefreshTokenError');
-//   }
-// }
 
 const handleProvider = async (account: any) => {
   switch (account?.provider) {
@@ -105,7 +81,6 @@ const handleProvider = async (account: any) => {
         return false;
       }
       break;
-    // Add more cases here for other providers
     default:
       return false;
   }
@@ -115,8 +90,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
   },
-  // secret: process.env.NEXTAUTH_SECRET,
-  secret: 'secretKeyForNextAuth',
+  secret: process.env.NEXTAUTH_SECRET || 'secretKeyForNextAuth',
   providers: [
     CredentialsProvider({
       type: 'credentials',
@@ -170,12 +144,12 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     FacebookProvider({
-      clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
+      clientId: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_SECRET!
     }),
     GoogleProvider({
-      clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
           prompt: 'consent',
@@ -198,7 +172,7 @@ export const authOptions: NextAuthOptions = {
 
         return true;
       }
-      return true; // Deny sign-in
+      return false; // Deny sign-in
     },
     async jwt({ token, user }: any) {
       if (user) {
@@ -224,3 +198,5 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login'
   }
 };
+
+export default authOptions;
