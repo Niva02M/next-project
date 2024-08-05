@@ -171,7 +171,9 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,client: {
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
+      idToken: false,
+      client: {
         callback: async (tokens:any, profile:any) => {
           console.log(tokens, profile,"ooooooooooooooooooooooooooo")
           // Handle the tokens and profile here
