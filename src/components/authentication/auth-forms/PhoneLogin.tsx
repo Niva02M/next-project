@@ -11,12 +11,14 @@ import { REQUEST_PHONE_LOGIN_MUTATION } from 'graphql/auth';
 import { IPhoneLoginCredential } from 'server';
 import { useRouter } from 'next/navigation';
 import pageRoutes from 'constants/routes';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
 export default function PhoneLogin() {
   const theme = useTheme();
   const router = useRouter();
 
   const [requestOtp] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
+  const {errorSnack, successSnack} = useSuccErrSnack();
 
   const handleFormSubmit = async (values: IPhoneLoginCredential) => {
     const countryCode = parsePhoneNumber(values.phoneNumber);
@@ -42,6 +44,7 @@ export default function PhoneLogin() {
           expiryTime: expiryTimeMilliSecond
         })
       );
+      successSnack(resposeRequestOtp?.data?.requestPhoneLoginOTP?.message);
       router.push(pageRoutes.verifyRegistrationPhone);
     }
   };
@@ -54,7 +57,7 @@ export default function PhoneLogin() {
         deviceId: ''
       }}
       validationSchema={Yup.object().shape({
-        phoneNumber: Yup.string().required().label('Phone')
+        phoneNumber: Yup.string().required().min(12).max(13).label('Phone')
       })}
       onSubmit={handleFormSubmit}
     >

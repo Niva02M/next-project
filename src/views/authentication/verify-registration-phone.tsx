@@ -5,7 +5,6 @@ import React, { useEffect } from 'react';
 import useListBackendErrors from 'hooks/useShowBackEndError';
 import pageRoutes from 'constants/routes';
 import AuthCodeVerification from 'components/authentication/auth-forms/AuthCodeVerification';
-// import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { signIn } from 'next-auth/react';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { calculateRemainingTime } from 'utils/helper';
@@ -20,7 +19,6 @@ const VerifyRegistrationPhone = () => {
 
   const [remainingTime, setRemainingTime] = React.useState(calculateRemainingTime(loginWithPhoneDetail?.expiryTime));
   const { handleError } = useListBackendErrors();
-  // const { errorSnack, successSnack } = useSuccErrSnack();
 
   const handleContinue = async (verificationCode: string) => {
     try {
