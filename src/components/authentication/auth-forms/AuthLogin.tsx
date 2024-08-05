@@ -28,7 +28,6 @@ import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { LoadingButton } from '@mui/lab';
 import PhoneLogin from './PhoneLogin';
-import { IPhoneLoginCredential } from 'server';
 
 // ===============================|| JWT LOGIN ||=============================== //
 

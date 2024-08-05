@@ -18,7 +18,7 @@ export default function PhoneLogin() {
   const router = useRouter();
 
   const [requestOtp] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
-  const {errorSnack, successSnack} = useSuccErrSnack();
+  const { successSnack } = useSuccErrSnack();
 
   const handleFormSubmit = async (values: IPhoneLoginCredential) => {
     const countryCode = parsePhoneNumber(values.phoneNumber);

@@ -46,14 +46,14 @@ const handleProvider = async (account: any, user:any) => {
           throw new Error(responseGoogle?.errors[0].message);
         }
         if (responseGoogle?.data) {
-          const returnData = responseGoogle?.data?.loginWithGoogle;
-          const obj= {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
+          // const returnData = responseGoogle?.data?.loginWithGoogle;
+          // const obj= {
+          //   id: returnData?.user?._id || '',
+          //   user: returnData?.user,
+          //   access_token: returnData?.token?.accessToken,
+          //   refresh_token: returnData?.token?.refreshToken,
+          //   expires_at: returnData?.token?.accessTokenExpiresIn
+          // };
           // user['retrunData']=obj;
         }
       } catch (error) {
