@@ -28,6 +28,7 @@ import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { LoadingButton } from '@mui/lab';
 import PhoneLogin from './PhoneLogin';
+import { IPhoneLoginCredential } from 'server';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -69,6 +70,17 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
     });
   };
+
+
+  // const handlePhoneClick = async ({number, deviceId, dailCode}: IPhoneLoginCredential) => {
+  //   // await signIn('phone-login', {
+  //   //   redirect: false,
+  //   //   number,
+  //   //   deviceId,
+  //   //   dailCode
+  //   //   // callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
+  //   // });
+  // };
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {

@@ -1,119 +1,133 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Box, FormControl, FormHelperText, Grid, InputLabel, useTheme } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import PhoneInput, {  isValidPhoneNumber } from 'react-phone-number-input'
+import PhoneInput, { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 
 import 'react-phone-number-input/style.css';
-import { signIn } from 'next-auth/react';
-import { generateDeviceId } from 'utils/deviceid.helper';
-import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { useMutation } from '@apollo/client';
+import { REQUEST_PHONE_LOGIN_MUTATION } from 'graphql/auth';
+import { IPhoneLoginCredential } from 'server';
+import { useRouter } from 'next/navigation';
+import pageRoutes from 'constants/routes';
 
-function PhoneLogin() {
+export default function PhoneLogin() {
   const theme = useTheme();
-  const { errorSnack, successSnack } = useSuccErrSnack();
+  const router = useRouter();
 
-  const handleFormSubmit = async() => {
-    try {
-      const res = await signIn('credentials', {
-        phone: values.phone,
-        deviceId: generateDeviceId(),
-        redirect: false,
-        callbackUrl: '/'
-      });
-      if (res?.ok) {
-        successSnack('Login successful');
-      } else {
-        if (res?.error?.includes(':')) {
-          errorSnack(res.error?.split(':')?.[1] || '');
+  const [requestOtp] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
+
+  const handleFormSubmit = async (values: IPhoneLoginCredential) => {
+    const countryCode = parsePhoneNumber(values.phoneNumber);
+
+    const resposeRequestOtp = await requestOtp({
+      variables: {
+        body: {
+          number: countryCode?.number,
+          dialCode: countryCode?.countryCallingCode,
+          deviceId: '123456'
         }
       }
-    } catch (err: any) {
-      errorSnack(err.message || 'Login failed');
+    });
+
+    if (resposeRequestOtp?.data) {
+      const expiryTimeMilliSecond = new Date(resposeRequestOtp?.data?.requestPhoneLoginOTP?.expiry?.expiresAt).getTime();
+      localStorage.setItem(
+        'userRegisterWithPhone',
+        JSON.stringify({
+          phoneNumber: countryCode?.number,
+          dialCode: countryCode?.countryCallingCode,
+          deviceId: '123456',
+          expiryTime: expiryTimeMilliSecond
+        })
+      );
+      router.push(pageRoutes.verifyRegistrationPhone);
     }
   };
-  const [value, setValue] = useState();
 
   return (
     <Formik
       initialValues={{
-        phone: ''
+        phoneNumber: '',
+        dialCode: '',
+        deviceId: ''
       }}
       validationSchema={Yup.object().shape({
-        phone: Yup.string().label('Phone')
+        phoneNumber: Yup.string().required().label('Phone')
       })}
       onSubmit={handleFormSubmit}
     >
-      {({ errors, handleBlur, handleChange, handleSubmit, touched, values, isSubmitting }) => (
-        <form onSubmit={handleSubmit}>
-          <Grid container gap={3}>
-            <Grid item xs={12}>
-              <FormControl
-                fullWidth
-                error={Boolean(touched.phone && errors.phone)}
-                sx={{
-                  ...theme.typography.customInput,
-                  '.PhoneInput': {
-                    position: 'relative'
-                  },
-                  '.PhoneInputInput': {
-                    height: 53,
-                    fontSize: theme.typography.body1.fontSize,
-                    borderRadius: 0,
-                    appearance: 'none',
-                    border: `1px solid ${theme.palette.grey[500]}`,
-                    paddingLeft: '54px',
-                    outline: 'none',
-                  },
-                  '.PhoneInputCountry': {
-                    position: 'absolute',
-                    top: 18,
-                    left: 12
-                  }
-                }}
-              >
-                <InputLabel htmlFor="phone">Phone</InputLabel>
-                {/* <TextField
+      {({ errors, handleSubmit, touched, values, isSubmitting, setFieldValue }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <Grid container gap={3}>
+              <Grid item xs={12}>
+                <FormControl
                   fullWidth
-                  name="phone"
-                  type="phone"
-                  placeholder="Enter your phone"
-                  value={values.phone}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                /> */}
-                <PhoneInput
-                  placeholder="Enter phone number"
-                  value={value}
-                  onChange={() => setValue}
-                  error={value ? (isValidPhoneNumber(value) ? undefined : 'Invalid phone number') : 'Phone number required'}
-                />
-                {touched.phone && errors.phone && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.phone}
-                  </FormHelperText>
-                )}
-              </FormControl>
+                  error={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                  sx={{
+                    ...theme.typography.customInput,
+                    '.PhoneInput': {
+                      position: 'relative'
+                    },
+                    '.PhoneInputInput': {
+                      height: 53,
+                      fontSize: theme.typography.body1.fontSize,
+                      borderRadius: 0,
+                      appearance: 'none',
+                      border: `1px solid ${theme.palette.grey[500]}`,
+                      paddingLeft: '54px',
+                      outline: 'none'
+                    },
+                    '.PhoneInputCountry': {
+                      position: 'absolute',
+                      top: 18,
+                      left: 12
+                    }
+                  }}
+                >
+                  <InputLabel htmlFor="phoneNumber">Phone</InputLabel>
+                  <PhoneInput
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    placeholder="Enter phone number"
+                    value={values.phoneNumber}
+                    onChange={(value) => {
+                      setFieldValue('phoneNumber', value);
+                    }}
+                    error={
+                      values.phoneNumber
+                        ? isValidPhoneNumber(values.phoneNumber)
+                          ? undefined
+                          : 'Invalid phone number'
+                        : 'Phone number required'
+                    }
+                  />
+                  {touched.phoneNumber && errors.phoneNumber && (
+                    <FormHelperText error id="standard-weight-helper-text--register">
+                      {errors.phoneNumber}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
-          <Box sx={{ mt: '34px' }}>
-            <LoadingButton
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              fullWidth
-              size="large"
-              type="submit"
-              variant="contained"
-              className="gradient"
-            >
-              Sign in now
-            </LoadingButton>
-          </Box>
-        </form>
-      )}
+            <Box sx={{ mt: '34px' }}>
+              <LoadingButton
+                loading={isSubmitting}
+                disabled={isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                className="gradient"
+              >
+                Sign in now
+              </LoadingButton>
+            </Box>
+          </form>
+        );
+      }}
     </Formik>
   );
 }
-
-export default PhoneLogin;

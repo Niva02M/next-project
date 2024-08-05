@@ -9,6 +9,7 @@ const pageRoutes = {
   contactUs: '/contact-us',
   faqs: '/pages/faqs',
   verifyRegistration: '/verify-registration',
+  verifyRegistrationPhone: '/verify-registration-phone',
   forgotPasswordVerification: '/forgot-password/code-verification',
   resetPassword: '/reset-password'
 };

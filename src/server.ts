@@ -9,7 +9,8 @@ import {
   LOGIN_MUTATION,
   FACEBOOK_SIGNIN_MUTATION,
   GOOGLE_SIGNIN_MUTATION,
-  REQUEST_PHONE_LOGIN_MUTATION
+  REQUEST_PHONE_LOGIN_MUTATION,
+  PHONE_LOGIN_WITH_OTP_MUTATION
   //  GOOGLE_SIGNIN_MUTATION,
   // REFRESH_TOKEN_MUTATION
 } from 'graphql/auth';
@@ -32,8 +33,14 @@ export interface IDecodedToken {
 
 export interface IPhoneLoginCredential {
   phoneNumber: string;
-  dailCode: string;
-  deviceId?: string;
+  dialCode: string;
+  deviceId: string;
+}
+
+
+export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
+  verificationCode: string;
+  expiryTime?: number;
 }
 
 // async function refreshAccessToken(tokenObject: any) {
@@ -193,22 +200,23 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     CredentialsProvider({
+      id: 'phone-login',
+      type: 'credentials',
       name: 'phone',
-      credentials: {
-        phoneNumber: {},
-        dailCode: {},
-        deviceId: {}      },
-      async authorize(credentials) {
+      credentials: {},
+      async authorize(credentials, req) {
+        console.log('credentials ====> ', req.body);
         if (!credentials) return null;
 
-        const { phoneNumber, dailCode, deviceId } = credentials as IPhoneLoginCredential;
+        const { phoneNumber, dialCode, deviceId, verificationCode } = credentials as IPhoneLoginVerifyCredential;
         try {
-          const res = await client.mutate<{ requestPhoneLoginOTP: ISignInResponse }>({
-            mutation: REQUEST_PHONE_LOGIN_MUTATION,
+          const res = await client.mutate<{ phoneLoginWithOTP: ISignInResponse }>({
+            mutation: PHONE_LOGIN_WITH_OTP_MUTATION,
             variables: {
               body: {
-                phoneNumber,
-                dailCode,
+                verificationCode,
+                number: phoneNumber,
+                dialCode,
                 deviceId
               }
             }
@@ -218,9 +226,8 @@ export const authOptions: NextAuthOptions = {
             throw new Error(res?.errors[0].message);
           }
 
-          if (res?.data?.requestPhoneLoginOTP?.token) {
-            const data = res.data.requestPhoneLoginOTP;
-
+          if (res?.data?.phoneLoginWithOTP?.message) {
+            const data = res.data.phoneLoginWithOTP;
             return {
               id: data.user?._id || '',
               user: data.user,
@@ -235,7 +242,8 @@ export const authOptions: NextAuthOptions = {
           throw new Error(error);
         }
       }
-    }),
+    })
+
   ],
 
   callbacks: {

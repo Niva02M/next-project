@@ -11,7 +11,7 @@ import BackgroundPattern, { PageType } from 'ui-component/cards/BackgroundPatter
 
 interface IOtpVerificationScreenProps {
   otpInputComponent: React.ReactNode;
-  handleResendCode: () => void;
+  handleResendCode?: () => void;
   handleContinue: (otp: string) => Promise<void>;
   remainingTime: number | undefined;
   isLoading?: boolean;
@@ -40,35 +40,43 @@ export default function OtpVerificationScreen({
               <Grid item xs={12}>
                 <Grid container direction={matchDownSM ? 'column-reverse' : 'row'} alignItems="center" justifyContent="center">
                   <Grid item>
-                    <Typography color={theme.palette.grey[600]} textAlign="center">
-                      Please enter verification code sent to your email or phone
-                    </Typography>
+                    {handleResendCode ? (
+                      <Typography color={theme.palette.grey[600]} textAlign="center">
+                        Please enter verification code sent to your email
+                      </Typography>
+                    ) : (
+                      <Typography color={theme.palette.grey[600]} textAlign="center">
+                        Please enter verification code sent to your phone
+                      </Typography>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
                 {otpInputComponent}
               </Grid>
-              <Grid item xs={12}>
-                <Stack rowGap="20px">
-                  <Typography color="#1c1c1c" textAlign="center">
-                    Did not receive the code? Check your spam filter, or
-                  </Typography>
-                  <LoadingButton
-                    onClick={handleResendCode}
-                    loading={!!isLoading}
-                    variant="outlined"
-                    disabled={typeof remainingTime == 'number' && remainingTime <= 0 ? false : true}
-                    fullWidth
-                    size="large"
-                    className="gradient"
-                    disableRipple
-                  >
-                    Resend code
-                  </LoadingButton>
-                  {typeof remainingTime == 'number' ? <OTPTimer remainingTime={remainingTime} /> : null}
-                </Stack>
-              </Grid>
+              {handleResendCode && (
+                <Grid item xs={12}>
+                  <Stack rowGap="20px">
+                    <Typography color="#1c1c1c" textAlign="center">
+                      Did not receive the code? Check your spam filter, or
+                    </Typography>
+                    <LoadingButton
+                      onClick={handleResendCode}
+                      loading={!!isLoading}
+                      variant="outlined"
+                      disabled={typeof remainingTime == 'number' && remainingTime <= 0 ? false : true}
+                      fullWidth
+                      size="large"
+                      className="gradient"
+                      disableRipple
+                    >
+                      Resend code
+                    </LoadingButton>
+                    {typeof remainingTime == 'number' ? <OTPTimer remainingTime={remainingTime} /> : null}
+                  </Stack>
+                </Grid>
+              )}
             </Grid>
           </AuthCardWrapper>
         </Grid>
