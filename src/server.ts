@@ -76,6 +76,7 @@ const handleProvider = async (account: any) => {
         console.error('Google sign-in error:', error);
         return false;
       }
+      break;
     case 'facebook':
       try {
         const responseFacebook = await client.mutate({
@@ -103,6 +104,8 @@ const handleProvider = async (account: any) => {
         console.error('Facebook sign-in error:', error);
         return false;
       }
+      break;
+    // Add more cases here for other providers
     default:
       return false;
   }
@@ -168,8 +171,7 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
-      authorization: { params: { scope: 'email,public_profile' } },
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -185,23 +187,17 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }: any) {
-      console.log('signIn callback:', { user, account, profile, email, credentials });
+    async signIn({ user, account, profile }: any) {
+      // const providerData = await handleProvider(account);
+      // if (providerData) {
+      //   user.id = providerData.id;
+      //   user.user = providerData.user;
+      //   user.access_token = providerData.access_token;
+      //   user.refresh_token = providerData.refresh_token;
+      //   user.expires_at = providerData.expires_at;
 
-      if (account.provider === 'credentials') {
-        return true;
-      }
-
-      const providerData = await handleProvider(account);
-      if (providerData) {
-        user.id = providerData.id;
-        user.user = providerData.user;
-        user.access_token = providerData.access_token;
-        user.refresh_token = providerData.refresh_token;
-        user.expires_at = providerData.expires_at;
-
-        return true;
-      }
+      //   return true;
+      // }
       return true; // Deny sign-in
     },
     async jwt({ token, user }: any) {
