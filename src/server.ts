@@ -170,14 +170,6 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
       authorization: { params: { scope: 'email,public_profile' } },
-      profile(profile) {
-        return {
-          id: profile.id,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture.data.url,
-        };
-      },
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
