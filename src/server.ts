@@ -31,7 +31,7 @@ export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
   expiryTime?: number;
 }
 
-const handleProvider = async (account: any, user:any) => {
+const handleProvider = async (account: any) => {
   switch (account?.provider) {
     case 'google':
       try {
@@ -172,7 +172,6 @@ export const authOptions: NextAuthOptions = {
       name: 'phone',
       credentials: {},
       async authorize(credentials, req) {
-        console.log('credentials ====> ', req.body);
         if (!credentials) return null;
 
         const { phoneNumber, dialCode, deviceId, verificationCode } = credentials as IPhoneLoginVerifyCredential;
