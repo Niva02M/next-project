@@ -10,15 +10,22 @@ import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { calculateRemainingTime } from 'utils/helper';
 import OtpVerificationScreen from './otp-verification';
 import { IPhoneLoginVerifyCredential } from 'server';
+import { REQUEST_PHONE_LOGIN_MUTATION } from 'graphql/auth';
+import { useMutation } from '@apollo/client';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
 const VerifyRegistrationPhone = () => {
-  const { getLocalStorage } = useLocalStorageCodeVerify();
+  const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
   const loginWithPhoneDetail = getLocalStorage<IPhoneLoginVerifyCredential>('userRegisterWithPhone');
+  const [otpTimer, setOtpTimer] = React.useState(true);
 
   const [remainingTime, setRemainingTime] = React.useState(calculateRemainingTime(loginWithPhoneDetail?.expiryTime));
   const { handleError } = useListBackendErrors();
+  const { successSnack, errorSnack } = useSuccErrSnack();
+
+  const [resendPhoneOTP, { loading: isResendingPhoneOtp }] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
 
   const handleContinue = async (verificationCode: string) => {
     try {
@@ -33,6 +40,35 @@ const VerifyRegistrationPhone = () => {
       }
     } catch (err) {
       handleError(err);
+    }
+  };
+
+  const handleResendCode = async () => {
+    try {
+      const { data } = await resendPhoneOTP({
+        variables: {
+          body: {
+            number: loginWithPhoneDetail?.phoneNumber,
+            deviceId: loginWithPhoneDetail?.deviceId,
+            dialCode: loginWithPhoneDetail?.dialCode
+          }
+        }
+      });
+
+      console.log(data);
+
+      if (data.requestPhoneLoginOTP) {
+        setOtpTimer(!otpTimer);
+        setLocalStorage('userRegisterWithPhone', {
+          ...loginWithPhoneDetail,
+          expiryTime: new Date(data.requestPhoneLoginOTP.expiry?.expiresAt || 0).getTime()
+        });
+        successSnack(data?.requestPhoneLoginOTP?.message || 'Code sent successfully. Please check your message on phone');
+      } else {
+        errorSnack('Resending code failed. Please try again');
+      }
+    } catch (error) {
+      handleError(error);
     }
   };
 
@@ -54,9 +90,10 @@ const VerifyRegistrationPhone = () => {
   return (
     <OtpVerificationScreen
       otpInputComponent={<AuthCodeVerification handleContinue={handleContinue} isLoading={false} remainingTimer={remainingTime} />}
+      handleResendCode={handleResendCode}
       remainingTime={remainingTime}
       handleContinue={handleContinue}
-      isLoading={false}
+      isLoading={isResendingPhoneOtp}
     />
   );
 };
