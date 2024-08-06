@@ -16,12 +16,6 @@ export interface ILoginCredential {
   password: string;
   deviceId?: string;
 }
-export interface IDecodedToken {
-  username: string;
-  sub: string;
-  registrationStatus: string;
-  jti: string;
-}
 
 const handleProvider = async (account: any) => {
   switch (account?.provider) {
@@ -52,7 +46,6 @@ const handleProvider = async (account: any) => {
         console.error('Google sign-in error:', error);
         return false;
       }
-      break;
     case 'facebook':
       try {
         const responseFacebook = await client.mutate({
@@ -80,7 +73,6 @@ const handleProvider = async (account: any) => {
         console.error('Facebook sign-in error:', error);
         return false;
       }
-      break;
     default:
       return false;
   }
@@ -90,7 +82,8 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
   },
-  secret: process.env.NEXTAUTH_SECRET || 'secretKeyForNextAuth',
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: true, // Enable debug
   providers: [
     CredentialsProvider({
       type: 'credentials',
@@ -144,12 +137,12 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     FacebookProvider({
-      clientId: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_SECRET!
+      clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
     }),
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
           prompt: 'consent',
@@ -172,7 +165,7 @@ export const authOptions: NextAuthOptions = {
 
         return true;
       }
-      return false; // Deny sign-in
+      return true;
     },
     async jwt({ token, user }: any) {
       if (user) {
@@ -198,5 +191,3 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login'
   }
 };
-
-export default authOptions;
