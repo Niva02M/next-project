@@ -2,28 +2,50 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
+// import { JWT } from 'next-auth/jwt';
+// import { jwtDecode } from 'jwt-decode';
 
-import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, PHONE_LOGIN_WITH_OTP_MUTATION } from 'graphql/auth';
+import {
+  LOGIN_MUTATION,
+  FACEBOOK_SIGNIN_MUTATION,
+  GOOGLE_SIGNIN_MUTATION
+  //  GOOGLE_SIGNIN_MUTATION,
+  // REFRESH_TOKEN_MUTATION
+} from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
+// import { generateDeviceId } from 'utils/deviceid.helper';
 
 export interface ILoginCredential {
   email: string;
   password: string;
   deviceId?: string;
 }
-
-export interface IPhoneLoginCredential {
-  phoneNumber: string;
-  dialCode: string;
-  deviceId: string;
+export interface IDecodedToken {
+  username: string;
+  sub: string;
+  registrationStatus: string;
+  jti: string;
 }
 
+// async function refreshAccessToken(tokenObject: any) {
+//   try {
+//     const { data } = await client.mutate({
+//       mutation: REFRESH_TOKEN_MUTATION,
+//       variables: {
+//         refreshToken: tokenObject.refresh_token
+//       }
+//     });
 
-export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
-  verificationCode: string;
-  expiryTime?: number;
-}
+//     return {
+//       expires_at: data?.refresh?.accessTokenExpiresIn,
+//       refresh_token: data?.refresh?.refreshToken,
+//       access_token: data?.refresh?.accessToken
+//     };
+//   } catch (error) {
+//     throw new Error('RefreshTokenError');
+//   }
+// }
 
 const handleProvider = async (account: any) => {
   switch (account?.provider) {
@@ -40,20 +62,21 @@ const handleProvider = async (account: any) => {
           throw new Error(responseGoogle?.errors[0].message);
         }
         if (responseGoogle?.data) {
-          // const returnData = responseGoogle?.data?.loginWithGoogle;
-          // const obj= {
-          //   id: returnData?.user?._id || '',
-          //   user: returnData?.user,
-          //   access_token: returnData?.token?.accessToken,
-          //   refresh_token: returnData?.token?.refreshToken,
-          //   expires_at: returnData?.token?.accessTokenExpiresIn
-          // };
-          // user['retrunData']=obj;
+          const returnData = responseGoogle?.data?.loginWithGoogle;
+
+          return {
+            id: returnData?.user?._id || '',
+            user: returnData?.user,
+            access_token: returnData?.token?.accessToken,
+            refresh_token: returnData?.token?.refreshToken,
+            expires_at: returnData?.token?.accessTokenExpiresIn
+          };
         }
       } catch (error) {
         console.error('Google sign-in error:', error);
         return false;
       }
+      break;
     case 'facebook':
       try {
         const responseFacebook = await client.mutate({
@@ -81,6 +104,8 @@ const handleProvider = async (account: any) => {
         console.error('Facebook sign-in error:', error);
         return false;
       }
+      break;
+    // Add more cases here for other providers
     default:
       return false;
   }
@@ -90,8 +115,8 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt'
   },
-  secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug
+  // secret: process.env.NEXTAUTH_SECRET,
+  secret: 'secretKeyForNextAuth',
   providers: [
     CredentialsProvider({
       type: 'credentials',
@@ -146,7 +171,7 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -156,49 +181,6 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code'
-        }
-      }
-    }),
-    CredentialsProvider({
-      id: 'phone-login',
-      type: 'credentials',
-      name: 'phone',
-      credentials: {},
-      async authorize(credentials, req) {
-        if (!credentials) return null;
-
-        const { phoneNumber, dialCode, deviceId, verificationCode } = credentials as IPhoneLoginVerifyCredential;
-        try {
-          const res = await client.mutate<{ phoneLoginWithOTP: ISignInResponse }>({
-            mutation: PHONE_LOGIN_WITH_OTP_MUTATION,
-            variables: {
-              body: {
-                verificationCode,
-                number: phoneNumber,
-                dialCode,
-                deviceId
-              }
-            }
-          });
-
-          if (res?.errors) {
-            throw new Error(res?.errors[0].message);
-          }
-
-          if (res?.data?.phoneLoginWithOTP?.message) {
-            const data = res.data.phoneLoginWithOTP;
-            return {
-              id: data.user?._id || '',
-              user: data.user,
-              access_token: data.token.accessToken,
-              refresh_token: data.token.refreshToken,
-              expires_at: data.token.accessTokenExpiresIn
-            };
-          }
-
-          return null;
-        } catch (error: any) {
-          throw new Error(error);
         }
       }
     })
@@ -216,23 +198,19 @@ export const authOptions: NextAuthOptions = {
 
         return true;
       }
-      return true;
+      return true; // Deny sign-in
     },
     async jwt({ token, user }: any) {
-      if (user && user.returnData) {
+      if (user) {
         const userDetail = user as ISignInResponseFormat;
+
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
           expires_at: userDetail?.expires_at,
           expiry: userDetail?.expiry,
-          user: userDetail?.user,
-          returnData: user.retrunData
+          user: userDetail?.user
         };
-      } else {
-        if (user) {
-          return user.user;
-        }
       }
       return token;
     },
