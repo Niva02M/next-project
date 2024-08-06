@@ -13,3 +13,5 @@ export const validationSchemaRegistration = Yup.object().shape({
     .label('Confirm Password'),
   termsChecked: Yup.bool().oneOf([true], 'The terms and conditions must be accepted.')
 });
+
+export const CODE_VERIVICATION_SUCCESS_MESSAGE = 'Code sent successfully. Please check your email';

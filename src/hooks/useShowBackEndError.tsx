@@ -37,14 +37,13 @@ const useListBackendErrors = () => {
             }
           }
           if (isString(errorProperty)) {
-            errorSnack(formatErrWithArrayIndex(errorProperty));
+            errorSnack(errorProperty);
             return;
           }
         }
       }
     }
     const message = err.message || defaultMessage;
-    console.log('message ===>', message);
     errorSnack(message);
     return;
   };
