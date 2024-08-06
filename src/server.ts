@@ -3,11 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
 
-import {
-  LOGIN_MUTATION,
-  FACEBOOK_SIGNIN_MUTATION,
-  GOOGLE_SIGNIN_MUTATION
-} from 'graphql/auth';
+import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, PHONE_LOGIN_WITH_OTP_MUTATION } from 'graphql/auth';
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
 
@@ -15,6 +11,18 @@ export interface ILoginCredential {
   email: string;
   password: string;
   deviceId?: string;
+}
+
+export interface IPhoneLoginCredential {
+  phoneNumber: string;
+  dialCode: string;
+  deviceId: string;
+}
+
+
+export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
+  verificationCode: string;
+  expiryTime?: number;
 }
 
 const handleProvider = async (account: any) => {
@@ -32,15 +40,15 @@ const handleProvider = async (account: any) => {
           throw new Error(responseGoogle?.errors[0].message);
         }
         if (responseGoogle?.data) {
-          const returnData = responseGoogle?.data?.loginWithGoogle;
-
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
+          // const returnData = responseGoogle?.data?.loginWithGoogle;
+          // const obj= {
+          //   id: returnData?.user?._id || '',
+          //   user: returnData?.user,
+          //   access_token: returnData?.token?.accessToken,
+          //   refresh_token: returnData?.token?.refreshToken,
+          //   expires_at: returnData?.token?.accessTokenExpiresIn
+          // };
+          // user['retrunData']=obj;
         }
       } catch (error) {
         console.error('Google sign-in error:', error);
@@ -150,6 +158,49 @@ export const authOptions: NextAuthOptions = {
           response_type: 'code'
         }
       }
+    }),
+    CredentialsProvider({
+      id: 'phone-login',
+      type: 'credentials',
+      name: 'phone',
+      credentials: {},
+      async authorize(credentials, req) {
+        if (!credentials) return null;
+
+        const { phoneNumber, dialCode, deviceId, verificationCode } = credentials as IPhoneLoginVerifyCredential;
+        try {
+          const res = await client.mutate<{ phoneLoginWithOTP: ISignInResponse }>({
+            mutation: PHONE_LOGIN_WITH_OTP_MUTATION,
+            variables: {
+              body: {
+                verificationCode,
+                number: phoneNumber,
+                dialCode,
+                deviceId
+              }
+            }
+          });
+
+          if (res?.errors) {
+            throw new Error(res?.errors[0].message);
+          }
+
+          if (res?.data?.phoneLoginWithOTP?.message) {
+            const data = res.data.phoneLoginWithOTP;
+            return {
+              id: data.user?._id || '',
+              user: data.user,
+              access_token: data.token.accessToken,
+              refresh_token: data.token.refreshToken,
+              expires_at: data.token.accessTokenExpiresIn
+            };
+          }
+
+          return null;
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      }
     })
   ],
 
@@ -168,16 +219,20 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user }: any) {
-      if (user) {
+      if (user && user.returnData) {
         const userDetail = user as ISignInResponseFormat;
-
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
           expires_at: userDetail?.expires_at,
           expiry: userDetail?.expiry,
-          user: userDetail?.user
+          user: userDetail?.user,
+          returnData: user.retrunData
         };
+      } else {
+        if (user) {
+          return user.user;
+        }
       }
       return token;
     },

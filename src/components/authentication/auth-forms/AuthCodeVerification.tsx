@@ -36,7 +36,6 @@ const AuthCodeVerification = ({ handleContinue, remainingTimer, isLoading }: IAu
           numInputs={otpLength}
           containerStyle={{ justifyContent: 'space-between', gap: '24px' }}
           inputStyle={{
-            // width: '71px !important',
             width: '100%',
             padding: '5px 8px',
             fontSize: '28px',
