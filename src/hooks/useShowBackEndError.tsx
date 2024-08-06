@@ -37,7 +37,7 @@ const useListBackendErrors = () => {
             }
           }
           if (isString(errorProperty)) {
-            errorSnack(formatErrWithArrayIndex(errorProperty));
+            errorSnack(errorProperty);
             return;
           }
         }

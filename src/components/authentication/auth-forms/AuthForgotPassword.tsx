@@ -44,7 +44,7 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
       validationSchema={Yup.object().shape({
         email: Yup.string().email().max(255).required().label('Email')
       })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         try {
           const deviceId = generateDeviceId();
           const { data } = await forgotPassword({
@@ -55,9 +55,8 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
               }
             }
           });
-
           setSubmitting(false);
-          successSnack('Code sent successfully. Please check your email');
+          successSnack(data?.forgotPassword?.message);
           setLocalStorage('forgotPassword', {
             email: values.email || '',
             expiresAt: data?.forgotPassword?.expiry?.expiresAt ? new Date(data?.forgotPassword?.expiry?.expiresAt).getTime() : 0,
@@ -67,46 +66,48 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
           setTimeout(() => {
             router.push(pageRoutes.forgotPasswordVerification);
           }, 1500);
-        } catch (err: any) {
-          handleError(err);
+        } catch (error: any) {
+          handleError(error);
         }
       }}
     >
-      {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-        <form noValidate onSubmit={handleSubmit} {...others}>
-          <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-            <InputLabel htmlFor="outlined-adornment-email-forgot">Email</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-email-forgot"
-              type="email"
-              value={values.email}
-              name="email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              label="Email"
-              inputProps={{}}
-            />
-            {touched.email && errors.email && (
-              <FormHelperText error id="standard-weight-helper-text-email-forgot">
-                {errors.email}
-              </FormHelperText>
+      {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => {
+        return (
+          <form noValidate onSubmit={handleSubmit} {...others}>
+            <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
+              <InputLabel htmlFor="outlined-adornment-email-forgot">Email</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-email-forgot"
+                type="email"
+                value={values.email}
+                name="email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                label="Email"
+                inputProps={{}}
+              />
+              {touched.email && errors.email && (
+                <FormHelperText error id="standard-weight-helper-text-email-forgot">
+                  {errors.email}
+                </FormHelperText>
+              )}
+            </FormControl>
+
+            {errors.submit && (
+              <Box sx={{ mt: 3 }}>
+                <FormHelperText error>{errors.submit}</FormHelperText>
+              </Box>
             )}
-          </FormControl>
 
-          {errors.submit && (
-            <Box sx={{ mt: 3 }}>
-              <FormHelperText error>{errors.submit}</FormHelperText>
+            <Box sx={{ mt: 2 }}>
+              <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                Please send me the link!
+              </Button>
             </Box>
-          )}
-
-          <Box sx={{ mt: 2 }}>
-            <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-              Please send me the link!
-            </Button>
-          </Box>
-        </form>
-      )}
+          </form>
+        );
+      }}
     </Formik>
   );
 };
