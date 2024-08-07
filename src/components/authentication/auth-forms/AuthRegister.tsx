@@ -3,11 +3,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { signIn } from 'next-auth/react';
 
 // material-ui
-// import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -17,7 +14,6 @@ import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
 
 // third party
 import { Formik } from 'formik';
@@ -38,7 +34,6 @@ import PhoneLogin from './PhoneLogin';
 // ===========================|| JWT - REGISTER ||=========================== //
 
 const JWTRegister = ({ ...others }) => {
-  // const theme = useTheme();
   const scriptedRef = useScriptRef();
 
   const { setLocalStorage } = useLocalStorageCodeVerify();

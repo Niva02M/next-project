@@ -1,17 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 // material-ui
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
-import { Email, Phone, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // third party
 import * as Yup from 'yup';
@@ -20,7 +18,7 @@ import { Formik } from 'formik';
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { Divider, IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
+import { IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
