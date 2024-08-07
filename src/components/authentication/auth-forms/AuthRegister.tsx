@@ -27,23 +27,36 @@ import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IRegisterValues } from 'types/localStorageValues';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import pageRoutes from 'constants/routes';
-import { validationSchemaRegistration } from '../constants';
+import {
+  CONFIRM_PASSWORD,
+  CONTACT_NUMBER,
+  CREATE_YOUR_ACCOUNT,
+  EMAIL,
+  FIRST_NAME,
+  LAST_NAME,
+  PASSWORD,
+  REGISTRATION_SUCCESSFUL_OTP_SENT_TO_EMAIL,
+  validationSchemaRegistration
+} from '../constants';
 import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
 import PhoneLogin from './PhoneLogin';
+import useListBackendErrors from 'hooks/useShowBackEndError';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
 const JWTRegister = ({ ...others }) => {
+  const [phoneLoginUi, setPhoneLoginUi] = useState(true);
   const scriptedRef = useScriptRef();
 
   const { setLocalStorage } = useLocalStorageCodeVerify();
 
   const router = useRouter();
-  const { successSnack, errorSnack } = useSuccErrSnack();
+  const { successSnack } = useSuccErrSnack();
 
   const [registerUser] = useMutation(REGISTER_MUTATION);
 
-  const [phoneLoginUi, setPhoneLoginUi] = useState(true);
+  const { handleError } = useListBackendErrors();
+
   const handleLoginLayout = (value: boolean) => {
     setPhoneLoginUi(value);
   };
@@ -88,7 +101,7 @@ const JWTRegister = ({ ...others }) => {
                   email: values.email,
                   expiryTime: new Date(data?.registerUser.expiry.expiresAt).getTime()
                 });
-                successSnack('Registration successful. OTP has been sent to your email');
+                successSnack(REGISTRATION_SUCCESSFUL_OTP_SENT_TO_EMAIL);
 
                 router.push(pageRoutes.verifyRegistration);
               }
@@ -97,7 +110,7 @@ const JWTRegister = ({ ...others }) => {
                 setStatus({ success: false });
                 setErrors({ submit: err.message });
                 setSubmitting(false);
-                errorSnack('User registration failed');
+                handleError(err);
               }
             }
           }}
@@ -106,7 +119,7 @@ const JWTRegister = ({ ...others }) => {
             <form noValidate onSubmit={handleSubmit} {...others}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <InputLabel>First name</InputLabel>
+                  <InputLabel>{FIRST_NAME}</InputLabel>
                   <TextField
                     fullWidth
                     name="firstName"
@@ -122,7 +135,7 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel>Last name</InputLabel>
+                  <InputLabel>{LAST_NAME}</InputLabel>
                   <TextField
                     fullWidth
                     name="lastName"
@@ -138,7 +151,7 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel>Contact number</InputLabel>
+                  <InputLabel>{CONTACT_NUMBER}</InputLabel>
                   <TextField
                     fullWidth
                     name="phoneNumber"
@@ -154,7 +167,7 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <InputLabel htmlFor="email">{EMAIL}</InputLabel>
                   <TextField
                     fullWidth
                     name="email"
@@ -171,7 +184,7 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <InputLabel htmlFor="password">{PASSWORD}</InputLabel>
                   <TextField
                     fullWidth
                     name="password"
@@ -188,7 +201,7 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <InputLabel htmlFor="confirm-password">Confirm password</InputLabel>
+                  <InputLabel htmlFor="confirm-password">{CONFIRM_PASSWORD}</InputLabel>
                   <TextField
                     fullWidth
                     name="confirmPassword"
@@ -225,15 +238,10 @@ const JWTRegister = ({ ...others }) => {
                   )}
                 </Grid>
               </Grid>
-              {errors.submit && (
-                <Box sx={{ mt: 3 }}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Box>
-              )}
 
               <Box sx={{ mt: '34px' }}>
                 <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                  Create your account
+                  {CREATE_YOUR_ACCOUNT}
                 </Button>
               </Box>
             </form>
