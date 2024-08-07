@@ -28,6 +28,15 @@ import pageRoutes from 'constants/routes';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { LoadingButton } from '@mui/lab';
 import PhoneLogin from './PhoneLogin';
+import {
+  EMAIL_VERIFICATION_CODE_SENT,
+  EMAIL_VERIFICATION_FAILED,
+  FORGOT_PASSWORD,
+  INVALID_LOGIN_CREDENTIAL,
+  LOGIN_SUCCESSFUL,
+  SIGN_IN_NOW
+} from '../constants';
+import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -46,7 +55,11 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [showPassword, setShowPassword] = useState(false);
-  const [phoneLogin, setPhoneLogin] = useState(true);
+
+  const [phoneLoginUi, setPhoneLoginUi] = useState(true);
+  const handleLoginLayout = (value: boolean) => {
+    setPhoneLoginUi(value);
+  };
 
   const { status, data, update } = useSession();
 
@@ -58,29 +71,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     event.preventDefault()!;
   };
 
-  const handleFacebookClick = async () => {
-    await signIn('facebook', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
-    });
-  };
-
-  const handleGoogleClick = async () => {
-    await signIn('google', {
-      callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
-    });
-  };
-
-
-  // const handlePhoneClick = async ({number, deviceId, dailCode}: IPhoneLoginCredential) => {
-  //   // await signIn('phone-login', {
-  //   //   redirect: false,
-  //   //   number,
-  //   //   deviceId,
-  //   //   dailCode
-  //   //   // callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
-  //   // });
-  // };
-
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {
       localStorage.clear();
@@ -91,7 +81,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
       await signOut({ redirect: false });
       update();
-      successSnack('Email verification code sent, please verify your email');
+      successSnack(EMAIL_VERIFICATION_CODE_SENT);
 
       setTimeout(() => {
         router.push(pageRoutes.verifyRegistration);
@@ -99,7 +89,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
       return;
     } catch (error) {
-      errorSnack('Email verification failed');
+      errorSnack(EMAIL_VERIFICATION_FAILED);
     }
   };
 
@@ -117,7 +107,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
 
   return (
     <>
-      {phoneLogin ? (
+      {phoneLoginUi ? (
         <Formik
           initialValues={{
             email: '',
@@ -125,30 +115,36 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
             submit: null
           }}
           validationSchema={Yup.object().shape({
-            email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-            password: Yup.string().max(255).required('Password is required')
+            email: Yup.string().email('Must be a valid email').max(255).required().label('Email'),
+            password: Yup.string().max(255).required().label('Password')
           })}
-          onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            try {
-              const res = await signIn('credentials', {
+            let res = await signIn('credentials', {
+              email: values.email,
+              password: values.password,
+              deviceId: generateDeviceId(),
+              redirect: false,
+              callbackUrl: pageRoutes.dashboard
+            });
+            if (res?.ok) {
+              res = await signIn('credentials', {
                 email: values.email,
                 password: values.password,
                 deviceId: generateDeviceId(),
-                redirect: false,
-                callbackUrl: '/'
+                callbackUrl: pageRoutes.dashboard
               });
-              if (res?.ok) {
-                successSnack('Login successful');
-              } else {
-                if (res?.error?.includes(':')) {
-                  errorSnack(res.error?.split(':')?.[1] || '');
-                }
-              }
-              setSubmitting(false);
-            } catch (err: any) {
-              errorSnack(err.message || 'Login failed');
+              successSnack(LOGIN_SUCCESSFUL);
+            } else {
+              res = await signIn('credentials', {
+                email: values.email,
+                password: values.password,
+                deviceId: generateDeviceId(),
+                redirect: false
+              });
+              errorSnack(INVALID_LOGIN_CREDENTIAL);
             }
+            setSubmitting(false);
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
@@ -216,7 +212,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                     color="primary"
                     sx={{ textDecoration: 'none' }}
                   >
-                    Forgot password?
+                    {FORGOT_PASSWORD}
                   </Typography>
                 </Grid>
               </Grid>
@@ -237,7 +233,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                   variant="contained"
                   className="gradient"
                 >
-                  Sign in now
+                  {SIGN_IN_NOW}
                 </LoadingButton>
               </Box>
             </form>
@@ -246,46 +242,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       ) : (
         <PhoneLogin />
       )}
-      <Grid display={'flex'} alignItems={'center'} sx={{ my: '34px' }}>
-        <Divider sx={{ width: '45%' }} />
-        <Typography sx={{ mx: '10px' }}>or</Typography>
-        <Divider sx={{ width: '45%' }} />
-      </Grid>
-      <Grid container gap={2}>
-        <Grid item xs={12}>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
-            onClick={handleFacebookClick}
-          >
-            Log in with Facebook
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
-            onClick={handleGoogleClick}
-          >
-            Log in with Google
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            startIcon={phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
-            onClick={() => setPhoneLogin(!phoneLogin)}
-          >
-            {phoneLogin ? 'Log in with Phone' : 'Log in with Email'}
-          </Button>
-        </Grid>
-      </Grid>
+      <AlternateLogins onLayoutChange={handleLoginLayout} />
     </>
   );
 };

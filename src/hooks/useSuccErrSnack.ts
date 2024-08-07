@@ -13,7 +13,7 @@ const useSuccErrSnack = () => {
         alert: {
           color: 'success'
         },
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+        anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
         close: false
       })
     );
@@ -28,7 +28,7 @@ const useSuccErrSnack = () => {
         alert: {
           color: 'error'
         },
-        anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+        anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
         close: false
       })
     );
