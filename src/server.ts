@@ -19,7 +19,6 @@ export interface IPhoneLoginCredential {
   deviceId: string;
 }
 
-
 export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
   verificationCode: string;
   expiryTime?: number;
@@ -40,15 +39,14 @@ const handleProvider = async (account: any) => {
           throw new Error(responseGoogle?.errors[0].message);
         }
         if (responseGoogle?.data) {
-          // const returnData = responseGoogle?.data?.loginWithGoogle;
-          // const obj= {
-          //   id: returnData?.user?._id || '',
-          //   user: returnData?.user,
-          //   access_token: returnData?.token?.accessToken,
-          //   refresh_token: returnData?.token?.refreshToken,
-          //   expires_at: returnData?.token?.accessTokenExpiresIn
-          // };
-          // user['retrunData']=obj;
+          const returnData = responseGoogle?.data?.loginWithGoogle;
+          return {
+            id: returnData?.user?._id || '',
+            user: returnData?.user,
+            access_token: returnData?.token?.accessToken,
+            refresh_token: returnData?.token?.refreshToken,
+            expires_at: returnData?.token?.accessTokenExpiresIn
+          };
         }
       } catch (error) {
         console.error('Google sign-in error:', error);
@@ -68,7 +66,7 @@ const handleProvider = async (account: any) => {
         }
         if (responseFacebook?.data) {
           const returnData = responseFacebook?.data?.loginWithFacebook;
-
+          
           return {
             id: returnData?.user?._id || '',
             user: returnData?.user,
@@ -128,6 +126,7 @@ export const authOptions: NextAuthOptions = {
               emailVerified: data.user.status !== 'email_verification_pending'
             };
           }
+
           if (res?.data?.loginWithEmailPassword?.user?.status === 'email_verification_pending') {
             const data = res.data.loginWithEmailPassword;
             return {
@@ -146,7 +145,7 @@ export const authOptions: NextAuthOptions = {
     }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,

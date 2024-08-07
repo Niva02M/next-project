@@ -12,6 +12,7 @@ import { IPhoneLoginCredential } from 'server';
 import { useRouter } from 'next/navigation';
 import pageRoutes from 'constants/routes';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { INVALID_PHONE_NUMBER, PHONE, PHONE_NUMBER_REQUIRED, SIGN_IN_NOW } from '../constants';
 
 export default function PhoneLogin() {
   const theme = useTheme();
@@ -57,7 +58,7 @@ export default function PhoneLogin() {
         deviceId: ''
       }}
       validationSchema={Yup.object().shape({
-        phoneNumber: Yup.string().required().min(12).max(13).label('Phone')
+        phoneNumber: Yup.string().required().min(12).max(20).label('Phone')
       })}
       onSubmit={handleFormSubmit}
     >
@@ -90,7 +91,7 @@ export default function PhoneLogin() {
                     }
                   }}
                 >
-                  <InputLabel htmlFor="phoneNumber">Phone</InputLabel>
+                  <InputLabel htmlFor="phoneNumber">{PHONE}</InputLabel>
                   <PhoneInput
                     id="phoneNumber"
                     name="phoneNumber"
@@ -103,8 +104,8 @@ export default function PhoneLogin() {
                       values.phoneNumber
                         ? isValidPhoneNumber(values.phoneNumber)
                           ? undefined
-                          : 'Invalid phone number'
-                        : 'Phone number required'
+                          : { INVALID_PHONE_NUMBER }
+                        : { PHONE_NUMBER_REQUIRED }
                     }
                   />
                   {touched.phoneNumber && errors.phoneNumber && (
@@ -125,7 +126,7 @@ export default function PhoneLogin() {
                 variant="contained"
                 className="gradient"
               >
-                Sign in now
+                {SIGN_IN_NOW}
               </LoadingButton>
             </Box>
           </form>

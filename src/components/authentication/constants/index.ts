@@ -15,3 +15,16 @@ export const validationSchemaRegistration = Yup.object().shape({
 });
 
 export const CODE_VERIVICATION_SUCCESS_MESSAGE = 'Code sent successfully. Please check your email';
+export const LOGIN_WITH_EMAIL = 'Log in with Email';
+export const LOGIN_WITH_PHONE = 'Log in with Phone';
+export const LOGIN_WITH_FACEBOOK = 'Log in with Facebook';
+export const LOGIN_WITH_GOOGLE = 'Log in with Google';
+export const LOGIN_SUCCESSFUL = 'Login successful';
+export const INVALID_LOGIN_CREDENTIAL = 'Invalid login credential';
+export const EMAIL_VERIFICATION_CODE_SENT = 'Email verification code sent, please verify your email';
+export const EMAIL_VERIFICATION_FAILED = 'Email verification failed';
+export const FORGOT_PASSWORD = 'Forgot password?';
+export const SIGN_IN_NOW = 'Sign in now';
+export const PHONE = 'Phone';
+export const INVALID_PHONE_NUMBER = 'Invalid phone number';
+export const PHONE_NUMBER_REQUIRED = 'Phone number required';
