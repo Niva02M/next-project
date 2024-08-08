@@ -1,6 +1,6 @@
 import { Email, Phone } from '@mui/icons-material';
 import { Button, Divider, Grid, Typography } from '@mui/material';
-import { LOGIN_WITH_EMAIL, LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE, LOGIN_WITH_PHONE } from 'components/authentication/constants';
+import { LOGIN_WITH_EMAIL, LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE, LOGIN_WITH_PHONE, REGISTER_WITH_EMAIL, REGISTER_WITH_FACEBOOK, REGISTER_WITH_GOOGLE, REGISTER_WITH_PHONE } from 'components/authentication/constants';
 import pageRoutes from 'constants/routes';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
@@ -18,7 +18,7 @@ const handleGoogleClick = async () => {
   });
 };
 
-export default function AlternateLogins({ onLayoutChange }: { onLayoutChange: (value: boolean) => void }) {
+export default function AlternateLogins({ onLayoutChange, register }: { onLayoutChange: (value: boolean) => void; register?: boolean }) {
   const [phoneLogin, setPhoneLogin] = useState(false);
 
   const layoutUpdate = () => {
@@ -41,7 +41,7 @@ export default function AlternateLogins({ onLayoutChange }: { onLayoutChange: (v
             startIcon={<Image src="/assets/images/auth/facebook.svg" width={24} height={24} alt="facebook" />}
             onClick={handleFacebookClick}
           >
-            {LOGIN_WITH_FACEBOOK}
+            {register ? REGISTER_WITH_FACEBOOK : LOGIN_WITH_FACEBOOK}
           </Button>
         </Grid>
         <Grid item xs={12}>
@@ -52,22 +52,37 @@ export default function AlternateLogins({ onLayoutChange }: { onLayoutChange: (v
             startIcon={<Image src="/assets/images/auth/google.svg" width={24} height={24} alt="google" />}
             onClick={handleGoogleClick}
           >
-            {LOGIN_WITH_GOOGLE}
+            {register ? REGISTER_WITH_GOOGLE : LOGIN_WITH_GOOGLE}
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            startIcon={!phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
-            onClick={() => {
-              setPhoneLogin(!phoneLogin);
-              layoutUpdate();
-            }}
-          >
-            {!phoneLogin ? LOGIN_WITH_PHONE : LOGIN_WITH_EMAIL}
-          </Button>
+          {register ? (
+            <Button
+              color="primary"
+              variant="outlined"
+              fullWidth
+              startIcon={!phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
+              onClick={() => {
+                setPhoneLogin(!phoneLogin);
+                layoutUpdate();
+              }}
+            >
+              {!phoneLogin ? REGISTER_WITH_PHONE : REGISTER_WITH_EMAIL}
+            </Button>
+          ) : (
+            <Button
+              color="primary"
+              variant="outlined"
+              fullWidth
+              startIcon={!phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
+              onClick={() => {
+                setPhoneLogin(!phoneLogin);
+                layoutUpdate();
+              }}
+            >
+              {!phoneLogin ? LOGIN_WITH_PHONE : LOGIN_WITH_EMAIL}
+            </Button>
+          )}
         </Grid>
       </Grid>
     </>

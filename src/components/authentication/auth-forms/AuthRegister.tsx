@@ -41,21 +41,20 @@ import {
 import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
 import PhoneLogin from './PhoneLogin';
 import useListBackendErrors from 'hooks/useShowBackEndError';
+import PasswordField from 'ui-component/password-filed/PasswordField';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
 const JWTRegister = ({ ...others }) => {
   const [phoneLoginUi, setPhoneLoginUi] = useState(true);
+
   const scriptedRef = useScriptRef();
-
-  const { setLocalStorage } = useLocalStorageCodeVerify();
-
   const router = useRouter();
+  const { setLocalStorage } = useLocalStorageCodeVerify();
   const { successSnack } = useSuccErrSnack();
+  const { handleError } = useListBackendErrors();
 
   const [registerUser] = useMutation(REGISTER_MUTATION);
-
-  const { handleError } = useListBackendErrors();
 
   const handleLoginLayout = (value: boolean) => {
     setPhoneLoginUi(value);
@@ -185,10 +184,8 @@ const JWTRegister = ({ ...others }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel htmlFor="password">{PASSWORD}</InputLabel>
-                  <TextField
-                    fullWidth
+                  <PasswordField
                     name="password"
-                    type="password"
                     placeholder="Password"
                     value={values.password}
                     onBlur={handleBlur}
@@ -202,10 +199,8 @@ const JWTRegister = ({ ...others }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel htmlFor="confirm-password">{CONFIRM_PASSWORD}</InputLabel>
-                  <TextField
-                    fullWidth
+                  <PasswordField
                     name="confirmPassword"
-                    type="password"
                     placeholder="Confirm password"
                     value={values.confirmPassword}
                     onBlur={handleBlur}
@@ -250,7 +245,7 @@ const JWTRegister = ({ ...others }) => {
       ) : (
         <PhoneLogin />
       )}
-      <AlternateLogins onLayoutChange={handleLoginLayout} />
+      <AlternateLogins register={true} onLayoutChange={handleLoginLayout} />
     </>
   );
 };
