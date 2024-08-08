@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Box, FormControl, FormHelperText, Grid, InputLabel, useTheme } from '@mui/material';
@@ -97,6 +97,8 @@ export default function PhoneLogin() {
                     name="phoneNumber"
                     placeholder="Enter phone number"
                     value={values.phoneNumber}
+                    international
+                    defaultCountry="AU"
                     onChange={(value) => {
                       setFieldValue('phoneNumber', value);
                     }}
@@ -107,6 +109,7 @@ export default function PhoneLogin() {
                           : { INVALID_PHONE_NUMBER }
                         : { PHONE_NUMBER_REQUIRED }
                     }
+                    countryCallingCodeEditable={false}
                   />
                   {touched.phoneNumber && errors.phoneNumber && (
                     <FormHelperText error id="standard-weight-helper-text--register">
