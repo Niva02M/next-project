@@ -60,7 +60,7 @@ export default function AlternateLogins({ onLayoutChange }: { onLayoutChange: (v
             color="primary"
             variant="outlined"
             fullWidth
-            startIcon={phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
+            startIcon={!phoneLogin ? <Phone width={24} height={24} /> : <Email width={24} height={24} />}
             onClick={() => {
               setPhoneLogin(!phoneLogin);
               layoutUpdate();
