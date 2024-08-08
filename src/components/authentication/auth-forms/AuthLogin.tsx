@@ -18,7 +18,7 @@ import { Formik } from 'formik';
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { IconButton, InputAdornment, OutlinedInput, TextField, useTheme } from '@mui/material';
+import { TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
@@ -35,6 +35,7 @@ import {
   SIGN_IN_NOW
 } from '../constants';
 import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
+import PasswordField from 'ui-component/password-filed/PasswordField';
 
 // ===============================|| JWT LOGIN ||=============================== //
 
@@ -52,7 +53,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const { setLocalStorage } = useLocalStorageCodeVerify();
 
   const { errorSnack, successSnack } = useSuccErrSnack();
-  const [showPassword, setShowPassword] = useState(false);
 
   const [phoneLoginUi, setPhoneLoginUi] = useState(true);
   const handleLoginLayout = (value: boolean) => {
@@ -60,14 +60,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   };
 
   const { status, data, update } = useSession();
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event: React.MouseEvent) => {
-    event.preventDefault()!;
-  };
 
   const handleEmailUnverified = async (user: any, expiry: any) => {
     try {
@@ -170,29 +162,12 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 <Grid item xs={12}>
                   <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
                     <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
-                    <OutlinedInput
-                      id="outlined-adornment-password-login"
-                      type={showPassword ? 'text' : 'password'}
+                    <PasswordField
                       value={values.password}
                       name="password"
                       placeholder="Password"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            size="large"
-                          >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                      inputProps={{}}
-                      label="Password"
                     />
                     {touched.password && errors.password && (
                       <FormHelperText error id="standard-weight-helper-text-password-login">
