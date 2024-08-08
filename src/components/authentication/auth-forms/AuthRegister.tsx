@@ -38,10 +38,10 @@ import {
   REGISTRATION_SUCCESSFUL_OTP_SENT_TO_EMAIL,
   validationSchemaRegistration
 } from '../constants';
-import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
+import AlternateLogins from 'components/alternate-logins/AlternateLogins';
 import PhoneLogin from './PhoneLogin';
 import useListBackendErrors from 'hooks/useShowBackEndError';
-import PasswordField from 'ui-component/password-filed/PasswordField';
+import PasswordField from 'components/password-filed/PasswordField';
 
 // ===========================|| JWT - REGISTER ||=========================== //
 
