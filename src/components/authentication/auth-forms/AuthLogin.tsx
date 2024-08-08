@@ -9,7 +9,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import Typography from '@mui/material/Typography';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 // third party
 import * as Yup from 'yup';

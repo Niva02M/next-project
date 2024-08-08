@@ -18,7 +18,7 @@ const handleGoogleClick = async () => {
   });
 };
 
-export default function AlternateLogins({ onLayoutChange, register }: { onLayoutChange: (value: boolean) => void; register: boolean }) {
+export default function AlternateLogins({ onLayoutChange, register }: { onLayoutChange: (value: boolean) => void; register?: boolean }) {
   const [phoneLogin, setPhoneLogin] = useState(false);
 
   const layoutUpdate = () => {
@@ -67,7 +67,7 @@ export default function AlternateLogins({ onLayoutChange, register }: { onLayout
                 layoutUpdate();
               }}
             >
-              {!phoneLogin ? REGISTER_WITH_PHONE : REGISTER_WITH_EMAIL }
+              {!phoneLogin ? REGISTER_WITH_PHONE : REGISTER_WITH_EMAIL}
             </Button>
           ) : (
             <Button
