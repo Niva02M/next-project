@@ -1,9 +1,9 @@
 // profile tabs option
 export const tabsOption = [
   {
-    label: 'User Profile'
+    label: 'User profile'
   },
   {
-    label: 'Password Settings'
+    label: 'Password settings'
   }
 ];

@@ -1,12 +1,17 @@
 'use client';
 // ==============================|| Admin Profile ||============================== //
 
-import { useState } from 'react';
-import { Avatar, Box, FormControl, Grid, InputLabel, Paper, Tab, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Grid, Paper, Tab, Typography } from '@mui/material';
 import { TabsProps } from 'types';
 import PageTitle from 'components/page-title/PageTitle';
 import { tabsOption } from '../constant';
 import { TabWrapper } from 'components/tab-wrapper/TabWrapper.styles';
+import UserProfile from './UserProfile';
+import ChangePassword from './ChangePassword';
+import { useQuery } from '@apollo/client';
+import { GET_PROFILE_QUERY } from '../graphql/queries';
+import { useSession } from 'next-auth/react';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
@@ -18,6 +23,14 @@ export function TabPanel({ children, value, index, ...other }: TabsProps) {
 
 const AdminProfile = () => {
   const [value, setValue] = useState<number>(0);
+
+  const { data, loading } = useQuery(GET_PROFILE_QUERY);
+  const session = useSession();
+
+  useEffect(() => {
+    console.log('data ====>', data);
+    console.log('session ====>', session);
+  })
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -32,9 +45,9 @@ const AdminProfile = () => {
 
   return (
     <>
-      <PageTitle title="Admin Profile" />
+      <PageTitle title="Account settings" />
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={2.41}>
+        <Grid item xs={12} lg={2.36}>
           <Paper>
             <TabWrapper value={value} onChange={handleChange} orientation="vertical" variant="scrollable">
               {tabsOption.map((tab, index) => (
@@ -53,61 +66,14 @@ const AdminProfile = () => {
             </TabWrapper>
           </Paper>
         </Grid>
-        <Grid item xs={12} lg={9.59}>
+        <Grid item xs={12} lg={9.64}>
           <Paper sx={{ padding: '20px' }}>
             <Box>
               <TabPanel value={value} index={0}>
-                {/* <UserProfile adminId={adminId!} isView={isView} /> */}
-                <Grid container spacing={2.5}>
-                  <Grid item xs={12}>
-                    <Avatar></Avatar>
-                    <Typography>Change profile picture</Typography>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>First name</InputLabel>
-                      <TextField
-                        // fullWidth
-                        placeholder="First name"
-                        // onChange={handleChange}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>First name</InputLabel>
-                      <TextField
-                        // fullWidth
-                        placeholder="First name"
-                        // onChange={handleChange}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>First name</InputLabel>
-                      <TextField
-                        fullWidth
-                        placeholder="First name"
-                        // onChange={handleChange}
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>First name</InputLabel>
-                      <TextField
-                        // fullWidth
-                        placeholder="First name"
-                        // onChange={handleChange}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
+                <UserProfile />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                {/* <Security adminId={adminId!} /> */}
-                <>Security</>
+                <ChangePassword />
               </TabPanel>
             </Box>
           </Paper>

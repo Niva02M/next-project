@@ -1,8 +1,8 @@
-import { alpha, styled, Tabs } from "@mui/material";
+import { alpha, styled, Tabs } from '@mui/material';
 
 export const TabWrapper = styled(Tabs)(({ theme }) => ({
   flex: 1,
-  padding: '16px 0',
+  padding: '12px 0',
 
   '.MuiTabs-flexContainer': {
     borderBottom: 'none'
@@ -19,6 +19,8 @@ export const TabWrapper = styled(Tabs)(({ theme }) => ({
     gap: 4,
     textAlign: 'left',
     textTransform: 'none',
+    padding: '14px 16px',
+    minHeight: 'auto',
 
     '&:last-child': {
       marginBottom: 0
