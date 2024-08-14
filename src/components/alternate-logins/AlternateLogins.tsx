@@ -1,6 +1,15 @@
 import { Email, Phone } from '@mui/icons-material';
 import { Button, Divider, Grid, Typography } from '@mui/material';
-import { LOGIN_WITH_EMAIL, LOGIN_WITH_FACEBOOK, LOGIN_WITH_GOOGLE, LOGIN_WITH_PHONE, REGISTER_WITH_EMAIL, REGISTER_WITH_FACEBOOK, REGISTER_WITH_GOOGLE, REGISTER_WITH_PHONE } from 'components/authentication/constants';
+import {
+  LOGIN_WITH_EMAIL,
+  LOGIN_WITH_FACEBOOK,
+  LOGIN_WITH_GOOGLE,
+  LOGIN_WITH_PHONE,
+  REGISTER_WITH_EMAIL,
+  REGISTER_WITH_FACEBOOK,
+  REGISTER_WITH_GOOGLE,
+  REGISTER_WITH_PHONE
+} from 'components/authentication/constants';
 import pageRoutes from 'constants/routes';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';

@@ -40,6 +40,7 @@ const handleProvider = async (account: any) => {
         }
         if (responseGoogle?.data) {
           const returnData = responseGoogle?.data?.loginWithGoogle;
+          console.log('returnData =====>', returnData);
           return {
             id: returnData?.user?._id || '',
             user: returnData?.user,
