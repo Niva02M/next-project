@@ -33,8 +33,8 @@ import {
   LOGIN_SUCCESSFUL,
   SIGN_IN_NOW
 } from '../constants';
-import AlternateLogins from 'ui-component/alternate-logins/AlternateLogins';
-import PasswordField from 'ui-component/password-filed/PasswordField';
+import AlternateLogins from 'components/alternate-logins/AlternateLogins';
+import PasswordField from 'components/password-filed/PasswordField';
 
 // ===============================|| JWT LOGIN ||=============================== //
 

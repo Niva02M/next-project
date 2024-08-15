@@ -1,3 +1,4 @@
+// 'use-client';
 import { useEffect, useRef, useState } from 'react';
 import { signOut } from 'next-auth/react';
 
@@ -30,6 +31,7 @@ import { IconButton, useMediaQuery } from '@mui/material';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { InfoIcon } from 'components/icons';
+import { useRouter } from 'next/navigation';
 
 const User1 = '/assets/images/users/user-round.svg';
 
@@ -37,6 +39,7 @@ const User1 = '/assets/images/users/user-round.svg';
 
 const ProfileSection = () => {
   const theme = useTheme();
+  const router = useRouter();
   const { borderRadius } = useConfig();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -75,6 +78,7 @@ const ProfileSection = () => {
   const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number, route: string = '') => {
     setSelectedIndex(index);
     handleClose(event);
+    router.push(route);
   };
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -145,9 +149,7 @@ const ProfileSection = () => {
                           <ListItemButton
                             sx={{ borderRadius: `${borderRadius}px` }}
                             selected={selectedIndex === 0}
-                            onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-                              handleListItemClick(event, 0, '/user/account-profile/profile1')
-                            }
+                            onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0, '/profile-setting')}
                           >
                             <ListItemIcon>
                               <IconSettings stroke={1.5} size="20px" />

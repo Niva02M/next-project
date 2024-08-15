@@ -40,6 +40,7 @@ const handleProvider = async (account: any) => {
         }
         if (responseGoogle?.data) {
           const returnData = responseGoogle?.data?.loginWithGoogle;
+          console.log('returnData =====>', returnData);
           return {
             id: returnData?.user?._id || '',
             user: returnData?.user,
@@ -218,20 +219,16 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     async jwt({ token, user }: any) {
-      if (user && user.returnData) {
+      if (user) {
         const userDetail = user as ISignInResponseFormat;
+
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
           expires_at: userDetail?.expires_at,
           expiry: userDetail?.expiry,
-          user: userDetail?.user,
-          returnData: user.retrunData
+          user: userDetail?.user
         };
-      } else {
-        if (user) {
-          return user.user;
-        }
       }
       return token;
     },
