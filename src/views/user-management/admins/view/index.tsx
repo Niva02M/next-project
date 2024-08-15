@@ -25,12 +25,12 @@ const AdminProfile = () => {
   const [value, setValue] = useState<number>(0);
 
   const { data, loading } = useQuery(GET_PROFILE_QUERY);
-  const session = useSession();
+  // const session = useSession();
 
-  useEffect(() => {
-    console.log('data ====>', data);
-    console.log('session ====>', session);
-  })
+  // useEffect(() => {
+  //   console.log('data ====>', data);
+  //   console.log('session ====>', session);
+  // })
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -70,7 +70,7 @@ const AdminProfile = () => {
           <Paper sx={{ padding: '20px' }}>
             <Box>
               <TabPanel value={value} index={0}>
-                <UserProfile />
+                <UserProfile userData={data} loading={loading} />
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <ChangePassword />
