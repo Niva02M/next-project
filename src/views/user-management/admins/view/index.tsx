@@ -1,7 +1,7 @@
 'use client';
 // ==============================|| Admin Profile ||============================== //
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box, Grid, Paper, Tab, Typography } from '@mui/material';
 import { TabsProps } from 'types';
 import PageTitle from 'components/page-title/PageTitle';
@@ -11,7 +11,6 @@ import UserProfile from './UserProfile';
 import ChangePassword from './ChangePassword';
 import { useQuery } from '@apollo/client';
 import { GET_PROFILE_QUERY } from '../graphql/queries';
-import { useSession } from 'next-auth/react';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
@@ -23,14 +22,7 @@ export function TabPanel({ children, value, index, ...other }: TabsProps) {
 
 const AdminProfile = () => {
   const [value, setValue] = useState<number>(0);
-
   const { data, loading } = useQuery(GET_PROFILE_QUERY);
-  // const session = useSession();
-
-  // useEffect(() => {
-  //   console.log('data ====>', data);
-  //   console.log('session ====>', session);
-  // })
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

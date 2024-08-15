@@ -59,8 +59,8 @@ export default function UserProfile({ userData, loading }: { userData: any; load
         }
       });
       successSnack(response?.data?.updateProfile?.message);
-    } catch (error) {
-      errorSnack(error?.message);
+    } catch (error: any) {
+      errorSnack(error);
     }
   };
   useEffect(() => {
