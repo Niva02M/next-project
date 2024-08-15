@@ -1,16 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, FormControl, FormHelperText, Grid, InputLabel, Stack, styled, TextField, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, FormControl, FormHelperText, Grid, InputLabel, Stack, styled, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { UPDATE_PROFILE_MUTATION } from '../graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-
-
+import { GET_PROFILE_QUERY, GET_PRESIGNED_URL } from '../graphql/queries';
 
 const UploadAvatar = styled(Box)(({ theme }) => ({
+  position: 'relative',
+
   'input[type="file"]': {
     position: 'absolute',
     opacity: 0,
@@ -24,7 +25,7 @@ const UploadAvatar = styled(Box)(({ theme }) => ({
   }
 }));
 
-export default function UserProfile({ userData, loading }: { userData: any; loading: boolean }) {
+export default function UserProfile() {
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [initialValues, setInitialValues] = useState({
     firstName: '',
@@ -33,19 +34,57 @@ export default function UserProfile({ userData, loading }: { userData: any; load
     profileImage: ''
   });
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [uploading, setUploading] = useState(false);
+
+  const { data: userData } = useQuery(GET_PROFILE_QUERY);
 
   const [handleUpdateProfile] = useMutation(UPDATE_PROFILE_MUTATION);
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+  const [getPreSignedUrl] = useLazyQuery(GET_PRESIGNED_URL); // Using skip to fetch on demand
+
+  const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setAvatarPreview(imageUrl);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setFieldValue('profileImage', base64String);
-      };
-      reader.readAsDataURL(file);
+      setUploading(true);
+      try {
+        // Step 1: Fetch the Pre-Signed URL from your server
+        const preSignedUrlResponse = await getPreSignedUrl({
+          variables: {
+            input: {
+              contentType: file.type,
+              method: 'PUT',
+              path: file.name
+            }
+          }
+        });
+
+        const { url } = preSignedUrlResponse.data.getPreSignedUrl;
+
+        // Step 2: Upload image to the pre-signed URL using PUT request
+        const uploadResponse = await fetch(url, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': file.type
+          }
+        });
+
+        if (uploadResponse.ok) {
+          // Step 3: Get the final image URL from the presigned URL response (assuming it's derived from the upload)
+          const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
+
+          // Step 4: Update the Formik value with the uploaded image URL
+          setFieldValue('profileImage', finalImageUrl);
+          successSnack('Profile picture uploaded successfully!');
+        } else {
+          throw new Error('Failed to upload image');
+        }
+      } catch (error) {
+        errorSnack('Error uploading image');
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -60,7 +99,7 @@ export default function UserProfile({ userData, loading }: { userData: any; load
       });
       successSnack(response?.data?.updateProfile?.message);
     } catch (error: any) {
-      errorSnack(error);
+      errorSnack(error.message || "Error while submitting file");
     }
   };
   useEffect(() => {
@@ -97,7 +136,14 @@ export default function UserProfile({ userData, loading }: { userData: any; load
             <Grid item xs={12}>
               <Stack direction={'row'} alignItems={'center'} spacing={2.5}>
                 <UploadAvatar>
-                  <input accept="image/*" id="upload-avatar" multiple type="file" onChange={(e) => handleFileChange(e, setFieldValue)} />
+                  <input
+                    accept="image/*"
+                    id="upload-avatar"
+                    multiple
+                    type="file"
+                    onChange={(e) => handleProfilePicutreChange(e, setFieldValue)}
+                  />
+                  {/* {uploading && <CircularProgress sx={{position: 'absolute', top: 8, left: 12, zIndex: 1}} />} */}
                   <Avatar src={avatarPreview || values.profileImage} />
                 </UploadAvatar>
                 <Typography htmlFor="upload-avatar" component={'label'}>
