@@ -15,3 +15,11 @@ export const UPDATE_PROFILE_MUTATION = gql`
     }
   }
 `;
+
+export const ADMIN_CHANGE_PASSWORD_MUTATION = gql`
+  mutation ChangePassword($body: ChangePasswordInput!) {
+    changePassword(body: $body) {
+      message
+    }
+  }
+`;
