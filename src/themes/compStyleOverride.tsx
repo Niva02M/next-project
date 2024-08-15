@@ -40,6 +40,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         }
       }
     },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+        disableElevation: true
+      }
+    },
     MuiPaper: {
       defaultProps: {
         elevation: 0
