@@ -13,7 +13,6 @@ import { IPhoneLoginVerifyCredential } from 'server';
 import { REQUEST_PHONE_LOGIN_MUTATION } from 'graphql/auth';
 import { useMutation } from '@apollo/client';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import { useRouter } from 'next/navigation';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
@@ -26,6 +25,7 @@ const VerifyRegistrationPhone = () => {
   const [remainingTime, setRemainingTime] = React.useState(calculateRemainingTime(loginWithPhoneDetail?.expiryTime));
   const { handleError } = useListBackendErrors();
   const { successSnack, errorSnack } = useSuccErrSnack();
+  const router = useRouter();
 
   const [resendPhoneOTP, { loading: isResendingPhoneOtp }] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
 
@@ -38,9 +38,7 @@ const VerifyRegistrationPhone = () => {
           dialCode: loginWithPhoneDetail?.dialCode,
           verificationCode,
           redirect: false
-          // callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
         });
-        console.log('test ===>');
         router.replace(pageRoutes.dashboard);
       }
     } catch (err) {

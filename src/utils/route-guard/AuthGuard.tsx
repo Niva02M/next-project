@@ -3,16 +3,9 @@
 import { Grid } from '@mui/material';
 import pageRoutes from 'constants/routes';
 import { UserAccountStatus } from 'constants/user';
-//import useAuth from 'hooks/useAuth';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-// import { useRouter } from 'next/navigation';
-
-// // project imports
-// import useAuth from 'hooks/useAuth';
-// import { useEffect } from 'react';
-// import Loader from 'components/ui-component/Loader';
 
 // types
 import { GuardProps } from 'types';
