@@ -55,8 +55,6 @@ const VerifyRegistrationPhone = () => {
         }
       });
 
-      console.log(data);
-
       if (data.requestPhoneLoginOTP) {
         setOtpTimer(!otpTimer);
         setLocalStorage('userRegisterWithPhone', {

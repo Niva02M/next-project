@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, CircularProgress, FormControl, FormHelperText, Grid, InputLabel, Stack, styled, TextField, Typography } from '@mui/material';
+import { Avatar, Box, FormControl, FormHelperText, Grid, InputLabel, Stack, styled, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
@@ -76,6 +76,7 @@ export default function UserProfile() {
 
           // Step 4: Update the Formik value with the uploaded image URL
           setFieldValue('profileImage', finalImageUrl);
+          // setFieldValue('profileImage', url);
           successSnack('Profile picture uploaded successfully!');
         } else {
           throw new Error('Failed to upload image');
@@ -102,6 +103,7 @@ export default function UserProfile() {
       errorSnack(error.message || "Error while submitting file");
     }
   };
+  const [profileUrl, setProfileUrl]=useState();
   useEffect(() => {
     if (userData?.me) {
       setInitialValues({
@@ -110,7 +112,11 @@ export default function UserProfile() {
         authProviderId: userData?.me?.authProviderId || '',
         profileImage: userData?.me?.profileImage || ''
       });
-      setAvatarPreview(userData.me.profileImage || '');
+      console.log('initialValues ===>', initialValues);
+      // setAvatarPreview(userData.me.profileImage || '');
+    }
+    if(userData?.me?.profileImage) {
+      setProfileUrl(userData?.me?.profileImage)
     }
   }, [userData]);
 
@@ -144,7 +150,8 @@ export default function UserProfile() {
                     onChange={(e) => handleProfilePicutreChange(e, setFieldValue)}
                   />
                   {/* {uploading && <CircularProgress sx={{position: 'absolute', top: 8, left: 12, zIndex: 1}} />} */}
-                  <Avatar src={avatarPreview || values.profileImage} />
+                  {/* avatarPreview || profileUrl ? <Avatar src={avatarPreview || profileUrl} /> : <Avatar /> */}
+                  <Avatar src={avatarPreview || profileUrl} />
                 </UploadAvatar>
                 <Typography htmlFor="upload-avatar" component={'label'}>
                   Change profile picture
