@@ -12,8 +12,19 @@ export default function EditSettings() {
   const [initialValues, setInitialValues] = useState({
     systemEmail: '',
     applicationName: '',
-    authProviderId: '',
-    profileImage: ''
+    checkbox: [
+      {
+        option1: false
+      },
+      {
+        option2: false
+      },
+      {
+        option3: false
+      }
+    ]
+    // authProviderId: '',
+    // profileImage: ''
   });
 
   const handleSubmitForm = async () => {
@@ -45,7 +56,9 @@ export default function EditSettings() {
         })}
         onSubmit={handleSubmitForm}
       >
-        {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue }) => (
+        {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue }) => {
+          console.log('values ===>', values);
+          return(
           <form onSubmit={handleSubmit}>
             <Grid container item md={6} spacing={2.5} rowGap={0.5}>
               <Grid item xs={12}>
@@ -133,7 +146,7 @@ export default function EditSettings() {
               </Grid>
             </Grid>
           </form>
-        )}
+        )}}
       </Formik>
     </>
   );

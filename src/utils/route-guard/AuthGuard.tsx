@@ -5,7 +5,7 @@ import pageRoutes from 'constants/routes';
 import { UserAccountStatus } from 'constants/user';
 //import useAuth from 'hooks/useAuth';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 // import { useRouter } from 'next/navigation';
 
@@ -33,16 +33,20 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 const AuthGuard = ({ children }: GuardProps) => {
   const { status, data } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (status === 'authenticated') {
       const payload = data?.user as any;
-      if (payload?.user?.status === UserAccountStatus.email_verified) {
+      if (payload?.user?.status === UserAccountStatus.email_verified || payload?.user?._id) {
         setTokens(payload?.access_token, payload?.refresh_token);
-
-        router.push(pageRoutes.dashboard);
+        if (pathname) {
+          router.replace(pathname);
+        } else {
+          router.replace(pageRoutes.dashboard);
+        }
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);

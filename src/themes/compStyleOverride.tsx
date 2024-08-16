@@ -190,6 +190,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         }
       }
     },
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          gap: 12,
+          marginBottom: 16,
+          marginLeft: 0,
+          '.MuiCheckbox-root, .MuiRadio-root': {
+            padding: 0
+          }
+        }
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         input: {
