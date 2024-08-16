@@ -38,9 +38,8 @@ const VerifyRegistrationPhone = () => {
           dialCode: loginWithPhoneDetail?.dialCode,
           verificationCode,
           redirect: false
-          // callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
         });
-        router.replace(pageRoutes.dashboard)
+        router.replace(pageRoutes.dashboard);
       }
     } catch (err) {
       handleError(err);

@@ -64,7 +64,7 @@ const Login = () => {
                 <AuthLogin />
               </Grid>
               <Grid item xs={12}>
-                <Grid item container direction="column" xs={12} sx={{ paddingTop: 4 }}>
+                <Grid item container direction="column" xs={12} sx={{ paddingTop: '12px' }}>
                   <Typography
                     color={'primary'}
                     component={Link}
