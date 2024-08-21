@@ -33,7 +33,7 @@ export default function ChangePassword() {
       });
       successSnack(response?.data?.changePassword?.message);
     } catch (error: any) {
-      console.log(values.password === true);
+      {/* Error message should up fix on api following code must be updated later */}
       if (values.password === values.new_password) {
         errorSnack('New password can not be same as old password');
       } else if (error.message === 'Forbidden') {
@@ -67,7 +67,6 @@ export default function ChangePassword() {
       onSubmit={handleSubmitForm}
     >
       {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
-        console.log('errors =====>', errors);
         return (
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2.5} rowGap={0.5}>
