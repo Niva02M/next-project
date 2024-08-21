@@ -40,6 +40,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         }
       }
     },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+        disableElevation: true
+      }
+    },
     MuiPaper: {
       defaultProps: {
         elevation: 0
@@ -181,6 +187,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           fontSize: theme.typography.body2.fontSize,
           color: theme.palette.grey[800],
           marginBottom: 3
+        }
+      }
+    },
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          gap: 12,
+          marginBottom: 16,
+          marginLeft: 0,
+          '.MuiCheckbox-root, .MuiRadio-root': {
+            padding: 0
+          }
         }
       }
     },

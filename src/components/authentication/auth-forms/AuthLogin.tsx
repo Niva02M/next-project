@@ -90,7 +90,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
     }
     if (status === 'authenticated' && payload?.user?.status === UserAccountStatus.email_verified) {
       setTokens(payload?.access_token, payload?.refresh_token);
-      return router.push(pageRoutes.dashboard);
+      return router.replace(pageRoutes.dashboard);
     }
   }, [status, data, router]);
 

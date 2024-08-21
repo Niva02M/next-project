@@ -21,7 +21,6 @@ const VerifyRegistrationPhone = () => {
   const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
   const loginWithPhoneDetail = getLocalStorage<IPhoneLoginVerifyCredential>('userRegisterWithPhone');
   const [otpTimer, setOtpTimer] = React.useState(true);
-
   const [remainingTime, setRemainingTime] = React.useState(calculateRemainingTime(loginWithPhoneDetail?.expiryTime));
   const { handleError } = useListBackendErrors();
   const { successSnack, errorSnack } = useSuccErrSnack();
@@ -57,9 +56,6 @@ const VerifyRegistrationPhone = () => {
           }
         }
       });
-
-      console.log(data);
-
       if (data.requestPhoneLoginOTP) {
         setOtpTimer(!otpTimer);
         setLocalStorage('userRegisterWithPhone', {
