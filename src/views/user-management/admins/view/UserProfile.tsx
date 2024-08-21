@@ -8,8 +8,6 @@ import { useMutation } from '@apollo/client';
 import { UPDATE_PROFILE_MUTATION } from '../graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
-
-
 const UploadAvatar = styled(Box)(({ theme }) => ({
   'input[type="file"]': {
     position: 'absolute',
@@ -32,22 +30,22 @@ export default function UserProfile({ userData, loading }: { userData: any; load
     authProviderId: '',
     profileImage: ''
   });
-  const [avatarPreview, setAvatarPreview] = useState('');
+  // const [avatarPreview, setAvatarPreview] = useState('');
 
   const [handleUpdateProfile] = useMutation(UPDATE_PROFILE_MUTATION);
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarPreview(imageUrl);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setFieldValue('profileImage', base64String);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     const imageUrl = URL.createObjectURL(file);
+  //     setAvatarPreview(imageUrl);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const base64String = reader.result as string;
+  //       setFieldValue('profileImage', base64String);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleSubmitForm = async ({ authProviderId, ...values }: any) => {
     try {
@@ -69,9 +67,9 @@ export default function UserProfile({ userData, loading }: { userData: any; load
         firstName: userData?.me?.firstName || '',
         lastName: userData?.me?.lastName || '',
         authProviderId: userData?.me?.authProviderId || '',
-        profileImage: userData?.me?.profileImage || ''
+        // profileImage: userData?.me?.profileImage || ''
+        profileImage: ''
       });
-      setAvatarPreview(userData.me.profileImage || '');
     }
   }, [userData]);
 
@@ -87,7 +85,7 @@ export default function UserProfile({ userData, loading }: { userData: any; load
           : userData?.me?.authProviderId != 'email'
             ? Yup.string().required().label('Phone')
             : Yup.string().email().required().label('Email address'),
-        profileImage: Yup.string().optional().label('Profile image')
+        // profileImage: Yup.string().optional().label('Profile image')
       })}
       onSubmit={handleSubmitForm}
     >
@@ -97,8 +95,9 @@ export default function UserProfile({ userData, loading }: { userData: any; load
             <Grid item xs={12}>
               <Stack direction={'row'} alignItems={'center'} spacing={2.5}>
                 <UploadAvatar>
-                  <input accept="image/*" id="upload-avatar" multiple type="file" onChange={(e) => handleFileChange(e, setFieldValue)} />
-                  <Avatar src={avatarPreview || values.profileImage} />
+                  {/* <input accept="image/*" id="upload-avatar" multiple type="file" onChange={(e) => handleFileChange(e, setFieldValue)} /> */}
+                  <Avatar src={''} />
+                  {/* <Avatar src={avatarPreview || values.profileImage} /> */}
                 </UploadAvatar>
                 <Typography htmlFor="upload-avatar" component={'label'}>
                   Change profile picture
