@@ -103,6 +103,7 @@ const AuthResetPassword = ({ ...others }) => {
           successSnack('Password reset successfully');
           router.push(pageRoutes.login);
         } catch (err: any) {
+          console.log('errpr');
           handleError(err, 'Error on password reset');
         }
       }}

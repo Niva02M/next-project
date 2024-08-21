@@ -1,47 +1,38 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Grid, InputLabel, Radio, RadioGroup, Stack, styled, Switch, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Checkbox,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  Grid,
+  InputLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
-import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import { rowData } from '../constant';
+import { FormValues, rowData } from '../constant';
 
 export default function EditSettings() {
-  const { successSnack, errorSnack } = useSuccErrSnack();
-  const [initialValues, setInitialValues] = useState({
+  const [initialValues, setInitialValues] = useState<FormValues>({
     systemEmail: '',
     applicationName: '',
-    checkbox: [
-      {
-        option1: false
-      },
-      {
-        option2: false
-      },
-      {
-        option3: false
-      }
-    ]
-    // authProviderId: '',
-    // profileImage: ''
+    checkboxField: [],
+    radioField: '',
+    enable2fa: false
   });
 
-  const handleSubmitForm = async () => {
-    // try {
-    //   const response = await handleUpdateProfile({
-    //     variables: {
-    //       body: {
-    //         ...values
-    //       }
-    //     }
-    //   });
-    //   successSnack(response?.data?.updateProfile?.message);
-    // } catch (error: any) {
-    //   errorSnack(error);
-    // }
+  const handleSubmitForm = (values: any) => {
+    setInitialValues(values);
   };
-
 
   return (
     <>
@@ -52,101 +43,95 @@ export default function EditSettings() {
         initialValues={initialValues}
         validationSchema={Yup.object().shape({
           systemEmail: Yup.string().min(2).required().label('System email'),
-          applicationName: Yup.string().min(2).required().label('Application name'),
+          applicationName: Yup.string().min(2).required().label('Application name')
         })}
-        onSubmit={handleSubmitForm}
+        onSubmit={(values) => handleSubmitForm(values)}
       >
-        {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue }) => {
-          console.log('values ===>', values);
-          return(
-          <form onSubmit={handleSubmit}>
-            <Grid container item md={6} spacing={2.5} rowGap={0.5}>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>System email</InputLabel>
-                  <TextField
-                    name="systemEmail"
-                    value={values.systemEmail}
-                    placeholder="System email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                {touched.systemEmail && errors.systemEmail && <FormHelperText error>{errors.systemEmail}</FormHelperText>}
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Application name</InputLabel>
-                  <TextField
-                    name="applicationName"
-                    value={values.applicationName}
-                    placeholder="Application name"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                {touched.applicationName && errors.applicationName && <FormHelperText error>{errors.applicationName}</FormHelperText>}
-              </Grid>
-              <Grid item xs={12}>
-                {/* <Typography variant="h6">Checkbox field</Typography> */}
-                <FormLabel component="legend">Checkbox field</FormLabel>
-                <FormGroup>
-                  {rowData.map((name, index) => (
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          // checked={rowData.values?.includes(name)}
+        {({ errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <Grid container item md={6} spacing={2.5} rowGap={0.5}>
+                {rowData.map((setting, index) => (
+                  <Grid key={index} item xs={12}>
+                    {setting.fieldType === 'text' && (
+                      <FormControl fullWidth>
+                        <InputLabel>{setting.title}</InputLabel>
+                        <TextField
+                          name={setting.slug}
+                          value={values[setting.slug as keyof FormValues] || ''}
+                          error={Boolean(errors[setting.slug as keyof FormValues])}
+                          helperText={errors[setting.slug as keyof FormValues]}
+                          onBlur={handleBlur}
                           onChange={handleChange}
-                          // name={`data.${key}.values`}
-                          name={`${name}-${index}`}
-                          value={name}
                         />
-                      }
-                      label={name}
-                      key={index + name}
-                    />
-                  ))}
-                </FormGroup>
+                      </FormControl>
+                    )}
+
+                    {setting.fieldType === 'checkbox' && (
+                      <>
+                        <FormLabel component="legend">{setting.title}</FormLabel>
+                        <FormGroup>
+                          {setting?.options?.map((option) => (
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  onChange={handleChange}
+                                  name={setting.slug}
+                                  value={option}
+                                  checked={
+                                    // @ts-ignore
+                                    values[setting.slug as keyof FormValues].includes(option)
+                                  }
+                                />
+                              }
+                              label={option}
+                              key={option}
+                            />
+                          ))}
+                        </FormGroup>
+                      </>
+                    )}
+
+                    {setting.fieldType === 'radio' && (
+                      <>
+                        <FormLabel id="radio-group">{setting.title}</FormLabel>
+                        <RadioGroup
+                          aria-labelledby="radio-group"
+                          name={setting.slug}
+                          onChange={handleChange}
+                          value={values[setting.slug as keyof FormValues] || ''}
+                        >
+                          {setting?.options?.map((option, index) => (
+                            <FormControlLabel value={option} control={<Radio />} label={option} key={option} />
+                          ))}
+                        </RadioGroup>
+                      </>
+                    )}
+                    {setting.fieldType === 'switch' && (
+                      <>
+                        <FormLabel component="legend">{setting.title}</FormLabel>
+                        <Switch
+                          onChange={handleChange}
+                          inputProps={{ 'aria-label': 'controlled' }}
+                          name={setting.slug}
+                          // @ts-ignore
+                          checked={values[setting.slug as keyof FormValues]}
+                        />
+                      </>
+                    )}
+                  </Grid>
+                ))}
+                <Grid item xs={12}>
+                  <Stack alignItems={'flex-start'}>
+                    <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
+                      Save changes
+                    </LoadingButton>
+                  </Stack>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <FormLabel id="demo-radio-buttons-group-label">Radio field</FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="female"
-                  // name={`data.${key}.value`}
-                  onChange={handleChange}
-                >
-                  {rowData.map((name, index) => (
-                    <FormControlLabel
-                      // checked={rowData.value === name ? true : false}
-                      value={name}
-                      control={<Radio />}
-                      label={name}
-                      key={index + name}
-                    />
-                  ))}
-                </RadioGroup>
-              </Grid>
-              <Grid item xs={12}>
-                <FormLabel component="legend">Switch</FormLabel>
-                <Switch
-                  // checked={values.data[key].value.toString() == 'true' ? true : false}
-                  onChange={handleChange}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                  // name={`data.${key}.value`}
-                  // value={values.data[key].value}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Stack alignItems={'flex-start'}>
-                  <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
-                    Save changes
-                  </LoadingButton>
-                </Stack>
-              </Grid>
-            </Grid>
-          </form>
-        )}}
+            </form>
+          );
+        }}
       </Formik>
     </>
   );
