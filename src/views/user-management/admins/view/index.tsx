@@ -69,7 +69,7 @@ const AdminProfile = () => {
                 <ChangePassword />
               </TabPanel>
               <TabPanel value={value} index={2}>
-                <EditSettings />
+                <EditSettings userData={data} />
               </TabPanel>
             </Box>
           </Paper>
