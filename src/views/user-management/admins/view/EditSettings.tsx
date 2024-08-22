@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Checkbox,
   Divider,
@@ -20,8 +20,13 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
 import { FormValues, rowData } from '../constant';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
 
-export default function EditSettings() {
+export default function EditSettings({ userData }: { userData: any }) {
+  const loggedInUserId = userData?.me?._id;
+  const localStorageKey = `settings_${loggedInUserId}`;
+  const { errorSnack, successSnack } = useSuccErrSnack();
+
   const [initialValues, setInitialValues] = useState<FormValues>({
     systemEmail: '',
     applicationName: '',
@@ -30,8 +35,21 @@ export default function EditSettings() {
     enable2fa: false
   });
 
+  useEffect(() => {
+    const savedSettings = localStorage.getItem(localStorageKey);
+    if (savedSettings) {
+      setInitialValues(JSON.parse(savedSettings));
+    }
+  }, []);
+
   const handleSubmitForm = (values: any) => {
-    setInitialValues(values);
+    try {
+      localStorage.setItem(localStorageKey, JSON.stringify(values));
+      setInitialValues(values);
+      successSnack('Settings saved successfully!');
+    } catch (error) {
+      errorSnack('Failed to save settings. Please try again.');
+    }
   };
 
   return (
