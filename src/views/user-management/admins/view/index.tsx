@@ -9,8 +9,6 @@ import { tabsOption } from '../constant';
 import { TabWrapper } from 'components/tab-wrapper/TabWrapper.styles';
 import UserProfile from './UserProfile';
 import ChangePassword from './ChangePassword';
-import { useQuery } from '@apollo/client';
-import { GET_PROFILE_QUERY } from '../graphql/queries';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
@@ -22,7 +20,6 @@ export function TabPanel({ children, value, index, ...other }: TabsProps) {
 
 const AdminProfile = () => {
   const [value, setValue] = useState<number>(0);
-  const { data, loading } = useQuery(GET_PROFILE_QUERY);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -62,7 +59,7 @@ const AdminProfile = () => {
           <Paper sx={{ padding: '20px' }}>
             <Box>
               <TabPanel value={value} index={0}>
-                <UserProfile userData={data} loading={loading} />
+                <UserProfile />
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <ChangePassword />

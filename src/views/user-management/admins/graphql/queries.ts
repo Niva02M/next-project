@@ -13,3 +13,12 @@ export const GET_PROFILE_QUERY = gql`
     }
   }
 `;
+
+export const GET_PRESIGNED_URL = gql`
+  query GetPreSignedUrl($input: PreSignedUrlInput!) {
+    getPreSignedUrl(input: $input) {
+      message
+      url
+    }
+  }
+`;
