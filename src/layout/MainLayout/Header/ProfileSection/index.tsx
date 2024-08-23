@@ -51,6 +51,7 @@ const ProfileSection = () => {
   const openLogoutModal = () => {
     setOpenModal(true);
   };
+
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
    * */
@@ -58,7 +59,24 @@ const ProfileSection = () => {
   const handleLogout = async () => {
     try {
       setIsLoading(true);
+      // remove this code later once settings api is ready
+      const settingsData: Record<string, string> = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('settings_')) {
+          settingsData[key] = localStorage.getItem(key) || '';
+        }
+      }
+      // remove this code later once settings api is ready ends
+
+      //Clear the localStorage
       localStorage.clear();
+
+      //Restore the settings data back to localStorage / remove this code later once settings api is ready
+      Object.keys(settingsData).forEach((key) => {
+        localStorage.setItem(key, settingsData[key]);
+      });
+      // remove this code later once settings api is ready ends
       await signOut({ callbackUrl: '/login' });
     } catch (err) {
       errorSnack('Error logging out');
