@@ -9,7 +9,6 @@ import {
   FormLabel,
   Grid,
   InputLabel,
-  Paper,
   Radio,
   RadioGroup,
   Stack,
@@ -27,7 +26,7 @@ import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries'
 import MainCard from 'ui-component/cards/MainCard';
 
 export default function Settings() {
-  const { data, loading } = useQuery(GET_PROFILE_QUERY);
+  const { data } = useQuery(GET_PROFILE_QUERY);
   const loggedInUserId = data?.me?._id;
   const localStorageKey = `settings_${loggedInUserId}`;
   const { errorSnack, successSnack } = useSuccErrSnack();
