@@ -19,11 +19,15 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
-import { FormValues, rowData } from '../constant';
+import { FormValues, rowData } from '../user-management/admins/constant';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { useQuery } from '@apollo/client';
+import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries';
+import MainCard from 'ui-component/cards/MainCard';
 
-export default function EditSettings({ userData }: { userData: any }) {
-  const loggedInUserId = userData?.me?._id;
+export default function Settings() {
+  const { data } = useQuery(GET_PROFILE_QUERY);
+  const loggedInUserId = data?.me?._id;
   const localStorageKey = `settings_${loggedInUserId}`;
   const { errorSnack, successSnack } = useSuccErrSnack();
 
@@ -40,7 +44,7 @@ export default function EditSettings({ userData }: { userData: any }) {
     if (savedSettings) {
       setInitialValues(JSON.parse(savedSettings));
     }
-  }, []);
+  }, [localStorageKey]);
 
   const handleSubmitForm = (values: any) => {
     try {
@@ -53,7 +57,7 @@ export default function EditSettings({ userData }: { userData: any }) {
   };
 
   return (
-    <>
+    <MainCard>
       <Typography variant="h2">Edit settings</Typography>
       <Divider sx={{ my: 3 }} />
       <Formik
@@ -151,6 +155,6 @@ export default function EditSettings({ userData }: { userData: any }) {
           );
         }}
       </Formik>
-    </>
+    </MainCard>
   );
 }

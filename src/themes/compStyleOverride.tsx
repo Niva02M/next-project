@@ -9,8 +9,8 @@ import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
-  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
-  const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.main;
+  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.primary.main, 0.15) : theme.palette.primary.light;
+  const menuSelected = mode === ThemeMode.DARK ? theme.palette.primary.main : theme.palette.text.dark;
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
   return {
