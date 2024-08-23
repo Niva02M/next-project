@@ -9,8 +9,8 @@ import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
   const mode = theme.palette.mode;
-  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.secondary.main, 0.15) : theme.palette.secondary.light;
-  const menuSelected = mode === ThemeMode.DARK ? theme.palette.secondary.main : theme.palette.secondary.main;
+  const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.primary.main, 0.15) : theme.palette.primary.light;
+  const menuSelected = mode === ThemeMode.DARK ? theme.palette.primary.main : theme.palette.text.dark;
   // eslint-disable-next-line react-hooks/rules-of-hooks
 
   return {
@@ -38,6 +38,12 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         startIcon: {
           marginLeft: 0
         }
+      }
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true,
+        disableElevation: true
       }
     },
     MuiPaper: {
@@ -181,6 +187,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           fontSize: theme.typography.body2.fontSize,
           color: theme.palette.grey[800],
           marginBottom: 3
+        }
+      }
+    },
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          gap: 12,
+          marginBottom: 16,
+          marginLeft: 0,
+          '.MuiCheckbox-root, .MuiRadio-root': {
+            padding: 0
+          }
         }
       }
     },

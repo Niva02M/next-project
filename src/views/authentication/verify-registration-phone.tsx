@@ -13,6 +13,7 @@ import { IPhoneLoginVerifyCredential } from 'server';
 import { REQUEST_PHONE_LOGIN_MUTATION } from 'graphql/auth';
 import { useMutation } from '@apollo/client';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { useRouter } from 'next/navigation';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
 
@@ -20,10 +21,10 @@ const VerifyRegistrationPhone = () => {
   const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
   const loginWithPhoneDetail = getLocalStorage<IPhoneLoginVerifyCredential>('userRegisterWithPhone');
   const [otpTimer, setOtpTimer] = React.useState(true);
-
   const [remainingTime, setRemainingTime] = React.useState(calculateRemainingTime(loginWithPhoneDetail?.expiryTime));
   const { handleError } = useListBackendErrors();
   const { successSnack, errorSnack } = useSuccErrSnack();
+  const router = useRouter();
 
   const [resendPhoneOTP, { loading: isResendingPhoneOtp }] = useMutation(REQUEST_PHONE_LOGIN_MUTATION);
 
@@ -35,8 +36,9 @@ const VerifyRegistrationPhone = () => {
           deviceId: loginWithPhoneDetail?.deviceId,
           dialCode: loginWithPhoneDetail?.dialCode,
           verificationCode,
-          callbackUrl: process.env.NEXT_PUBLIC_SITE_URL + pageRoutes.dashboard
+          redirect: false
         });
+        router.replace(pageRoutes.dashboard);
       }
     } catch (err) {
       handleError(err);
@@ -54,7 +56,6 @@ const VerifyRegistrationPhone = () => {
           }
         }
       });
-
       if (data.requestPhoneLoginOTP) {
         setOtpTimer(!otpTimer);
         setLocalStorage('userRegisterWithPhone', {

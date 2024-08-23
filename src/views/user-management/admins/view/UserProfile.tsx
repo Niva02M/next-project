@@ -1,6 +1,18 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, FormControl, FormHelperText, Grid, InputLabel, Stack, styled, TextField, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  Stack,
+  styled,
+  TextField,
+  Typography
+} from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { LoadingButton } from '@mui/lab';
@@ -8,6 +20,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { UPDATE_PROFILE_MUTATION } from '../graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { GET_PROFILE_QUERY, GET_PRESIGNED_URL } from '../graphql/queries';
+import AlignCenter from 'components/align-center/AlignCenter';
 
 const UploadAvatar = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -33,23 +46,22 @@ export default function UserProfile() {
     authProviderId: '',
     profileImage: ''
   });
+  const [profileUrl, setProfileUrl]=useState();
   const [avatarPreview, setAvatarPreview] = useState('');
-  const [uploading, setUploading] = useState(false);
 
-  const { data: userData } = useQuery(GET_PROFILE_QUERY);
+  const { data: userData, loading } = useQuery(GET_PROFILE_QUERY);
 
   const [handleUpdateProfile] = useMutation(UPDATE_PROFILE_MUTATION);
-  const [getPreSignedUrl] = useLazyQuery(GET_PRESIGNED_URL); // Using skip to fetch on demand
+
+  const [getPreSignedUrl] = useLazyQuery(GET_PRESIGNED_URL);
 
   const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
-    console.log('file  ====>', file);
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setAvatarPreview(imageUrl);
-      setUploading(true);
       try {
-        // Step 1: Fetch the Pre-Signed URL from your server
+        // Fetch the Pre-Signed URL from your server
         const preSignedUrlResponse = await getPreSignedUrl({
           variables: {
             input: {
@@ -62,7 +74,7 @@ export default function UserProfile() {
 
         const { url } = preSignedUrlResponse.data.getPreSignedUrl;
 
-        // Step 2: Upload image to the pre-signed URL using PUT request
+        // Upload image to the pre-signed URL using PUT request
         const uploadResponse = await fetch(url, {
           method: 'PUT',
           body: file,
@@ -72,12 +84,10 @@ export default function UserProfile() {
         });
 
         if (uploadResponse.ok) {
-          // Step 3: Get the final image URL from the presigned URL response (assuming it's derived from the upload)
+          // Get the final image URL from the presigned URL response (assuming it's derived from the upload)
           // const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
 
-          // Step 4: Update the Formik value with the uploaded image URL
           setFieldValue('profileImage', file.name);
-          // setFieldValue('profileImage', url);
           successSnack('Profile picture uploaded successfully!');
         } else {
           throw new Error('Failed to upload image');
@@ -85,7 +95,6 @@ export default function UserProfile() {
       } catch (error) {
         errorSnack('Error uploading image');
       } finally {
-        setUploading(false);
       }
     }
   };
@@ -104,7 +113,7 @@ export default function UserProfile() {
       errorSnack(error.message || 'Error while submitting file');
     }
   };
-  const [profileUrl, setProfileUrl]=useState();
+
   useEffect(() => {
     if (userData?.me) {
       setInitialValues({
@@ -138,80 +147,97 @@ export default function UserProfile() {
       {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting, setFieldValue }) => (
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2.5} rowGap={0.5}>
-            <Grid item xs={12}>
-              <Stack direction={'row'} alignItems={'center'} spacing={2.5}>
-                <UploadAvatar>
-                  <input
-                    accept="image/*"
-                    id="upload-avatar"
-                    multiple
-                    type="file"
-                    onChange={(e) => handleProfilePicutreChange(e, setFieldValue)}
-                  />
-                  {/* {uploading && <CircularProgress sx={{position: 'absolute', top: 8, left: 12, zIndex: 1}} />} */}
-                  {/* avatarPreview || profileUrl ? <Avatar src={avatarPreview || profileUrl} /> : <Avatar /> */}
-                  <Avatar src={avatarPreview || profileUrl} />
-                </UploadAvatar>
-                <Typography htmlFor="upload-avatar" component={'label'}>
-                  Change profile picture
-                </Typography>
-              </Stack>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>First name</InputLabel>
-                <TextField name="firstName" value={values.firstName} placeholder="First name" onBlur={handleBlur} onChange={handleChange} />
-              </FormControl>
-              {touched.firstName && errors.firstName && <FormHelperText error>{errors.firstName}</FormHelperText>}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Last name</InputLabel>
-                <TextField name="lastName" value={values.lastName} placeholder="Last name" onBlur={handleBlur} onChange={handleChange} />
-              </FormControl>
-              {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>}
-            </Grid>
-            {userData?.me?.authProvider === 'email' ? (
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Contact Email</InputLabel>
-                  <TextField
-                    id="email"
-                    name="authProviderId"
-                    fullWidth
-                    type="email"
-                    placeholder="Email"
-                    value={values.authProviderId}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
-              </Grid>
+            {loading ? (
+              <AlignCenter>
+                <CircularProgress />
+              </AlignCenter>
             ) : (
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Contact Phone</InputLabel>
-                  <TextField
-                    id="phone"
-                    name="authProviderId"
-                    value={values.authProviderId}
-                    placeholder="Phone number"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                  />
-                </FormControl>
-                {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
-              </Grid>
+              <>
+                <Grid item xs={12}>
+                  <Stack direction={'row'} alignItems={'center'} spacing={2.5}>
+                    <UploadAvatar>
+                      <input
+                        accept="image/*"
+                        id="upload-avatar"
+                        multiple
+                        type="file"
+                        onChange={(e) => handleProfilePicutreChange(e, setFieldValue)}
+                      />
+                      <Avatar src={avatarPreview || profileUrl} />
+                    </UploadAvatar>
+                    <Typography htmlFor="upload-avatar" component={'label'}>
+                      Change profile picture
+                    </Typography>
+                  </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>First name</InputLabel>
+                    <TextField
+                      name="firstName"
+                      value={values.firstName}
+                      placeholder="First name"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  {touched.firstName && errors.firstName && <FormHelperText error>{errors.firstName}</FormHelperText>}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Last name</InputLabel>
+                    <TextField
+                      name="lastName"
+                      value={values.lastName}
+                      placeholder="Last name"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
+                  {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>}
+                </Grid>
+                {userData?.me?.authProvider === 'email' ? (
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel>Contact Email</InputLabel>
+                      <TextField
+                        id="email"
+                        name="authProviderId"
+                        fullWidth
+                        type="email"
+                        placeholder="Email"
+                        value={values.authProviderId}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                      />
+                    </FormControl>
+                    {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
+                  </Grid>
+                ) : (
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel>Contact Phone</InputLabel>
+                      <TextField
+                        id="phone"
+                        name="authProviderId"
+                        value={values.authProviderId}
+                        placeholder="Phone number"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                      />
+                    </FormControl>
+                    {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Stack alignItems={'flex-end'}>
+                    <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
+                      Save changes
+                    </LoadingButton>
+                  </Stack>
+                </Grid>
+              </>
             )}
-
-            <Grid item xs={12}>
-              <Stack alignItems={'flex-end'}>
-                <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
-                  Save changes
-                </LoadingButton>
-              </Stack>
-            </Grid>
           </Grid>
         </form>
       )}

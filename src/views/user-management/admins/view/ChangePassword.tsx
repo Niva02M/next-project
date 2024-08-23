@@ -10,7 +10,7 @@ import {
   PASSWORD,
   OLD_PASSWORD,
   PASSWORD_REG_MESSAGE,
-  REPEAT_NEW_PASSWORD,
+  CONFIRM_NEW_PASSWORD,
   BOTH_PASSWORD_MUST_MATCH,
   NEW_PASSWORD,
   CHANGE_PASSWORD
@@ -20,20 +20,27 @@ export default function ChangePassword() {
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [handleChangePassword] = useMutation(ADMIN_CHANGE_PASSWORD_MUTATION);
   const handleSubmitForm = async (values: any) => {
-    delete values.confirmPassword;
+    const newValue = { ...values };
+    delete newValue.confirmPassword;
 
     try {
       const response = await handleChangePassword({
         variables: {
           body: {
-            ...values
+            ...newValue
           }
         }
       });
       successSnack(response?.data?.changePassword?.message);
     } catch (error: any) {
-      console.log('error ====>', error);
-      errorSnack(error.message);
+      {/* Error message should up fix on api following code must be updated later */}
+      if (values.password === values.new_password) {
+        errorSnack('New password can not be same as old password');
+      } else if (error.message === 'Forbidden') {
+        errorSnack('Password you have provided does not match with your existing password.');
+      } else {
+        errorSnack(error.message);
+      }
     }
   };
 
@@ -54,63 +61,64 @@ export default function ChangePassword() {
           .label(PASSWORD),
         confirmPassword: Yup.string()
           .required()
-          .label(REPEAT_NEW_PASSWORD)
+          .label(CONFIRM_NEW_PASSWORD)
           .oneOf([Yup.ref('new_password')], BOTH_PASSWORD_MUST_MATCH)
       })}
       onSubmit={handleSubmitForm}
     >
-      {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2.5} rowGap={0.5}>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>{OLD_PASSWORD}</InputLabel>
-                <PasswordField
-                  name="password"
-                  value={values.password}
-                  placeholder={OLD_PASSWORD}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
-              </FormControl>
+      {({ touched, errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2.5} rowGap={0.5}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>{OLD_PASSWORD}</InputLabel>
+                  <PasswordField
+                    name="password"
+                    value={values.password}
+                    placeholder={OLD_PASSWORD}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>{NEW_PASSWORD}</InputLabel>
+                  <PasswordField
+                    name="new_password"
+                    value={values.new_password}
+                    placeholder={NEW_PASSWORD}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {touched.new_password && errors.new_password && <FormHelperText error>{errors.new_password}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel>{CONFIRM_NEW_PASSWORD}</InputLabel>
+                  <PasswordField
+                    name="confirmPassword"
+                    value={values.confirmPassword}
+                    placeholder="Repeat password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {touched.confirmPassword && errors.confirmPassword && <FormHelperText error>{errors.confirmPassword}</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack alignItems={'flex-end'}>
+                  <LoadingButton loading={isSubmitting} disabled={isSubmitting} variant="contained" size="large" type="submit">
+                    {CHANGE_PASSWORD}
+                  </LoadingButton>
+                </Stack>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>{NEW_PASSWORD}</InputLabel>
-                <PasswordField
-                  name="new_password"
-                  value={values.new_password}
-                  placeholder={NEW_PASSWORD}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.new_password && errors.new_password && <FormHelperText error>{errors.new_password}</FormHelperText>}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>{REPEAT_NEW_PASSWORD}</InputLabel>
-                <PasswordField
-                  name="confirmPassword"
-                  value={values.confirmPassword}
-                  placeholder="Repeat password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
-                {touched.confirmPassword && errors.confirmPassword && <FormHelperText error>{errors.confirmPassword}</FormHelperText>}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Stack alignItems={'flex-end'}>
-                <LoadingButton loading={isSubmitting} disabled={isSubmitting} variant="contained" size="large" type="submit">
-                  {CHANGE_PASSWORD}
-                </LoadingButton>
-              </Stack>
-            </Grid>
-          </Grid>
-        </form>
-      )}
+          </form>
+        );}}
     </Formik>
   );
 }
