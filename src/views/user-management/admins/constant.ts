@@ -5,9 +5,6 @@ export const tabsOption = [
   },
   {
     label: 'Password settings'
-  },
-  {
-    label: 'Edit Settings'
   }
 ];
 

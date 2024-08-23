@@ -11,7 +11,6 @@ import UserProfile from './UserProfile';
 import ChangePassword from './ChangePassword';
 import { useQuery } from '@apollo/client';
 import { GET_PROFILE_QUERY } from '../graphql/queries';
-import EditSettings from './EditSettings';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
@@ -67,9 +66,6 @@ const AdminProfile = () => {
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <ChangePassword />
-              </TabPanel>
-              <TabPanel value={value} index={2}>
-                <EditSettings userData={data} />
               </TabPanel>
             </Box>
           </Paper>
