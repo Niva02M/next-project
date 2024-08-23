@@ -43,6 +43,7 @@ export default function UserProfile() {
 
   const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
+    console.log('file  ====>', file);
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setAvatarPreview(imageUrl);
@@ -72,10 +73,10 @@ export default function UserProfile() {
 
         if (uploadResponse.ok) {
           // Step 3: Get the final image URL from the presigned URL response (assuming it's derived from the upload)
-          const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
+          // const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
 
           // Step 4: Update the Formik value with the uploaded image URL
-          setFieldValue('profileImage', finalImageUrl);
+          setFieldValue('profileImage', file.name);
           // setFieldValue('profileImage', url);
           successSnack('Profile picture uploaded successfully!');
         } else {
@@ -100,7 +101,7 @@ export default function UserProfile() {
       });
       successSnack(response?.data?.updateProfile?.message);
     } catch (error: any) {
-      errorSnack(error.message || "Error while submitting file");
+      errorSnack(error.message || 'Error while submitting file');
     }
   };
   const [profileUrl, setProfileUrl]=useState();
@@ -112,11 +113,9 @@ export default function UserProfile() {
         authProviderId: userData?.me?.authProviderId || '',
         profileImage: userData?.me?.profileImage || ''
       });
-      console.log('initialValues ===>', initialValues);
-      // setAvatarPreview(userData.me.profileImage || '');
     }
-    if(userData?.me?.profileImage) {
-      setProfileUrl(userData?.me?.profileImage)
+    if (userData?.me?.profileImage) {
+      setProfileUrl(userData?.me?.profileImage);
     }
   }, [userData]);
 
