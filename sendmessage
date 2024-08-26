@@ -1,0 +1,6 @@
+
+curl -X POST   -H "Content-Type: application/json"   -d '{
+    "ZOOM_CHANNEL_JID": "'"$ZOOM_CHANNEL_JID"'",
+    "BITBUCKET_REPO_SLUG": "'"$BITBUCKET_REPO_SLUG"'",
+    "tag": "'"$BITBUCKET_TAG"'"
+  }' $ZOOM_API_ENDPOINT
