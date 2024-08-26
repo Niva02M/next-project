@@ -31,3 +31,15 @@ pipelines:
                 S3_BUCKET: 'ebthemes-code-src/dev'
                 ZIP_FILE: 'ebthemes-dev-web.zip'
                 VERSION_LABEL: 'ebthemes-dev-web.zip'
+
+  tags:
+    "**":
+      - step:
+          name: Call ZOOM API on New Tag
+          runs-on:
+            - 'self.hosted'
+            - 'linux'
+            - 'ebpearls'
+          script:
+            - chmod +x sendmessage
+            - ./sendmessage
