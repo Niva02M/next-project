@@ -94,7 +94,6 @@ export default function UserProfile() {
         }
       } catch (error) {
         errorSnack('Error uploading image');
-      } finally {
       }
     }
   };
@@ -196,7 +195,7 @@ export default function UserProfile() {
                   </FormControl>
                   {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>}
                 </Grid>
-                {userData?.me?.authProvider === 'email' ? (
+                {userData?.me?.authProvider === 'email' && (
                   <Grid item xs={12}>
                     <FormControl fullWidth>
                       <InputLabel>Contact Email</InputLabel>
@@ -213,7 +212,8 @@ export default function UserProfile() {
                     </FormControl>
                     {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
                   </Grid>
-                ) : (
+                )}
+                {userData?.me?.authProvider === 'phone' && (
                   <Grid item xs={12}>
                     <FormControl fullWidth>
                       <InputLabel>Contact Phone</InputLabel>
