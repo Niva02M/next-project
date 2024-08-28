@@ -7,7 +7,7 @@ import { ThemeMode } from 'types/config';
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
 
-export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean) {
+export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean, disableElevation: boolean) {
   const mode = theme.palette.mode;
   const menuSelectedBack = mode === ThemeMode.DARK ? alpha(theme.palette.primary.main, 0.15) : theme.palette.primary.light;
   const menuSelected = mode === ThemeMode.DARK ? theme.palette.primary.main : theme.palette.text.dark;
@@ -380,6 +380,13 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         flexContainer: {
           borderBottom: '1px solid',
           borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.2) : theme.palette.grey[200]
+        }
+      }
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          maxWidth: 'none'
         }
       }
     },

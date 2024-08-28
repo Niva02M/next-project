@@ -45,7 +45,7 @@ export default function Settings() {
           </Paper>
         </Grid>
         <Grid item xs={12} lg={9.64}>
-          <Paper sx={{ padding: '20px' }}>
+          <Paper>
             <Box>
               <TabPanel value={value} index={0}>
                 <EditSettings />

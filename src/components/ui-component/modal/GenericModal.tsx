@@ -8,10 +8,10 @@ import { LoadingButton } from '@mui/lab';
 interface IGenericModalProps {
   open: boolean;
   setOpen: any;
-  title?: string;
   children: any;
   openModal: boolean;
   closeModal: any;
+  title?: string;
   maxWidth?: number;
   btnDirection?: 'column' | 'row';
   btnTextYes?: string;
