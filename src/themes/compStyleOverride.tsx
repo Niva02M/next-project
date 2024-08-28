@@ -534,6 +534,41 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
           alignItems: 'center'
         }
       }
+    },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          margin: '0 -16px',
+          minHeight: 'auto',
+          '&.MuiPaper-root': {
+            '&:before': {
+              content: 'none'
+            }
+          },
+          '&.Mui-expanded': {
+            borderRadius: 8,
+            backgroundColor: theme.palette.primary.light,
+            margin: '0 -16px 12px',
+          }
+        }
+      }
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          minHeight: 'auto',
+          '&.MuiButtonBase-root': {
+            minHeight: 'auto',
+          }
+        },
+        content: {
+          margin: 0,
+          '&.Mui-expanded': {
+            margin: '12px 0 0',
+            minHeight: 'auto'
+          }
+        }
+      }
     }
   };
 }

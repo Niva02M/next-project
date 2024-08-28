@@ -12,6 +12,12 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'ui-component/cards/MainCard';
 import Accordion from 'ui-component/extended/Accordion';
 import { gridSpacing } from 'store/constant';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_FAQ_QUERY } from './graphql/queries';
+import { useEffect, useState } from 'react';
+import FaqAccordion from 'ui-component/extended/FaqAccordion';
+import { set } from 'lodash';
+import Loader from 'ui-component/Loader';
 
 // assets
 const mailImg = '/assets/images/landing/widget-mail.svg';
@@ -46,6 +52,24 @@ const basicData = [
 // ============================|| SAAS PAGES - FAQs ||============================ //
 
 const Faqs = () => {
+  const { data, loading } = useQuery(GET_ALL_FAQ_QUERY, {
+    variables: {
+      input: {
+        limit: 10,
+        order: 'asc',
+        orderBy: 'section',
+        searchText: '',
+        skip: 0
+      }
+    }
+  });
+
+  // const [faq, setFaq] = useState([]);
+  // useEffect(() => {
+  //   setFaq(data?.getAllFAQ?.faqs);
+  //   console.log(faq);
+  // }, [faq]);
+
   return (
     <Box
       sx={{
@@ -103,7 +127,7 @@ const Faqs = () => {
           </Grid>
           <Grid item xs={12}>
             <MainCard sx={{ textAlign: 'left' }} elevation={4} border={false} boxShadow shadow="4">
-              <Accordion data={basicData} />
+              {loading ? <Loader /> : <FaqAccordion data={data?.getAllFAQ?.faqs} />}
             </MainCard>
           </Grid>
         </Grid>
