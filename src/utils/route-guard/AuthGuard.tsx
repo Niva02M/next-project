@@ -48,6 +48,7 @@ const AuthGuard = ({ children }: GuardProps) => {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
+      router.replace(pageRoutes.login);
     }
   }, [status, data, router]);
 
