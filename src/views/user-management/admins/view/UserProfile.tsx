@@ -48,6 +48,11 @@ export default function UserProfile() {
   });
   const [profileUrl, setProfileUrl]=useState();
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [imageSize, setImageSize] =  useState(false);
+
+  useEffect(() => {
+    console.log(imageSize);
+  },[imageSize]);
 
   const { data: userData, loading } = useQuery(GET_PROFILE_QUERY);
 
@@ -57,8 +62,10 @@ export default function UserProfile() {
 
   const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
+    //check image size is less than 200kb
     if (file) {
       const imageUrl = URL.createObjectURL(file);
+      // if(200000 < file?.size!) {}
       setAvatarPreview(imageUrl);
       try {
         // Fetch the Pre-Signed URL from your server
@@ -88,12 +95,14 @@ export default function UserProfile() {
           // const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
 
           setFieldValue('profileImage', file.name);
-          successSnack('Profile picture uploaded successfully!');
+          // setImageSize(true);
+          // successSnack('Profile picture uploaded successfully!');
         } else {
           throw new Error('Failed to upload image');
         }
       } catch (error) {
-        errorSnack('Error uploading image');
+        // setImageSize(false);
+        // errorSnack('Error uploading image');
       }
     }
   };
@@ -168,6 +177,7 @@ export default function UserProfile() {
                       Change profile picture
                     </Typography>
                   </Stack>
+                  {imageSize && <FormHelperText error>Image size is too big to upload</FormHelperText>}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
