@@ -206,7 +206,6 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile }: any) {
-      console.log('user ====>', user);
       const providerData = await handleProvider(account);
       if (providerData) {
         user.id = providerData.id;
