@@ -11,7 +11,8 @@ import {
   Stack,
   styled,
   TextField,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -21,24 +22,10 @@ import { UPDATE_PROFILE_MUTATION } from '../graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { GET_PROFILE_QUERY, GET_PRESIGNED_URL } from '../graphql/queries';
 import AlignCenter from 'components/align-center/AlignCenter';
-
-const UploadAvatar = styled(Box)(({ theme }) => ({
-  position: 'relative',
-
-  'input[type="file"]': {
-    position: 'absolute',
-    opacity: 0,
-    width: 62,
-    height: 62,
-    zIndex: 1
-  },
-  '.MuiAvatar-root': {
-    width: 62,
-    height: 62
-  }
-}));
+import { UploadAvatar } from '../Admin.styles';
 
 export default function UserProfile() {
+  const theme = useTheme();
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [initialValues, setInitialValues] = useState({
     firstName: '',
@@ -46,26 +33,25 @@ export default function UserProfile() {
     authProviderId: '',
     profileImage: ''
   });
-  const [profileUrl, setProfileUrl]=useState();
+  const [profileUrl, setProfileUrl] = useState();
   const [avatarPreview, setAvatarPreview] = useState('');
-  const [imageSize, setImageSize] =  useState(false);
-
-  useEffect(() => {
-    console.log(imageSize);
-  },[imageSize]);
+  const [profileFileName, setProfileFileName] = useState('');
+  const [imageSize, setImageSize] = useState(false);
 
   const { data: userData, loading } = useQuery(GET_PROFILE_QUERY);
-
   const [handleUpdateProfile] = useMutation(UPDATE_PROFILE_MUTATION);
-
   const [getPreSignedUrl] = useLazyQuery(GET_PRESIGNED_URL);
 
   const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
     //check image size is less than 200kb
+    if (200000 < file?.size!) {
+      setImageSize(true);
+    } else {
+      setImageSize(false);
+    }
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      // if(200000 < file?.size!) {}
       setAvatarPreview(imageUrl);
       try {
         // Fetch the Pre-Signed URL from your server
@@ -90,21 +76,14 @@ export default function UserProfile() {
           }
         });
 
-        console.log('uploadResponse =====>', uploadResponse);
-
         if (uploadResponse.ok) {
-          // Get the final image URL from the presigned URL response (assuming it's derived from the upload)
-          // const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
-
           setFieldValue('profileImage', file.name);
-          // setImageSize(true);
-          // successSnack('Profile picture uploaded successfully!');
+          setProfileFileName(file.name);
         } else {
           throw new Error('Failed to upload image');
         }
       } catch (error) {
-        // setImageSize(false);
-        // errorSnack('Error uploading image');
+        throw new Error('Failed to upload image');
       }
     }
   };
@@ -130,13 +109,13 @@ export default function UserProfile() {
         firstName: userData?.me?.firstName || '',
         lastName: userData?.me?.lastName || '',
         authProviderId: userData?.me?.authProviderId || '',
-        profileImage: userData?.me?.profileImage || ''
+        profileImage: profileFileName || ''
       });
     }
     if (userData?.me?.profileImage) {
       setProfileUrl(userData?.me?.profileImage);
     }
-  }, [userData]);
+  }, [userData, profileFileName]);
 
   return (
     <Formik
@@ -176,7 +155,8 @@ export default function UserProfile() {
                       <Avatar src={avatarPreview || profileUrl} />
                     </UploadAvatar>
                     <Typography htmlFor="upload-avatar" component={'label'}>
-                      Change profile picture
+                      Change profile picture <br />
+                      <Typography fontSize={theme.typography.body4.fontSize} color="grey.500">Image size should be less than 200kb</Typography>
                     </Typography>
                   </Stack>
                   {imageSize && <FormHelperText error>Image size is too big to upload</FormHelperText>}
@@ -243,7 +223,13 @@ export default function UserProfile() {
                 )}
                 <Grid item xs={12}>
                   <Stack alignItems={'flex-end'}>
-                    <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
+                    <LoadingButton
+                      loading={isSubmitting}
+                      disabled={isSubmitting || imageSize}
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                    >
                       Save changes
                     </LoadingButton>
                   </Stack>
