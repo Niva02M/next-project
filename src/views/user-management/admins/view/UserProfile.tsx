@@ -90,6 +90,8 @@ export default function UserProfile() {
           }
         });
 
+        console.log('uploadResponse =====>', uploadResponse);
+
         if (uploadResponse.ok) {
           // Get the final image URL from the presigned URL response (assuming it's derived from the upload)
           // const finalImageUrl = url.split('?')[0]; // Remove the query params to get the actual file URL
