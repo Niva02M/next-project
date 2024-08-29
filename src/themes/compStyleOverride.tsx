@@ -538,17 +538,17 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     MuiAccordion: {
       styleOverrides: {
         root: {
-          margin: '0 -16px',
+          margin: '8px 0',
           minHeight: 'auto',
           '&.MuiPaper-root': {
+            backgroundColor: theme.palette.primary.light,
+            borderRadius: 8,
             '&:before': {
               content: 'none'
             }
           },
           '&.Mui-expanded': {
-            borderRadius: 8,
-            backgroundColor: theme.palette.primary.light,
-            margin: '0 -16px 12px',
+            margin: '8px 0'
           }
         }
       }
@@ -558,15 +558,23 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         root: {
           minHeight: 'auto',
           '&.MuiButtonBase-root': {
-            minHeight: 'auto',
+            minHeight: 'auto'
           }
         },
         content: {
-          margin: 0,
+          margin: '16px 0',
           '&.Mui-expanded': {
-            margin: '12px 0 0',
+            margin: '16px 0',
             minHeight: 'auto'
           }
+        }
+      }
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          paddingTop: 0,
+          fontSize: theme.typography.body2.fontSize
         }
       }
     }
