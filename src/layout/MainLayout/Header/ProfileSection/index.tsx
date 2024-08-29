@@ -47,8 +47,7 @@ const ProfileSection = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { errorSnack } = useSuccErrSnack();
-  const { data, loading } = useQuery(GET_PROFILE_QUERY);
-  const [profileImage, setProfileImage] = useState('');
+  const { data } = useQuery(GET_PROFILE_QUERY);
 
   const openLogoutModal = () => {
     setOpenModal(true);
@@ -113,17 +112,13 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
 
-  useEffect(() => {
-    if (!loading && data?.me?.profileImage) setProfileImage(data?.me?.profileImage);
-  }, [loading, data]);
-
   const [openModal, setOpenModal] = useState(false);
 
   return (
     <>
       <IconButton onClick={handleToggle} sx={{ p: 0 }}>
         <Avatar
-          src={profileImage}
+          src={data?.me?.profileImage}
           alt="user-images"
           sx={{
             ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
