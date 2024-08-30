@@ -46,11 +46,19 @@ export default function Settings() {
     }
   }, [localStorageKey]);
 
+  const [isModified, setIsModified] = useState(false);
+
+  const handleFormChange = (currentValues: FormValues) => {
+    const isChanged = JSON.stringify(initialValues) !== JSON.stringify(currentValues);
+    setIsModified(isChanged);
+  };
+
   const handleSubmitForm = (values: any) => {
     try {
       localStorage.setItem(localStorageKey, JSON.stringify(values));
       setInitialValues(values);
       successSnack('Settings saved successfully!');
+      setIsModified(false);
     } catch (error) {
       errorSnack('Failed to save settings. Please try again.');
     }
@@ -70,6 +78,15 @@ export default function Settings() {
         onSubmit={(values) => handleSubmitForm(values)}
       >
         {({ errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
+
+          const customHandleChange = (event: React.ChangeEvent<any>) => {
+            handleChange(event);
+            handleFormChange({
+              ...values,
+              [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
+            });
+          };
+
           return (
             <form onSubmit={handleSubmit}>
               <Grid container item md={6} spacing={2.5} rowGap={0.5}>
@@ -84,7 +101,7 @@ export default function Settings() {
                           error={Boolean(errors[setting.slug as keyof FormValues])}
                           helperText={errors[setting.slug as keyof FormValues]}
                           onBlur={handleBlur}
-                          onChange={handleChange}
+                          onChange={customHandleChange}
                         />
                       </FormControl>
                     )}
@@ -97,7 +114,7 @@ export default function Settings() {
                             <FormControlLabel
                               control={
                                 <Checkbox
-                                  onChange={handleChange}
+                                  onChange={customHandleChange}
                                   name={setting.slug}
                                   value={option}
                                   checked={
@@ -120,7 +137,7 @@ export default function Settings() {
                         <RadioGroup
                           aria-labelledby="radio-group"
                           name={setting.slug}
-                          onChange={handleChange}
+                          onChange={customHandleChange}
                           value={values[setting.slug as keyof FormValues] || ''}
                         >
                           {setting?.options?.map((option, index) => (
@@ -133,7 +150,7 @@ export default function Settings() {
                       <>
                         <FormLabel component="legend">{setting.title}</FormLabel>
                         <Switch
-                          onChange={handleChange}
+                          onChange={customHandleChange}
                           inputProps={{ 'aria-label': 'controlled' }}
                           name={setting.slug}
                           // @ts-ignore
@@ -145,7 +162,13 @@ export default function Settings() {
                 ))}
                 <Grid item xs={12}>
                   <Stack alignItems={'flex-start'}>
-                    <LoadingButton loading={isSubmitting} disabled={isSubmitting} type="submit" variant="contained" size="large">
+                    <LoadingButton
+                      loading={isSubmitting}
+                      disabled={!isModified || isSubmitting}
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                    >
                       Save changes
                     </LoadingButton>
                   </Stack>
