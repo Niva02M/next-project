@@ -22,7 +22,6 @@ export default function ChangePassword() {
   const handleSubmitForm = async (values: any) => {
     const newValue = { ...values };
     delete newValue.confirmPassword;
-
     try {
       const response = await handleChangePassword({
         variables: {
@@ -33,14 +32,7 @@ export default function ChangePassword() {
       });
       successSnack(response?.data?.changePassword?.message);
     } catch (error: any) {
-      {/* Error message should up fix on api following code must be updated later */}
-      if (values.password === values.new_password) {
-        errorSnack('New password can not be same as old password');
-      } else if (error.message === 'Forbidden') {
-        errorSnack('Password you have provided does not match with your existing password.');
-      } else {
-        errorSnack(error.message);
-      }
+      errorSnack(error.message);
     }
   };
 
