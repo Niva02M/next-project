@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { TabPanel } from 'views/user-management/admins/view';
 import EditSettings from './EditSettings';
 import { settingsTabOption } from './constant';
-import Subscription from './subscription';
+import Subscription from './payment';
 
 export default function Settings() {
   const [value, setValue] = useState<number>(0);

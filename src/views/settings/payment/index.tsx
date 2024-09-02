@@ -19,9 +19,9 @@ import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import MainCard from 'ui-component/cards/MainCard';
 import Visa from 'assets/subscription/visa.svg';
-import AddPaymentElement from './AddPayemntElement';
+import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
-import { PaymentDetailWrapper } from './Subscripton.styles';
+import { PaymentDetailWrapper } from './Payment.styles';
 // import { AddPaymentElement } from './AddPayemntElement';
 
 export default function Subscription() {

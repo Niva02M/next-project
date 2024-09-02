@@ -4,7 +4,7 @@ import CheckoutForm from './CheckoutForm';
 import { Button, Typography } from '@mui/material';
 import { GET_EPHEMERAL_KEY_QUERY } from './graphql/queries';
 import { useQuery } from '@apollo/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -14,24 +14,23 @@ const stripePromise = loadStripe(
 
 export default function AddPaymentElement({ kind }: { kind: string }) {
   const { data } = useQuery(GET_EPHEMERAL_KEY_QUERY);
+  // console.log('stripePromise ====>', stripePromise);
+  const [secret, setSecret] = useState('');
+  console.log('data ====>', data);
+  // `${resData.id}_secret_${resData.clientSecret}`
   useEffect(() => {
-    console.log('clientSecert ====>', data);
-  });
-  const options = {
-    // passing the client secret obtained from the server
-    // clientSecret: '{{sk_test_51PsHKgB6OyBxjtx8ROh460J7rXivp8PIHUhdQVCc8A33IXQzcy1uQtyjETuey5UeeajlG19uBy1nrpvbr6qI1pnP00wOxBf4sy}}'
-  };
-
-  return (
-    // <Elements stripe={stripePromise} options={options}>
-    //   <CheckoutForm />
-    // </Elements>
+    if (data?.getEphemeralKey) setSecret(`${data?.getEphemeralKey?.data?.keyId}_secret_${data?.getEphemeralKey?.data?.keySecret}`);
+    console.log('options -===>', secret);
+  }, [data?.getEphemeralKey]);
+  return secret ? (
     <>
-      <Typography variant={'h6'}>{kind}</Typography>
+      <Elements stripe={stripePromise} options={{ clientSecret: secret }}>
+        <CheckoutForm />
+      </Elements>
       <Button
         onClick={(e) => {
           e.preventDefault();
-          //   save(stripe, elements);
+          // save(stripe, elements);
         }}
         type="submit"
         variant="contained"
@@ -42,5 +41,6 @@ export default function AddPaymentElement({ kind }: { kind: string }) {
         Add payment details
       </Button>
     </>
-  );
+  ) : null;
 }
+
