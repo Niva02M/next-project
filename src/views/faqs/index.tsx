@@ -10,42 +10,31 @@ import Typography from '@mui/material/Typography';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import Accordion from 'ui-component/extended/Accordion';
 import { gridSpacing } from 'store/constant';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_FAQ_QUERY } from './graphql/queries';
+import FaqAccordion from 'ui-component/extended/FaqAccordion';
+import Loader from 'ui-component/Loader';
 
 // assets
 const mailImg = '/assets/images/landing/widget-mail.svg';
 const headerBackground = '/assets/images/landing/bg-header.jpg';
 
-const basicData = [
-  {
-    id: 'basic1',
-    title: 'When do I need Extended License?',
-    defaultExpand: true,
-    content:
-      'If your End Product which is sold - Then only your required Extended License. i.e. If you take subscription charges (monthly, yearly, etc...) from your end users in this case you required Extended License.'
-  },
-  {
-    id: 'basic2',
-    title: 'What Support Includes?',
-    content: '6 Months of Support Includes with 1 year of free updates. We are happy to solve your bugs, issue.'
-  },
-  {
-    id: 'basic3',
-    title: 'Is Ebtheme Support TypeScript?',
-    content: 'Yes, Ebtheme Support the TypeScript and it is only available in Plus and Extended License.'
-  },
-  {
-    id: 'basic4',
-    title: 'Is there any RoadMap for Ebtheme?',
-    content:
-      'Ebtheme is our flagship React Dashboard Template and we always add the new features for the long run. You can check the Roadmap in Documentation.'
-  }
-];
-
 // ============================|| SAAS PAGES - FAQs ||============================ //
 
 const Faqs = () => {
+  const { data, loading } = useQuery(GET_ALL_FAQ_QUERY, {
+    variables: {
+      input: {
+        limit: 10,
+        order: 'asc',
+        orderBy: 'section',
+        searchText: '',
+        skip: 0
+      }
+    }
+  });
+
   return (
     <Box
       sx={{
@@ -103,7 +92,7 @@ const Faqs = () => {
           </Grid>
           <Grid item xs={12}>
             <MainCard sx={{ textAlign: 'left' }} elevation={4} border={false} boxShadow shadow="4">
-              <Accordion data={basicData} />
+              {loading ? <Loader /> : <FaqAccordion data={data?.getAllFAQ?.faqs} />}
             </MainCard>
           </Grid>
         </Grid>

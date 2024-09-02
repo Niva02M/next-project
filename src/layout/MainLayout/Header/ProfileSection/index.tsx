@@ -32,8 +32,8 @@ import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { InfoIcon } from 'components/icons';
 import { useRouter } from 'next/navigation';
-
-const User1 = '/assets/images/users/user-round.svg';
+import { useQuery } from '@apollo/client';
+import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -47,6 +47,7 @@ const ProfileSection = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { errorSnack } = useSuccErrSnack();
+  const { data } = useQuery(GET_PROFILE_QUERY);
 
   const openLogoutModal = () => {
     setOpenModal(true);
@@ -117,7 +118,7 @@ const ProfileSection = () => {
     <>
       <IconButton onClick={handleToggle} sx={{ p: 0 }}>
         <Avatar
-          src={User1}
+          src={data?.me?.profileImage}
           alt="user-images"
           sx={{
             ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),

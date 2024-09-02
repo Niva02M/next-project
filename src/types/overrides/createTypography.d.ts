@@ -43,7 +43,7 @@ declare module '@mui/material/styles/createTypography' {
     smallAvatar: TypographyStyle;
     mediumAvatar: TypographyStyle;
     largeAvatar: TypographyStyle;
-    body3: TypographyStyle;
-    body4: TypographyStyle;
+    body3: TypographyStyleOptions;
+    body4: TypographyStyleOptions;
   }
 }
