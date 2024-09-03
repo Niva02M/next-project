@@ -30,7 +30,6 @@ import {
   EMAIL_VERIFICATION_FAILED,
   FORGOT_PASSWORD,
   INVALID_LOGIN_CREDENTIAL,
-  LOGIN_SUCCESSFUL,
   SIGN_IN_NOW
 } from '../constants';
 import AlternateLogins from 'components/alternate-logins/AlternateLogins';

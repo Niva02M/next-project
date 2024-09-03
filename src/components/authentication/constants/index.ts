@@ -23,7 +23,6 @@ export const REGISTER_WITH_EMAIL = 'Register with Email';
 export const REGISTER_WITH_PHONE = 'Register with Phone';
 export const REGISTER_WITH_FACEBOOK = 'Register with Facebook';
 export const REGISTER_WITH_GOOGLE = 'Register with Google';
-export const LOGIN_SUCCESSFUL = 'Login successful';
 export const INVALID_LOGIN_CREDENTIAL = 'Invalid login credential';
 export const EMAIL_VERIFICATION_CODE_SENT = 'Email verification code sent, please verify your email';
 export const EMAIL_VERIFICATION_FAILED = 'Email verification failed';
