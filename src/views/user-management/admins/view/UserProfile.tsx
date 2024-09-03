@@ -43,11 +43,11 @@ export default function UserProfile() {
   const handleProfilePicutreChange = async (e: React.ChangeEvent<HTMLInputElement>, setFieldValue: any) => {
     const file = e.target.files?.[0];
     //check image size is less than 200kb
-    if (200000 < file?.size!) {
+    if (file && file.size > 200000) {
       setImageSize(true);
-    } else {
-      setImageSize(false);
+      return;
     }
+    setImageSize(false);
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setAvatarPreview(imageUrl);
