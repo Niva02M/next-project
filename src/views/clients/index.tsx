@@ -29,8 +29,8 @@ const ClientList = () => {
               <CustomTimeRangePicker
                 startTime={values.startTime}
                 endTime={values.endTime}
-                onChangeStartTime={(date) => setFieldValue('startTime', date)}
-                onChangeEndTime={(date) => setFieldValue('endTime', date)}
+                onChangeStartTime={(date: any) => setFieldValue('startTime', date)}
+                onChangeEndTime={(date: any) => setFieldValue('endTime', date)}
                 errorStartTime={touched.startTime && errors.startTime ? errors.startTime : ''}
                 errorEndTime={touched.endTime && errors.endTime ? errors.endTime : ''}
                 timeIntervals={60}

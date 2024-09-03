@@ -5,10 +5,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { TimeRangeWrapper } from './CustomtimeRangePicker.style';
 
 type CustomTimeRangePickerType = {
-  startTime: Date | string;
-  endTime: Date | string;
-  onChangeStartTime: (date: Date) => void;
-  onChangeEndTime: (date: Date) => void;
+  // startTime: Date | string;
+  // endTime: Date | string;
+  startTime: any;
+  endTime: any;
+  // onChangeStartTime: (date: Date) => void;
+  // onChangeEndTime: (date: Date) => void;
+  onChangeStartTime: any;
+  onChangeEndTime: any;
   placeholderStartTime?: string;
   placeHolderEndTime?: string;
   errorStartTime?: string;

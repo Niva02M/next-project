@@ -209,7 +209,7 @@ const NavCollapse = ({ menu, level, parentId }: NavCollapseProps) => {
 
   const Icon = menu.icon!;
   const menuIcon = menu.icon ? (
-    <Icon strokeWidth={1.5} size={drawerOpen ? '20px' : '24px'} />
+    <Icon strokeWidth={1.5} size={drawerOpen ? '20px' : '24px'} stroke={theme.palette.secondary.main} />
   ) : (
     <FiberManualRecordIcon
       sx={{
