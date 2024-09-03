@@ -30,7 +30,6 @@ import {
   EMAIL_VERIFICATION_FAILED,
   FORGOT_PASSWORD,
   INVALID_LOGIN_CREDENTIAL,
-  LOGIN_SUCCESSFUL,
   SIGN_IN_NOW
 } from '../constants';
 import AlternateLogins from 'components/alternate-logins/AlternateLogins';
@@ -123,7 +122,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 deviceId: generateDeviceId(),
                 callbackUrl: pageRoutes.dashboard
               });
-              successSnack(LOGIN_SUCCESSFUL);
+              successSnack('login-successful');
             } else {
               res = await signIn('credentials', {
                 email: values.email,

@@ -18,6 +18,7 @@ import { KeyedObject } from 'types';
 
 // assets
 import CloseIcon from '@mui/icons-material/Close';
+import { FormattedMessage } from 'react-intl';
 
 // animation function
 function TransitionSlideLeft(props: SlideProps) {
@@ -72,7 +73,7 @@ const Snackbar = () => {
           open={open}
           autoHideDuration={1500}
           onClose={handleClose}
-          message={message}
+          message={<FormattedMessage id={message} />}
           TransitionComponent={animation[transition]}
           action={
             <>
@@ -119,7 +120,7 @@ const Snackbar = () => {
               })
             }}
           >
-            {message}
+            <FormattedMessage id={message} />
           </Alert>
         </MuiSnackbar>
       )}
