@@ -20,5 +20,6 @@
   "settings": "Settings",
   "terms-and-condition": "Terms and conditions",
   "dashboard": "Dashboard",
-  "login-successful": "Login successful"
+  "login-successful": "Login successful",
+  "clients":  "Clients"
 }
