@@ -1,3 +1,4 @@
+import { FormattedMessage } from 'react-intl';
 import { useDispatch } from 'store';
 import { openSnackbar } from 'store/slices/snackbar';
 

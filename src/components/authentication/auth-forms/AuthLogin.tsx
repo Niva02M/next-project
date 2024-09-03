@@ -123,7 +123,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 deviceId: generateDeviceId(),
                 callbackUrl: pageRoutes.dashboard
               });
-              successSnack(LOGIN_SUCCESSFUL);
+              successSnack('login-successful');
             } else {
               res = await signIn('credentials', {
                 email: values.email,
