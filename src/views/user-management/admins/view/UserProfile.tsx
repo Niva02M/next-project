@@ -122,11 +122,12 @@ export default function UserProfile() {
       validationSchema={Yup.object().shape({
         firstName: Yup.string().min(2).required().label('First name'),
         lastName: Yup.string().min(2).required().label('Last name'),
-        authProviderId: userData?.me
-          ? Yup.string().email().required().label('Email address')
-          : userData?.me?.authProviderId != 'email'
-            ? Yup.string().required().label('Phone')
-            : Yup.string().email().required().label('Email address'),
+        authProviderId:
+          userData?.me?.authProviderId === 'email'
+            ? Yup.string().email().required().label('Email address')
+            : userData?.me?.authProviderId === 'phone'
+              ? Yup.string().required().label('Phone')
+              : Yup.string().email().required().label('Email address'),
         profileImage: Yup.string().optional().label('Profile image')
       })}
       onSubmit={handleSubmitForm}
@@ -154,7 +155,9 @@ export default function UserProfile() {
                     </UploadAvatar>
                     <Typography htmlFor="upload-avatar" component={'label'}>
                       Change profile picture <br />
-                      <Typography fontSize={theme.typography.body4.fontSize} color="grey.500">Image size should be less than 200kb</Typography>
+                      <Typography fontSize={theme.typography.body4.fontSize} color="grey.500">
+                        Image size should be less than 200kb
+                      </Typography>
                     </Typography>
                   </Stack>
                   {imageSize && <FormHelperText error>Image size is too big to upload</FormHelperText>}

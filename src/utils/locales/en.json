@@ -21,5 +21,6 @@
   "terms-and-condition": "Terms and conditions",
   "dashboard": "Dashboard",
   "login-successful": "Login successful",
-  "clients":  "Clients"
+  "clients":  "Clients",
+  "verification-code-sent": "Verification code sent to your phone number please use that code to verify your phone number."
 }
