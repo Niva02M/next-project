@@ -66,6 +66,7 @@ const VerifyRegistration = () => {
         ...tokenDetail,
         redirect: false
       });
+      console.log('signInResponse', signInResponse);
       if (signInResponse) {
         removeItem('register');
         localStorage.setItem('accessToken', tokenDetail.accessToken);

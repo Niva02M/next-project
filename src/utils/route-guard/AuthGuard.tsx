@@ -31,7 +31,6 @@ const AuthGuard = ({ children }: GuardProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-
     if (status === 'authenticated') {
       const payload = data?.user as any;
       if (payload?.user?.status === UserAccountStatus.email_verified || payload?.user?._id) {
@@ -47,8 +46,6 @@ const AuthGuard = ({ children }: GuardProps) => {
         }, 1000);
       }
     } else if (status === 'unauthenticated') {
-      router.replace(pageRoutes.login);
-    } else {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { Box, FormControl, FormHelperText, Grid, InputLabel, useTheme } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import PhoneInput, { isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
+import PhoneInput, { formatPhoneNumberIntl, isValidPhoneNumber, parsePhoneNumber } from 'react-phone-number-input';
 
 import 'react-phone-number-input/style.css';
 import { useMutation } from '@apollo/client';
@@ -27,7 +27,7 @@ export default function PhoneLogin() {
     const resposeRequestOtp = await requestOtp({
       variables: {
         body: {
-          number: countryCode?.number,
+          number: countryCode?.nationalNumber,
           dialCode: countryCode?.countryCallingCode,
           deviceId: '123456'
         }
@@ -39,13 +39,13 @@ export default function PhoneLogin() {
       localStorage.setItem(
         'userRegisterWithPhone',
         JSON.stringify({
-          phoneNumber: countryCode?.number,
+          phoneNumber: countryCode?.nationalNumber,
           dialCode: countryCode?.countryCallingCode,
           deviceId: '123456',
           expiryTime: expiryTimeMilliSecond
         })
       );
-      successSnack(resposeRequestOtp?.data?.requestPhoneLoginOTP?.message);
+      successSnack(resposeRequestOtp?.data?.requestPhoneLoginOTP?.message && 'verification-code-sent');
       router.push(pageRoutes.verifyRegistrationPhone);
     }
   };
@@ -96,7 +96,7 @@ export default function PhoneLogin() {
                     id="phoneNumber"
                     name="phoneNumber"
                     placeholder="Enter phone number"
-                    value={values.phoneNumber}
+                    value={formatPhoneNumberIntl(values.phoneNumber)}
                     international
                     defaultCountry="AU"
                     onChange={(value) => {
