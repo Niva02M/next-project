@@ -1,13 +1,15 @@
 import { Box, styled } from '@mui/material';
 
 export const TimeRangeWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
   width: '50%',
 
   '.react-datepicker': {
-    borderRadius: '8px',
+    borderRadius: '0',
     overflow: 'hidden',
     borderColor: theme.palette.primary.main,
     fontFamily: 'inherit',
+    width: '100%',
 
     '&-time__header': {
       color: theme.palette.background.paper
@@ -38,7 +40,7 @@ export const TimeRangeWrapper = styled(Box)(({ theme }) => ({
     },
 
     ' &__time-container': {
-      width: '178px',
+      width: '100%',
 
       '.react-datepicker__time': {
         '.react-datepicker__time-box': {
@@ -64,7 +66,8 @@ export const TimeRangeWrapper = styled(Box)(({ theme }) => ({
 
     '&__header': {
       backgroundColor: theme.palette.primary.main,
-      borderBottomColor: theme.palette.background.paper
+      borderBottomColor: theme.palette.background.paper,
+      borderRadius: 0
     },
 
     '&__close-icon': {
@@ -81,6 +84,12 @@ export const TimeRangeWrapper = styled(Box)(({ theme }) => ({
 
     '&__triangle': {
       display: 'none'
+    },
+
+    '&-popper.datepicker-popper': {
+      top: '52px !important',
+      width: '100%',
+      transform: 'none !important',
     }
   }
 }));

@@ -12,8 +12,8 @@ import MainCard from 'ui-component/cards/MainCard';
 const ClientList = () => {
   const handleSubmitForm = () => {};
   return (
-    <MainCard title="Client List">
-      <Typography variant="h5">Time range picker</Typography>
+    <MainCard title="Client List" sx={{ overflow: 'visible' }}>
+      <Typography variant="h5" mb={2}>Time range picker</Typography>
       <Formik
         enableReinitialize
         initialValues={{
