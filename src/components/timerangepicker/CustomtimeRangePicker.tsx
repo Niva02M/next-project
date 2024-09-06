@@ -38,7 +38,7 @@ function CustomTimeRangePicker({
   labelEndTime = 'End Time'
 }: CustomTimeRangePickerType) {
   return (
-    <Stack direction="row" gap={1}>
+    <Stack direction="row" gap={2.5}>
       <TimeRangeWrapper>
         {showLabel && <InputLabel sx={{ mb: 0.5 }}>{labelStartTime}</InputLabel>}
         <DatePicker
@@ -50,7 +50,8 @@ function CustomTimeRangePicker({
           timeCaption="Time"
           dateFormat="h:mmaa"
           placeholderText={placeholderStartTime}
-          isClearable
+          isClearable={startTime != '' && true}
+          popperClassName="datepicker-popper"
         />
         {errorStartTime && (
           <FormHelperText error id="startTime-error">
@@ -69,7 +70,8 @@ function CustomTimeRangePicker({
           timeCaption="Time"
           dateFormat="h:mmaa"
           placeholderText={placeHolderEndTime}
-          isClearable
+          isClearable={endTime != '' && true}
+          popperClassName="datepicker-popper"
         />
         {errorEndTime && (
           <FormHelperText error id="startTime-error">
