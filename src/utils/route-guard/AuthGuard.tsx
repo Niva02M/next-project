@@ -35,6 +35,7 @@ const AuthGuard = ({ children }: GuardProps) => {
       const payload = data?.user as any;
       if (payload?.user?.status === UserAccountStatus.email_verified || payload?.user?._id) {
         setTokens(payload?.access_token, payload?.refresh_token);
+
         if (pathname) {
           router.replace(pathname);
         } else {
@@ -44,13 +45,12 @@ const AuthGuard = ({ children }: GuardProps) => {
           setIsLoading(false);
         }, 1000);
       }
-    } else {
+    } else if (status === 'unauthenticated') {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
-      router.replace(pageRoutes.login);
     }
-  }, [status, data, router]);
+  }, [status, data, router, pathname]);
 
   return isLoading ? (
     <Grid container justifyContent="center" alignItems="center" sx={{ height: '100vh' }}>

@@ -6,11 +6,12 @@ import reports from './reports';
 // types
 import { NavItemType } from 'types';
 import settingPage from './setting';
+import clients from './clients';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems: { items: NavItemType[] } = {
-  items: [dashboard, pages, reports, settingPage]
+  items: [dashboard, pages, reports, clients, settingPage]
 };
 
 export default menuItems;

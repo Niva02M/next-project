@@ -62,7 +62,7 @@ const VerifyRegistrationPhone = () => {
           ...loginWithPhoneDetail,
           expiryTime: new Date(data.requestPhoneLoginOTP.expiry?.expiresAt || 0).getTime()
         });
-        successSnack(data?.requestPhoneLoginOTP?.message || 'Code sent successfully. Please check your message on phone');
+        successSnack(data?.requestPhoneLoginOTP?.message && 'verification-code-sent');
       } else {
         errorSnack('Resending code failed. Please try again');
       }

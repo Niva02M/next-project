@@ -65,7 +65,11 @@ const NavItem = ({ item, level, isParents = false, setSelectedID }: NavItemProps
 
   const Icon = item?.icon!;
   const itemIcon = item?.icon ? (
-    <Icon stroke={1.5} size={drawerOpen ? '20px' : '24px'} style={{ ...(isHorizontal && isParents && { fontSize: 20, stroke: '1.5' }) }} />
+    <Icon
+      stroke={1.5}
+      size={drawerOpen ? '20px' : '24px'}
+      style={{ ...(isHorizontal && isParents && { fontSize: 20, stroke: '1.5' }), color: theme.palette.secondary.main }}
+    />
   ) : (
     <FiberManualRecordIcon sx={{ width: isSelected ? 8 : 6, height: isSelected ? 8 : 6 }} fontSize={level > 0 ? 'inherit' : 'medium'} />
   );
