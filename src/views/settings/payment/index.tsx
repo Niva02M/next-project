@@ -22,7 +22,6 @@ import Visa from 'assets/subscription/visa.svg';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
-// import { AddPaymentElement } from './AddPayemntElement';
 
 export default function Subscription() {
   const [open, setOpen] = useState(false);
@@ -37,7 +36,6 @@ export default function Subscription() {
       id: 1,
       value: 'subcritpion',
       image: Visa,
-      cardName: 'Subcription card',
       cardLastFourDigit: '4242',
       cardExpireDate: `${new Date()}`
     },
@@ -45,7 +43,6 @@ export default function Subscription() {
       id: 2,
       value: 'visa',
       image: Visa,
-      cardName: 'Visa card',
       cardLastFourDigit: '2424',
       cardExpireDate: `${new Date()}`
     },
@@ -53,7 +50,6 @@ export default function Subscription() {
       id: 3,
       value: 'master',
       image: Visa,
-      cardName: 'Master card',
       cardLastFourDigit: '1111',
       cardExpireDate: `${new Date()}`
     }
@@ -84,7 +80,6 @@ export default function Subscription() {
                 label={
                   <Stack>
                     <Image src={item.image} alt="card-image"></Image>
-                    <Typography>{item.cardName}</Typography>
                     <Divider orientation="vertical" sx={{ height: 20 }} />
                     <Typography>**** **** **** {item.cardLastFourDigit}</Typography>
                     <Typography>Exp {dayjs(item.cardExpireDate).format('MM/YY')}</Typography>
@@ -96,24 +91,6 @@ export default function Subscription() {
               </IconButton>
             </PaymentDetailWrapper>
           ))}
-          {/* <PaymentDetailWrapper>
-            <FormControlLabel
-              value="visa"
-              control={<Radio />}
-              label={
-                <Stack>
-                  <Image src={Visa} alt="card-image"></Image>
-                  <Typography>Subscription card</Typography>
-                  <Divider orientation="vertical" sx={{ height: 20 }} />
-                  <Typography>**** **** **** 4242</Typography>
-                  <Typography>Exp 12/26</Typography>
-                </Stack>
-              }
-            />
-            <IconButton>
-              <Close />
-            </IconButton>
-          </PaymentDetailWrapper> */}
         </RadioGroup>
         <Button variant="text" sx={{ p: 0, mt: 2 }} onClick={openLogoutModal}>
           Add new payment detail
