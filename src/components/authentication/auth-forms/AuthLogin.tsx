@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 // material-ui
@@ -45,41 +45,40 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const router = useRouter();
   const theme = useTheme();
-
-  // const dispatch = useDispatch();
-
+  const { status, data, update } = useSession();
   const { setLocalStorage } = useLocalStorageCodeVerify();
-
   const { errorSnack, successSnack } = useSuccErrSnack();
-
   const [phoneLoginUi, setPhoneLoginUi] = useState(true);
+
   const handleLoginLayout = (value: boolean) => {
     setPhoneLoginUi(value);
   };
 
-  const { status, data, update } = useSession();
+  // Wrap handleEmailUnverified with useCallback
+  const handleEmailUnverified = useCallback(
+    async (user: any, expiry: any) => {
+      try {
+        localStorage.clear();
+        setLocalStorage('register', {
+          email: user?.email,
+          expiryTime: new Date(expiry?.expiresAt).getTime()
+        });
+        // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
+        await signOut({ redirect: false });
+        update();
+        successSnack(EMAIL_VERIFICATION_CODE_SENT);
 
-  const handleEmailUnverified = async (user: any, expiry: any) => {
-    try {
-      localStorage.clear();
-      setLocalStorage('register', {
-        email: user?.email,
-        expiryTime: new Date(expiry?.expiresAt).getTime()
-      });
-      // dispatch(setLoginDetail({ email: user?.email, password: values.password }));
-      await signOut({ redirect: false });
-      update();
-      successSnack(EMAIL_VERIFICATION_CODE_SENT);
+        setTimeout(() => {
+          router.push(pageRoutes.verifyRegistration);
+        }, 1500);
 
-      setTimeout(() => {
-        router.push(pageRoutes.verifyRegistration);
-      }, 1500);
-
-      return;
-    } catch (error) {
-      errorSnack(EMAIL_VERIFICATION_FAILED);
-    }
-  };
+        return;
+      } catch (error) {
+        errorSnack(EMAIL_VERIFICATION_FAILED);
+      }
+    },
+    [router, update]
+  ); //Add dependencies here
 
   useEffect(() => {
     const payload = data?.user as any;
@@ -91,7 +90,7 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       setTokens(payload?.access_token, payload?.refresh_token);
       return router.replace(pageRoutes.dashboard);
     }
-  }, [status, data, router]);
+  }, [status, data, router, handleEmailUnverified]);
 
   return (
     <>
@@ -108,31 +107,29 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
           })}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            let res = await signIn('credentials', {
-              email: values.email,
-              password: values.password,
-              deviceId: generateDeviceId(),
-              redirect: false,
-              callbackUrl: pageRoutes.dashboard
-            });
-            if (res?.ok) {
-              res = await signIn('credentials', {
+
+            try {
+              let res = await signIn('credentials', {
                 email: values.email,
                 password: values.password,
                 deviceId: generateDeviceId(),
-                callbackUrl: pageRoutes.dashboard
+                redirect: false,
+                callbackUrl: '/'
               });
-              successSnack('login-successful');
-            } else {
-              res = await signIn('credentials', {
-                email: values.email,
-                password: values.password,
-                deviceId: generateDeviceId(),
-                redirect: false
-              });
-              errorSnack(INVALID_LOGIN_CREDENTIAL);
+
+              if (res?.ok && res?.status === 200) {
+                successSnack('login-successful');
+              } else {
+                if (res?.error?.includes(':')) {
+                  errorSnack(res.error?.split(':')?.[1] || '');
+                }
+                setSubmitting(false);
+              }
+            } catch (error: any) {
+              setSubmitting(false);
+              const errorMessage = error?.message ?? INVALID_LOGIN_CREDENTIAL;
+              errorSnack(errorMessage);
             }
-            setSubmitting(false);
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (

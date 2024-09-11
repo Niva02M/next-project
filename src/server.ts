@@ -7,10 +7,21 @@ import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, PHONE
 import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
 import client from '../apollo.config';
 
+type UserStatus = 'email_verification_pending' | 'email_verified' | 'password_set' | 'password_set_pending';
+interface IUserPops {
+  _id: string;
+  email: string;
+  status: UserStatus;
+}
 export interface ILoginCredential {
   email: string;
   password: string;
   deviceId?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  accessTokenExpiresIn?: string;
+  user: string | IUserPops;
+  _id?: string;
 }
 
 export interface IPhoneLoginCredential {
@@ -97,8 +108,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials) return null;
 
-        const { email, password, deviceId } = credentials as ILoginCredential;
+        const { email, password, deviceId, accessToken, refreshToken, _id, accessTokenExpiresIn, user } = credentials as ILoginCredential;
         try {
+          if (accessToken && refreshToken && _id) {
+            let formatedUser = user;
+            if (typeof user === 'string') {
+              formatedUser = JSON.parse(user);
+            }
+            return {
+              id: _id,
+              user: formatedUser,
+              access_token: accessToken,
+              refresh_token: refreshToken,
+              expires_at: accessTokenExpiresIn,
+              emailVerified: true
+            };
+          }
+
           const res = await client.mutate<{ loginWithEmailPassword: ISignInResponse }>({
             mutation: LOGIN_MUTATION,
             variables: {
@@ -220,7 +246,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }: any) {
       if (user) {
         const userDetail = user as ISignInResponseFormat;
-
         return {
           access_token: userDetail?.access_token,
           refresh_token: userDetail?.refresh_token,
