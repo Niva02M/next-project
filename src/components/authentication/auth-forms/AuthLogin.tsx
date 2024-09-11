@@ -45,19 +45,14 @@ const setTokens = (accessToken: string, refreshToken: string) => {
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const router = useRouter();
   const theme = useTheme();
-
-  // const dispatch = useDispatch();
-
+  const { status, data, update } = useSession();
   const { setLocalStorage } = useLocalStorageCodeVerify();
-
   const { errorSnack, successSnack } = useSuccErrSnack();
-
   const [phoneLoginUi, setPhoneLoginUi] = useState(true);
+
   const handleLoginLayout = (value: boolean) => {
     setPhoneLoginUi(value);
   };
-
-  const { status, data, update } = useSession();
 
   // Wrap handleEmailUnverified with useCallback
   const handleEmailUnverified = useCallback(
@@ -135,32 +130,6 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
               const errorMessage = error?.message ?? INVALID_LOGIN_CREDENTIAL;
               errorSnack(errorMessage);
             }
-
-            // let res = await signIn('credentials', {
-            //   email: values.email,
-            //   password: values.password,
-            //   deviceId: generateDeviceId(),
-            //   redirect: false,
-            //   callbackUrl: pageRoutes.dashboard
-            // });
-            // if (res?.ok) {
-            //   res = await signIn('credentials', {
-            //     email: values.email,
-            //     password: values.password,
-            //     deviceId: generateDeviceId(),
-            //     callbackUrl: pageRoutes.dashboard
-            //   });
-            //   successSnack('login-successful');
-            // } else {
-            //   res = await signIn('credentials', {
-            //     email: values.email,
-            //     password: values.password,
-            //     deviceId: generateDeviceId(),
-            //     redirect: false
-            //   });
-            //   errorSnack(INVALID_LOGIN_CREDENTIAL);
-            // }
-            // setSubmitting(false);
           }}
         >
           {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
