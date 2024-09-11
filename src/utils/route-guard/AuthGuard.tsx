@@ -36,8 +36,14 @@ const AuthGuard = ({ children }: GuardProps) => {
       if (payload?.user?.status === UserAccountStatus.email_verified || payload?.user?._id) {
         setTokens(payload?.access_token, payload?.refresh_token);
 
-        if (pathname) {
-          router.replace(pathname);
+        if (
+          pathname === pageRoutes.login ||
+          pathname === pageRoutes.register ||
+          pathname === pageRoutes.forgotPassword ||
+          pathname === pageRoutes.verifyRegistration ||
+          pathname === pageRoutes.verifyRegistrationPhone
+        ) {
+          router.replace(pageRoutes.dashboard);
         } else {
           router.replace(pageRoutes.dashboard);
         }
@@ -46,11 +52,20 @@ const AuthGuard = ({ children }: GuardProps) => {
         }, 1000);
       }
     } else if (status === 'unauthenticated') {
+      if (pathname === '/register') {
+        router.replace(pathname);
+      } else {
+        router.replace(pageRoutes.login);
+      }
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    } else {
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
     }
-  }, [status, data, router, pathname]);
+  }, [status, data, router]);
 
   return isLoading ? (
     <Grid container justifyContent="center" alignItems="center" sx={{ height: '100vh' }}>

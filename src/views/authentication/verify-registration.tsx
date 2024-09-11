@@ -48,9 +48,14 @@ const VerifyRegistration = () => {
       if (data?.verifyEmail) {
         successSnack(data?.verifyEmail?.message || 'Email verified successfully');
         if (data.verifyEmail?.token) {
+          const userData = {
+            _id: data.verifyEmail?.user?._id ?? '',
+            email: data.verifyEmail?.user?.email ?? '',
+            status: data.verifyEmail?.user?.status ?? 'email_verified'
+          };
           await tryLogin({
             ...data.verifyEmail.token,
-            user: data.verifyEmail.user,
+            user: userData,
             _id: data.verifyEmail.user._id
           });
         }
@@ -64,10 +69,10 @@ const VerifyRegistration = () => {
     try {
       const signInResponse = await signIn('credentials', {
         ...tokenDetail,
+        user: JSON.stringify(tokenDetail.user),
         redirect: false
       });
-      console.log('signInResponse', signInResponse);
-      if (signInResponse) {
+      if (signInResponse?.ok) {
         removeItem('register');
         localStorage.setItem('accessToken', tokenDetail.accessToken);
         localStorage.setItem('refreshToken', tokenDetail.refreshToken);

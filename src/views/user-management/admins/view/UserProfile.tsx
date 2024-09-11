@@ -123,9 +123,9 @@ export default function UserProfile() {
         firstName: Yup.string().min(2).required().label('First name'),
         lastName: Yup.string().min(2).required().label('Last name'),
         authProviderId:
-          userData?.me?.authProviderId === 'email'
+          userData?.me?.authProvider === 'email'
             ? Yup.string().email().required().label('Email address')
-            : userData?.me?.authProviderId === 'phone'
+            : userData?.me?.authProvider === 'phone'
               ? Yup.string().required().label('Phone')
               : Yup.string().email().required().label('Email address'),
         profileImage: Yup.string().optional().label('Profile image')
