@@ -44,9 +44,8 @@ const AuthGuard = ({ children }: GuardProps) => {
           pathname === pageRoutes.verifyRegistrationPhone
         ) {
           router.replace(pageRoutes.dashboard);
-        } else {
-          router.replace(pageRoutes.dashboard);
         }
+
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
