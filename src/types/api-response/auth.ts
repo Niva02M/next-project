@@ -63,6 +63,7 @@ interface IExpiry {
 }
 
 interface IForgotpasswordFields {
+  expiry?: any;
   message: string;
   data: IExpiry;
 }

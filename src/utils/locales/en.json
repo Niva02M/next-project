@@ -22,5 +22,7 @@
   "dashboard": "Dashboard",
   "login-successful": "Login successful",
   "clients":  "Clients",
-  "verification-code-sent": "Verification code sent to your phone number please use that code to verify your phone number."
+  "verification-code-sent": "Verification code sent to your phone number please use that code to verify your phone number.",
+  "code-verify-successfully": "Code verified successfully",
+  "password-reset-code-sent": "Password reset code sent."
 }

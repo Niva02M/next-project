@@ -56,7 +56,7 @@ const AuthForgotPassword = ({ loginProp, ...others }: { loginProp?: number }) =>
             }
           });
           setSubmitting(false);
-          successSnack(data?.forgotPassword?.message);
+          successSnack(data?.forgotPassword?.message && 'password-reset-code-sent');
           setLocalStorage('forgotPassword', {
             email: values.email || '',
             expiresAt: data?.forgotPassword?.expiry?.expiresAt ? new Date(data?.forgotPassword?.expiry?.expiresAt).getTime() : 0,

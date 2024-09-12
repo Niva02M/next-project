@@ -14,20 +14,22 @@ import { setForgotPasswordOTP } from 'store/slices/emailVerification';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IForgotpasswordValues } from 'types/localStorageValues';
 import { calculateRemainingTime } from 'utils/helper';
-import { IForgotPasswordResponse } from 'types/api-response/auth';
+import { IForgotPasswordResponse, ILoginUserResponse, IToken } from 'types/api-response/auth';
 import { IForgotpasswordFields } from 'types/api-inputs/auth';
+import { signIn } from 'next-auth/react';
 
 export default function ForgotPasswordCodeverify() {
-  const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
+  const { getLocalStorage, removeItem, setLocalStorage } = useLocalStorageCodeVerify();
   const forgotPasswordDetail = getLocalStorage<IForgotpasswordValues>('forgotPassword');
 
+  const [otpTimer, setOtpTimer] = React.useState(true);
   const [remainingTime, setRemainingTime] = useState(calculateRemainingTime(forgotPasswordDetail?.expiresAt));
 
   const router = useRouter();
   const { handleError } = useListBackendErrors();
-  const { successSnack } = useSuccErrSnack();
+  const { successSnack, errorSnack } = useSuccErrSnack();
 
-  const [verifyFogotPasswordOtp, { loading: isVerifyingResetPasswordOtp }] = useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
+  const [verifyFogotPasswordOtp, { data: verifyOtpData, loading: isVerifyingResetPasswordOtp }] = useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
 
   const [forgotPassword, { loading: isResendingPassword }] = useMutation<IForgotPasswordResponse, { body: IForgotpasswordFields }>(
     FORGOT_PASSWORD_MUTATION
@@ -43,13 +45,46 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
+      if (verifyOtpData?.verifyEmail) {
+        successSnack(verifyOtpData?.verifyEmail?.message || 'Email verified successfully');
+        if (verifyOtpData.verifyEmail?.token) {
+          const userData = {
+            _id: verifyOtpData.verifyEmail?.user?._id ?? '',
+            email: verifyOtpData.verifyEmail?.user?.email ?? '',
+            status: verifyOtpData.verifyEmail?.user?.status ?? 'email_verified'
+          };
+          await tryLogin({
+            ...verifyOtpData.verifyEmail.token,
+            user: userData,
+            _id: verifyOtpData.verifyEmail.user._id
+          });
+        }
+      }
       setLocalStorage('forgotPassword', {
         ...forgotPasswordDetail,
         otp
       });
       dispatch(setForgotPasswordOTP(otp));
-      successSnack('Code verified successfully');
+      successSnack('code-verify-successfully');
       router.push(pageRoutes.resetPassword);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const tryLogin = async (tokenDetail: IToken & { user: ILoginUserResponse; _id: string }) => {
+    try {
+      const signInResponse = await signIn('credentials', {
+        ...tokenDetail,
+        user: JSON.stringify(tokenDetail.user),
+        redirect: false
+      });
+      if (signInResponse?.ok) {
+        removeItem('register');
+        localStorage.setItem('accessToken', tokenDetail.accessToken);
+        localStorage.setItem('refreshToken', tokenDetail.refreshToken);
+        router.push(pageRoutes.dashboard);
+      }
     } catch (error) {
       handleError(error);
     }
@@ -65,12 +100,22 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
+      console.log('data ====>', data);
+      if (data?.forgotPassword) {
+        setOtpTimer(!otpTimer);
+        setLocalStorage('register', {
+          ...forgotPasswordDetail,
+          expiryTime: new Date(data?.forgotPassword?.expiry?.expiresAt || 0).getTime()
+        });
+        successSnack(data?.forgotPassword?.message || 'Code sent successfully. Please check your email');
+      } else {
+        errorSnack('Resending code failed. Please try again');
+      }
       setLocalStorage('forgotPassword', {
         email: forgotPasswordDetail?.email || '',
         expiresAt: data?.forgotPassword?.data?.expiresAt ? new Date(data?.forgotPassword?.data?.expiresAt).getTime() : 0,
         deviceId: forgotPasswordDetail?.deviceId || ''
       });
-      successSnack('Code sent successfully');
     } catch (error) {
       handleError(error);
     }

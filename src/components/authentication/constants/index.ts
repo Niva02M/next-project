@@ -34,8 +34,15 @@ export const PHONE_NUMBER_REQUIRED = 'Phone number required';
 export const REGISTRATION_SUCCESSFUL_OTP_SENT_TO_EMAIL = 'Registration successful. OTP has been sent to your email';
 export const CREATE_YOUR_ACCOUNT = 'Create your account';
 export const CONFIRM_PASSWORD = 'Confirm password';
-export const PASSWORD = 'Password';
 export const EMAIL = 'Email';
 export const CONTACT_NUMBER = 'Contact number';
 export const LAST_NAME = 'Last name';
 export const FIRST_NAME = 'First name';
+export const PASSWORD = 'Password';
+export const OLD_PASSWORD = 'Old password';
+export const NEW_PASSWORD = 'New password';
+export const PASSWORD_REG_MESSAGE =
+  'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+export const CONFIRM_NEW_PASSWORD = 'Confirm new password';
+export const BOTH_PASSWORD_MUST_MATCH = 'Both Password must be match!';
+export const CHANGE_PASSWORD = 'Change password';

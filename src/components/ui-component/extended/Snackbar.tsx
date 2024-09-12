@@ -73,7 +73,7 @@ const Snackbar = () => {
           open={open}
           autoHideDuration={1500}
           onClose={handleClose}
-          message={<FormattedMessage id={message} /> || message}
+          message={<FormattedMessage id={message} defaultMessage={message} />}
           TransitionComponent={animation[transition]}
           action={
             <>
@@ -120,7 +120,7 @@ const Snackbar = () => {
               })
             }}
           >
-            {<FormattedMessage id={message} /> || message}
+            {<FormattedMessage id={message} defaultMessage={message} />}
           </Alert>
         </MuiSnackbar>
       )}

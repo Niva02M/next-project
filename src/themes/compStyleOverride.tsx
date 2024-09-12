@@ -16,8 +16,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
   return {
     MuiButton: {
       defaultProps: {
-        disableRipple: true,
-        disableElevation: true
+        disableRipple: true
       },
       styleOverrides: {
         root: {
@@ -42,8 +41,7 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
     },
     MuiButtonBase: {
       defaultProps: {
-        disableRipple: true,
-        disableElevation: true
+        disableRipple: true
       }
     },
     MuiPaper: {
