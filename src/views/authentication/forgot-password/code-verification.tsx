@@ -29,7 +29,8 @@ export default function ForgotPasswordCodeverify() {
   const { handleError } = useListBackendErrors();
   const { successSnack, errorSnack } = useSuccErrSnack();
 
-  const [verifyFogotPasswordOtp, { data: verifyOtpData, loading: isVerifyingResetPasswordOtp }] = useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
+  const [verifyFogotPasswordOtp, { data: verifyOtpData, loading: isVerifyingResetPasswordOtp }] =
+    useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
 
   const [forgotPassword, { loading: isResendingPassword }] = useMutation<IForgotPasswordResponse, { body: IForgotpasswordFields }>(
     FORGOT_PASSWORD_MUTATION

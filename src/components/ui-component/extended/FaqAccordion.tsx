@@ -60,7 +60,9 @@ const FaqAccordion = ({ data, defaultExpandedId = null, expandIcon, square, togg
         data.map((item: AccordionItem) => (
           <Box key={item._id} sx={{ mt: 4, '&:first-child': { mt: 0 } }}>
             <Typography variant="h3">{item.section}</Typography>
-            <Typography mb={1.5} variant="body2">{item.description}</Typography>
+            <Typography mb={1.5} variant="body2">
+              {item.description}
+            </Typography>
             {item.content.map((faqItem: MainAccordionItem) => (
               <MuiAccordion
                 key={faqItem._id}

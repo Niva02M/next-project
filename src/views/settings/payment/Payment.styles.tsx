@@ -1,4 +1,4 @@
-import { Stack, styled } from "@mui/material";
+import { Stack, styled } from '@mui/material';
 
 export const PaymentDetailWrapper = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',

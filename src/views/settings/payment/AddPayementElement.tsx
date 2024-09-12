@@ -1,7 +1,6 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-import { Button, Typography } from '@mui/material';
 import { GET_EPHEMERAL_KEY_QUERY } from './graphql/queries';
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
