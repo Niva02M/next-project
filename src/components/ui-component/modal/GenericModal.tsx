@@ -52,7 +52,15 @@ export default function GenericModal({
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Paper sx={{ width: { xs: '90%', md: '100%' }, maxWidth: maxWidth ? maxWidth : 830, p: '27px 20px' }}>
+        <Paper
+          sx={{
+            width: { xs: '90%', md: '100%' },
+            maxWidth: maxWidth ? maxWidth : 830,
+            p: '27px 20px',
+            maxHeight: '90%',
+            overflowY: 'auto'
+          }}
+        >
           {title && (
             <Stack direction="row" alignItems="flex-start" justifyContent="space-between" columnGap={2} mb={2}>
               {titleIcon ? (

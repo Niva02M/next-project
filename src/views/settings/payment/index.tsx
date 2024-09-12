@@ -22,11 +22,16 @@ import Visa from 'assets/subscription/visa.svg';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
+import { Stripe, StripeElements } from '@stripe/stripe-js';
+import { openSnackbar } from 'store/slices/snackbar';
+import { useDispatch } from 'react-redux';
+import { CardElement, useElements } from '@stripe/react-stripe-js';
 
 export default function Subscription() {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [kind, setKind] = useState('card');
+  const dispatch = useDispatch();
   const openLogoutModal = () => {
     setOpenModal(true);
   };
@@ -54,6 +59,84 @@ export default function Subscription() {
       cardExpireDate: `${new Date()}`
     }
   ];
+
+  const addPayment = async (stripe: Stripe, elements: StripeElements) => {
+    if (!stripe || !elements) {
+      return;
+    }
+    try {
+      const result = await stripe.confirmSetup({
+        elements: elements,
+        redirect: 'if_required'
+        // confirmParams: {
+        //     payment_method_data: {
+        //         billing_details: {
+        //             name: props.userId
+        //                 ? `${clientDetail?.firstName} ${clientDetail?.lastName}`
+        //                 : `${user?.firstName} ${user?.lastName}`
+        //         }
+        //     }
+        // }
+      });
+      console.log('result', result);
+
+    //   const cardElement = elements.getElement(result.elements);
+  
+    // const { token } = await stripe.createToken(cardElement!);
+
+    // console.log('token =====>', token);
+
+      if (result.error) {
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: result?.error?.message,
+            anchorOrigin: { horizontal: 'center' },
+            variant: 'alert',
+            alert: {
+              color: 'error'
+            }
+          })
+        );
+      } else {
+        // save payment to local db
+        // await handleSavePayment({
+        //     variables: {
+        //         input: {
+        //             paymentMethod: result?.setupIntent?.payment_method,
+        //             // isClient: props.userId ? true : false,
+        //             // ...(props.userId ? { userId: clientDetail._id } : {})
+        //         }
+        //     }
+        // });
+        // dispatch(
+        //     openSnackbar({
+        //         open: true,
+        //         message: 'New payment method added.',
+        //         anchorOrigin: { horizontal: 'center' },
+        //         variant: 'alert',
+        //         alert: {
+        //             color: 'success'
+        //         }
+        //     })
+        // );
+        // await props.reloadData();
+        // handleClose();
+      }
+    } catch (e: any) {
+      dispatch(
+        openSnackbar({
+          open: true,
+          message: e.message,
+          anchorOrigin: { horizontal: 'center' },
+          variant: 'alert',
+          alert: {
+            color: 'danger'
+          }
+        })
+      );
+    }
+  };
 
   return (
     <>
@@ -107,7 +190,7 @@ export default function Subscription() {
         }}
         title="Add payment details"
       >
-        <Box>
+        <Box mb={2.5}>
           <InputLabel>Payment type</InputLabel>
           <Select
             fullWidth
@@ -115,7 +198,6 @@ export default function Subscription() {
             name="kind"
             value={kind}
             onChange={(event) => {
-              console.log(event.target.value, 'sdf');
               setKind(event.target.value);
             }}
           >
@@ -129,25 +211,9 @@ export default function Subscription() {
             ))}
           </Select>
         </Box>
-        {kind === 'card' && (
-          <AddPaymentElement kind={kind} />
-          // <AddPaymentElement
-          //   clientSecret={clientSecretCard}
-          //   businessConnectId={props.businessConnectId || null}
-          //   addPayment={addPayment}
-          //   savePaymemtMethodLoadng={savePaymemtMethodLoadng}
-          // />
-        )}
+        {kind === 'card' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
 
-        {kind === 'au_bank' && (
-          <AddPaymentElement kind={kind} />
-          // <AddPaymentElement
-          //   clientSecret={clientSecretBank}
-          //   businessConnectId={props.businessConnectId || null}
-          //   addPayment={addPayment}
-          //   savePaymemtMethodLoadng={savePaymemtMethodLoadng}
-          // />
-        )}
+        {kind === 'au_bank' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
       </GenericModal>
     </>
   );
