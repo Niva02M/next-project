@@ -46,28 +46,12 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
-      if (verifyOtpData?.verifyEmail) {
-        successSnack(verifyOtpData?.verifyEmail?.message || 'Email verified successfully');
-        if (verifyOtpData.verifyEmail?.token) {
-          const userData = {
-            _id: verifyOtpData.verifyEmail?.user?._id ?? '',
-            email: verifyOtpData.verifyEmail?.user?.email ?? '',
-            status: verifyOtpData.verifyEmail?.user?.status ?? 'email_verified'
-          };
-          await tryLogin({
-            ...verifyOtpData.verifyEmail.token,
-            user: userData,
-            _id: verifyOtpData.verifyEmail.user._id
-          });
-        }
-      }
+      router.push(pageRoutes.resetPassword);
+      dispatch(setForgotPasswordOTP(otp));
       setLocalStorage('forgotPassword', {
         ...forgotPasswordDetail,
         otp
       });
-      dispatch(setForgotPasswordOTP(otp));
-      successSnack('code-verify-successfully');
-      router.push(pageRoutes.resetPassword);
     } catch (error) {
       handleError(error);
     }
@@ -101,22 +85,22 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
-      console.log('data ====>', data);
+
       if (data?.forgotPassword) {
-        setOtpTimer(!otpTimer);
-        setLocalStorage('register', {
+        const newExpiryTime = new Date(data?.forgotPassword?.expiry?.expiresAt || 0).getTime();
+
+        setLocalStorage('forgotPassword', {
           ...forgotPasswordDetail,
-          expiryTime: new Date(data?.forgotPassword?.expiry?.expiresAt || 0).getTime()
+          expiresAt: newExpiryTime
         });
+
+        setOtpTimer(!otpTimer);
+        setRemainingTime(calculateRemainingTime(newExpiryTime));
+
         successSnack(data?.forgotPassword?.message || 'Code sent successfully. Please check your email');
       } else {
         errorSnack('Resending code failed. Please try again');
       }
-      setLocalStorage('forgotPassword', {
-        email: forgotPasswordDetail?.email || '',
-        expiresAt: data?.forgotPassword?.data?.expiresAt ? new Date(data?.forgotPassword?.data?.expiresAt).getTime() : 0,
-        deviceId: forgotPasswordDetail?.deviceId || ''
-      });
     } catch (error) {
       handleError(error);
     }
@@ -136,7 +120,6 @@ export default function ForgotPasswordCodeverify() {
       clearInterval(interval);
     };
   }, [forgotPasswordDetail?.expiresAt]);
-
   return (
     <OtpVerificationScreen
       otpInputComponent={
