@@ -11,7 +11,6 @@ export const StripePaymentAdd = ({ save, savePaymemtMethodLoadng }: PaymentMetho
   const stripe = useStripe();
   const elements = useElements();
   const cardElement = elements?.getElement(CardElement);
-  console.log('cardElement =====>', cardElement);
   
   return (
     <>
