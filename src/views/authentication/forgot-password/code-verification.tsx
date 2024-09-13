@@ -14,12 +14,11 @@ import { setForgotPasswordOTP } from 'store/slices/emailVerification';
 import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IForgotpasswordValues } from 'types/localStorageValues';
 import { calculateRemainingTime } from 'utils/helper';
-import { IForgotPasswordResponse, ILoginUserResponse, IToken } from 'types/api-response/auth';
+import { IForgotPasswordResponse } from 'types/api-response/auth';
 import { IForgotpasswordFields } from 'types/api-inputs/auth';
-import { signIn } from 'next-auth/react';
 
 export default function ForgotPasswordCodeverify() {
-  const { getLocalStorage, removeItem, setLocalStorage } = useLocalStorageCodeVerify();
+  const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
   const forgotPasswordDetail = getLocalStorage<IForgotpasswordValues>('forgotPassword');
 
   const [otpTimer, setOtpTimer] = React.useState(true);
@@ -29,8 +28,7 @@ export default function ForgotPasswordCodeverify() {
   const { handleError } = useListBackendErrors();
   const { successSnack, errorSnack } = useSuccErrSnack();
 
-  const [verifyFogotPasswordOtp, { data: verifyOtpData, loading: isVerifyingResetPasswordOtp }] =
-    useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
+  const [verifyFogotPasswordOtp, { loading: isVerifyingResetPasswordOtp }] = useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
 
   const [forgotPassword, { loading: isResendingPassword }] = useMutation<IForgotPasswordResponse, { body: IForgotpasswordFields }>(
     FORGOT_PASSWORD_MUTATION
@@ -52,24 +50,6 @@ export default function ForgotPasswordCodeverify() {
         ...forgotPasswordDetail,
         otp
       });
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  const tryLogin = async (tokenDetail: IToken & { user: ILoginUserResponse; _id: string }) => {
-    try {
-      const signInResponse = await signIn('credentials', {
-        ...tokenDetail,
-        user: JSON.stringify(tokenDetail.user),
-        redirect: false
-      });
-      if (signInResponse?.ok) {
-        removeItem('register');
-        localStorage.setItem('accessToken', tokenDetail.accessToken);
-        localStorage.setItem('refreshToken', tokenDetail.refreshToken);
-        router.push(pageRoutes.dashboard);
-      }
     } catch (error) {
       handleError(error);
     }
