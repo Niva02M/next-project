@@ -22,16 +22,21 @@ import Visa from 'assets/subscription/visa.svg';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
-import { Stripe, StripeElements } from '@stripe/stripe-js';
-import { openSnackbar } from 'store/slices/snackbar';
-import { useDispatch } from 'react-redux';
-import { CardElement, useElements } from '@stripe/react-stripe-js';
+import { Stripe, StripeCardElement } from '@stripe/stripe-js';
+// import { openSnackbar } from 'store/slices/snackbar';
+// import { useDispatch } from 'react-redux';
+// import { CardElement } from '@stripe/react-stripe-js';
+// import { CardElement, useElements } from '@stripe/react-stripe-js';
+
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
 
 export default function Subscription() {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [kind, setKind] = useState('card');
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const openLogoutModal = () => {
     setOpenModal(true);
   };
@@ -60,25 +65,31 @@ export default function Subscription() {
     }
   ];
 
-  const addPayment = async (stripe: Stripe, elements: StripeElements) => {
-    if (!stripe || !elements) {
-      return;
-    }
-    try {
-      const result = await stripe.confirmSetup({
-        elements: elements,
-        redirect: 'if_required'
-        // confirmParams: {
-        //     payment_method_data: {
-        //         billing_details: {
-        //             name: props.userId
-        //                 ? `${clientDetail?.firstName} ${clientDetail?.lastName}`
-        //                 : `${user?.firstName} ${user?.lastName}`
-        //         }
-        //     }
-        // }
-      });
-      console.log('result', result);
+  const addPayment = async (stripe: Stripe, elements: StripeCardElement) => {
+    console.log('stripe=====>', stripe )
+    console.log('elements=====>', elements )
+    // if (!stripe || !elements) {
+    //   return;
+    // }
+    // try {
+      // const result = await stripe.confirmSetup({
+      //   elements: elements,
+      //   redirect: 'if_required',
+      //   confirmParams: {
+      //       payment_method_data: {
+      //           billing_details: {
+      //               name: 'Sam '
+      //           }
+      //       }
+      //   }
+      // });
+      // console.log('result', result);
+
+      const token = await stripe.createToken(elements);
+      console.log(token);
+    // }
+
+      // console.log('token', token);
 
     //   const cardElement = elements.getElement(result.elements);
   
@@ -86,19 +97,19 @@ export default function Subscription() {
 
     // console.log('token =====>', token);
 
-      if (result.error) {
-        dispatch(
-          openSnackbar({
-            open: true,
-            message: result?.error?.message,
-            anchorOrigin: { horizontal: 'center' },
-            variant: 'alert',
-            alert: {
-              color: 'error'
-            }
-          })
-        );
-      } else {
+      // if (result.error) {
+      //   dispatch(
+      //     openSnackbar({
+      //       open: true,
+      //       message: result?.error?.message,
+      //       anchorOrigin: { horizontal: 'center' },
+      //       variant: 'alert',
+      //       alert: {
+      //         color: 'error'
+      //       }
+      //     })
+      //   );
+      // } else {
         // save payment to local db
         // await handleSavePayment({
         //     variables: {
@@ -122,21 +133,25 @@ export default function Subscription() {
         // );
         // await props.reloadData();
         // handleClose();
-      }
-    } catch (e: any) {
-      dispatch(
-        openSnackbar({
-          open: true,
-          message: e.message,
-          anchorOrigin: { horizontal: 'center' },
-          variant: 'alert',
-          alert: {
-            color: 'danger'
-          }
-        })
-      );
-    }
+      // }
+    // } catch (e: any) {
+    //   dispatch(
+    //     openSnackbar({
+    //       open: true,
+    //       message: e.message,
+    //       anchorOrigin: { horizontal: 'center' },
+    //       variant: 'alert',
+    //       alert: {
+    //         color: 'danger'
+    //       }
+    //     })
+    //   );
+    // }
   };
+
+  const stripePromise = loadStripe(
+    'pk_test_51Mc0MNEr2SjM3rR4LaEDHNLk03VqGvBNMIOOQ4Khtyo2gS5mJp0nMAiVPPeianRFTJcXiPVJZitbibx2KJQU73r500F7Rpyih7'
+  );
 
   return (
     <>
@@ -214,6 +229,13 @@ export default function Subscription() {
         {kind === 'card' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
 
         {kind === 'au_bank' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
+
+        <div>
+      <h1>Stripe Payment</h1>
+      <Elements stripe={stripePromise}>
+        <CheckoutForm />
+      </Elements>
+    </div>
       </GenericModal>
     </>
   );
