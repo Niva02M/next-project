@@ -21,11 +21,12 @@ export default function ForgotPasswordCodeverify() {
   const { getLocalStorage, setLocalStorage } = useLocalStorageCodeVerify();
   const forgotPasswordDetail = getLocalStorage<IForgotpasswordValues>('forgotPassword');
 
+  const [otpTimer, setOtpTimer] = React.useState(true);
   const [remainingTime, setRemainingTime] = useState(calculateRemainingTime(forgotPasswordDetail?.expiresAt));
 
   const router = useRouter();
   const { handleError } = useListBackendErrors();
-  const { successSnack } = useSuccErrSnack();
+  const { successSnack, errorSnack } = useSuccErrSnack();
 
   const [verifyFogotPasswordOtp, { loading: isVerifyingResetPasswordOtp }] = useMutation(VERIFY_FORGOT_PASSWORD_OTP_MUTATION);
 
@@ -43,13 +44,12 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
+      router.push(pageRoutes.resetPassword);
+      dispatch(setForgotPasswordOTP(otp));
       setLocalStorage('forgotPassword', {
         ...forgotPasswordDetail,
         otp
       });
-      dispatch(setForgotPasswordOTP(otp));
-      successSnack('Code verified successfully');
-      router.push(pageRoutes.resetPassword);
     } catch (error) {
       handleError(error);
     }
@@ -65,12 +65,22 @@ export default function ForgotPasswordCodeverify() {
           }
         }
       });
-      setLocalStorage('forgotPassword', {
-        email: forgotPasswordDetail?.email || '',
-        expiresAt: data?.forgotPassword?.data?.expiresAt ? new Date(data?.forgotPassword?.data?.expiresAt).getTime() : 0,
-        deviceId: forgotPasswordDetail?.deviceId || ''
-      });
-      successSnack('Code sent successfully');
+
+      if (data?.forgotPassword) {
+        const newExpiryTime = new Date(data?.forgotPassword?.expiry?.expiresAt || 0).getTime();
+
+        setLocalStorage('forgotPassword', {
+          ...forgotPasswordDetail,
+          expiresAt: newExpiryTime
+        });
+
+        setOtpTimer(!otpTimer);
+        setRemainingTime(calculateRemainingTime(newExpiryTime));
+
+        successSnack(data?.forgotPassword?.message || 'Code sent successfully. Please check your email');
+      } else {
+        errorSnack('Resending code failed. Please try again');
+      }
     } catch (error) {
       handleError(error);
     }
@@ -90,7 +100,6 @@ export default function ForgotPasswordCodeverify() {
       clearInterval(interval);
     };
   }, [forgotPasswordDetail?.expiresAt]);
-
   return (
     <OtpVerificationScreen
       otpInputComponent={
