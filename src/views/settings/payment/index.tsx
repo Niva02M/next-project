@@ -231,10 +231,10 @@ export default function Subscription() {
         {kind === 'au_bank' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
 
         <div>
-      <h1>Stripe Payment</h1>
-      <Elements stripe={stripePromise}>
+      {/* <h1>Stripe Payment</h1> */}
+      {/* <Elements stripe={stripePromise}>
         <CheckoutForm />
-      </Elements>
+      </Elements> */}
     </div>
       </GenericModal>
     </>
