@@ -9,7 +9,7 @@ type PaymentMethodProps = {
   savePaymemtMethodLoadng?: boolean;
 };
 
-export const StripePaymentAdd = ({ save, savePaymemtMethodLoadng }: PaymentMethodProps) => {
+export const StripePaymentAdd = ({ savePaymemtMethodLoadng }: PaymentMethodProps) => {
   const stripe = useStripe();
   const elements = useElements();
 

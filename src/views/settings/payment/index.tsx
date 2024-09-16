@@ -22,15 +22,9 @@ import Visa from 'assets/subscription/visa.svg';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
-import { Stripe, StripeCardElement } from '@stripe/stripe-js';
-// import { openSnackbar } from 'store/slices/snackbar';
-// import { useDispatch } from 'react-redux';
-// import { CardElement } from '@stripe/react-stripe-js';
-// import { CardElement, useElements } from '@stripe/react-stripe-js';
-
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import CheckoutForm from './CheckoutForm';
+import { GET_ALL_CARDS_QUERY } from './graphql/queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { DELETE_CARD_DEFAULT_MUTATION } from './graphql/mutation';
 
 export default function Subscription() {
   const [open, setOpen] = useState(false);
@@ -41,117 +35,16 @@ export default function Subscription() {
     setOpenModal(true);
   };
 
-  const radioOptions = [
-    {
-      id: 1,
-      value: 'subcritpion',
-      image: Visa,
-      cardLastFourDigit: '4242',
-      cardExpireDate: `${new Date()}`
-    },
-    {
-      id: 2,
-      value: 'visa',
-      image: Visa,
-      cardLastFourDigit: '2424',
-      cardExpireDate: `${new Date()}`
-    },
-    {
-      id: 3,
-      value: 'master',
-      image: Visa,
-      cardLastFourDigit: '1111',
-      cardExpireDate: `${new Date()}`
+  const { data } = useQuery(GET_ALL_CARDS_QUERY);
+  const [selectCard, setSelectCard] = useState('');
+  console.log('selectedCard =====>', selectCard)
+  const [handleDeleteCard] = useMutation(DELETE_CARD_DEFAULT_MUTATION, {
+    variables: {
+      body: {
+        cardId: selectCard
+      }
     }
-  ];
-
-  const addPayment = async (stripe: Stripe, elements: StripeCardElement) => {
-    console.log('stripe=====>', stripe )
-    console.log('elements=====>', elements )
-    // if (!stripe || !elements) {
-    //   return;
-    // }
-    // try {
-      // const result = await stripe.confirmSetup({
-      //   elements: elements,
-      //   redirect: 'if_required',
-      //   confirmParams: {
-      //       payment_method_data: {
-      //           billing_details: {
-      //               name: 'Sam '
-      //           }
-      //       }
-      //   }
-      // });
-      // console.log('result', result);
-
-      const token = await stripe.createToken(elements);
-      console.log(token);
-    // }
-
-      // console.log('token', token);
-
-    //   const cardElement = elements.getElement(result.elements);
-  
-    // const { token } = await stripe.createToken(cardElement!);
-
-    // console.log('token =====>', token);
-
-      // if (result.error) {
-      //   dispatch(
-      //     openSnackbar({
-      //       open: true,
-      //       message: result?.error?.message,
-      //       anchorOrigin: { horizontal: 'center' },
-      //       variant: 'alert',
-      //       alert: {
-      //         color: 'error'
-      //       }
-      //     })
-      //   );
-      // } else {
-        // save payment to local db
-        // await handleSavePayment({
-        //     variables: {
-        //         input: {
-        //             paymentMethod: result?.setupIntent?.payment_method,
-        //             // isClient: props.userId ? true : false,
-        //             // ...(props.userId ? { userId: clientDetail._id } : {})
-        //         }
-        //     }
-        // });
-        // dispatch(
-        //     openSnackbar({
-        //         open: true,
-        //         message: 'New payment method added.',
-        //         anchorOrigin: { horizontal: 'center' },
-        //         variant: 'alert',
-        //         alert: {
-        //             color: 'success'
-        //         }
-        //     })
-        // );
-        // await props.reloadData();
-        // handleClose();
-      // }
-    // } catch (e: any) {
-    //   dispatch(
-    //     openSnackbar({
-    //       open: true,
-    //       message: e.message,
-    //       anchorOrigin: { horizontal: 'center' },
-    //       variant: 'alert',
-    //       alert: {
-    //         color: 'danger'
-    //       }
-    //     })
-    //   );
-    // }
-  };
-
-  const stripePromise = loadStripe(
-    'pk_test_51Mc0MNEr2SjM3rR4LaEDHNLk03VqGvBNMIOOQ4Khtyo2gS5mJp0nMAiVPPeianRFTJcXiPVJZitbibx2KJQU73r500F7Rpyih7'
-  );
+  });
 
   return (
     <>
@@ -170,21 +63,28 @@ export default function Subscription() {
             mb: 2
           }}
         >
-          {radioOptions.map((item) => (
-            <PaymentDetailWrapper key={item.id}>
+          {data?.getCards.map((item: any) => (
+            <PaymentDetailWrapper key={item.userId}>
               <FormControlLabel
                 value={item.value}
                 control={<Radio />}
                 label={
                   <Stack>
-                    <Image src={item.image} alt="card-image"></Image>
+                    {/* <Image src={item.image} alt="card-image"></Image> */}
+                    <Typography>{item.brand}</Typography>
                     <Divider orientation="vertical" sx={{ height: 20 }} />
-                    <Typography>**** **** **** {item.cardLastFourDigit}</Typography>
-                    <Typography>Exp {dayjs(item.cardExpireDate).format('MM/YY')}</Typography>
+                    <Typography>**** **** **** {item.last4}</Typography>
+                    <Typography>{`Exp ${item.exp_month}/${item.exp_year}`}</Typography>
                   </Stack>
                 }
               />
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  console.log('delete card');
+                  setSelectCard(item.userId);
+                  handleDeleteCard;
+                }}
+              >
                 <Close />
               </IconButton>
             </PaymentDetailWrapper>
@@ -226,16 +126,11 @@ export default function Subscription() {
             ))}
           </Select>
         </Box>
-        {kind === 'card' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
+        {kind === 'card' && <AddPaymentElement kind={kind} savePaymentLoading={false} />}
 
-        {kind === 'au_bank' && <AddPaymentElement kind={kind} addPayment={addPayment} savePaymentLoading={false} />}
+        {kind === 'au_bank' && <AddPaymentElement kind={kind} savePaymentLoading={false} />}
 
-        <div>
-      {/* <h1>Stripe Payment</h1> */}
-      {/* <Elements stripe={stripePromise}>
-        <CheckoutForm />
-      </Elements> */}
-    </div>
+        <div></div>
       </GenericModal>
     </>
   );

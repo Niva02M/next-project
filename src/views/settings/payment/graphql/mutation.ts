@@ -16,7 +16,7 @@ export const MAKE_CARD_DEFAULT_MUTATION = gql`
   }
 `;
 
-export const DELET_CARD_DEFAULT_MUTATION = gql`
+export const DELETE_CARD_DEFAULT_MUTATION = gql`
   mutation DeleteCard($body: DeleteCardInput!) {
     deleteCard(body: $body) {
       message

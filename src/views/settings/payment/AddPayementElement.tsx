@@ -13,11 +13,9 @@ const stripePromise = loadStripe(
 
 export default function AddPaymentElement({
   kind,
-  addPayment,
   savePaymentLoading
 }: {
   kind: string;
-  addPayment: any;
   savePaymentLoading?: boolean;
 }) {
   const { data } = useQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
@@ -40,7 +38,7 @@ export default function AddPaymentElement({
   return secret ? (
     <>
       <Elements stripe={stripePromise} options={options}>
-        <StripePaymentAdd save={addPayment} {...{ savePaymentLoading }} />
+        <StripePaymentAdd {...{ savePaymentLoading }} />
       </Elements>
     </>
   ) : null;
