@@ -14,11 +14,8 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import Image from 'next/image';
 import React, { useState } from 'react';
-import dayjs from 'dayjs';
 import MainCard from 'ui-component/cards/MainCard';
-import Visa from 'assets/subscription/visa.svg';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
@@ -46,6 +43,8 @@ export default function Subscription() {
     }
   });
 
+  const addPayment = () => {}
+
   return (
     <>
       <MainCard>
@@ -63,8 +62,8 @@ export default function Subscription() {
             mb: 2
           }}
         >
-          {data?.getCards.map((item: any) => (
-            <PaymentDetailWrapper key={item.userId}>
+          {data?.getCards.map((item: any, index: number) => (
+            <PaymentDetailWrapper key={item.brand + index}>
               <FormControlLabel
                 value={item.value}
                 control={<Radio />}
@@ -126,9 +125,9 @@ export default function Subscription() {
             ))}
           </Select>
         </Box>
-        {kind === 'card' && <AddPaymentElement kind={kind} savePaymentLoading={false} />}
+        {kind === 'card' && <AddPaymentElement addPayment={addPayment} kind={kind} savePaymentLoading={false} />}
 
-        {kind === 'au_bank' && <AddPaymentElement kind={kind} savePaymentLoading={false} />}
+        {kind === 'au_bank' && <AddPaymentElement addPayment={addPayment} kind={kind} savePaymentLoading={false} />}
 
         <div></div>
       </GenericModal>

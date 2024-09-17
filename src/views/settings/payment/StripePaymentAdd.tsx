@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { Box, Button } from '@mui/material';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Stripe, StripeCardElement } from '@stripe/stripe-js';
 import { ADD_CARD_FROM_TOKEN_MUTATION } from './graphql/mutation';
 
@@ -39,15 +39,15 @@ export const StripePaymentAdd = ({ savePaymemtMethodLoadng }: PaymentMethodProps
 
   return (
     <>
-      {/* <PaymentElement /> */}
-      <Box
+      <PaymentElement />
+      {/* <Box
         sx={{
           border: '1px solid #9e9e9e',
           padding: '16px'
         }}
       >
         <CardElement options={cardElementOptions} />
-      </Box>
+      </Box> */}
       <Button
         onClick={async (e) => {
           e.preventDefault();

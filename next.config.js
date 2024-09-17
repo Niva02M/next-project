@@ -18,6 +18,7 @@ module.exports = {
   images: {
     domains: ['flagcdn.com']
   },
+  revalidate: 5,
   env: {
     REACT_APP_VERSION: process.env.REACT_APP_VERSION,
     REACT_APP_API_URL: process.env.REACT_APP_API_URL,
