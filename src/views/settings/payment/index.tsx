@@ -3,6 +3,7 @@ import ExpandMoreOutlinedIcon from '@mui/icons-material/ExpandMoreOutlined';
 import {
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControlLabel,
   IconButton,
@@ -19,31 +20,50 @@ import MainCard from 'ui-component/cards/MainCard';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
-import { GET_ALL_CARDS_QUERY } from './graphql/queries';
+import { GET_PAYMENT_METHODS } from './graphql/queries';
 import { useMutation, useQuery } from '@apollo/client';
-import { DELETE_CARD_DEFAULT_MUTATION } from './graphql/mutation';
+import { DELETE_CARD_DEFAULT_MUTATION, MAKE_CARD_DEFAULT_MUTATION } from './graphql/mutation';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import AlignCenter from 'components/align-center/AlignCenter';
 
 export default function Subscription() {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  // const [openDeleteCard, setOpenDeleteCard] = useState(true);
+  // const [openModalDeleteCard, setOpenModalDeleteCard] = useState(false);
+
   const [kind, setKind] = useState('card');
+  const { successSnack, errorSnack } = useSuccErrSnack();
   // const dispatch = useDispatch();
-  const openLogoutModal = () => {
+  const openAddPaymentModal = () => {
     setOpenModal(true);
   };
 
-  const { data } = useQuery(GET_ALL_CARDS_QUERY);
-  const [selectCard, setSelectCard] = useState('');
-  console.log('selectedCard =====>', selectCard)
-  const [handleDeleteCard] = useMutation(DELETE_CARD_DEFAULT_MUTATION, {
-    variables: {
-      body: {
-        cardId: selectCard
-      }
-    }
-  });
+  // const openDeletePaymentModal = () => {
+  //   console.log('clicked', openDeleteCard);
+  //   setOpenDeleteCard(true);
+  // };
 
-  const addPayment = () => {}
+  const { data, loading, refetch } = useQuery(GET_PAYMENT_METHODS);
+  const [handleDeleteCard] = useMutation(DELETE_CARD_DEFAULT_MUTATION);
+  const [handleDefaultCard] = useMutation(MAKE_CARD_DEFAULT_MUTATION);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await handleDeleteCard({ variables: { body: { paymentMethodId: id } } });
+      refetch();
+      successSnack(response?.data?.deleteCard?.message);
+      // setOpenModalDeleteCard(false);
+    } catch (err: any) {
+      errorSnack(err.message);
+      // setOpenModalDeleteCard(false);
+    }
+  }
+
+  const addPayment = () => {
+    console.log('add payment clicked'); 
+    setOpenModal(false);
+  }
 
   return (
     <>
@@ -53,45 +73,52 @@ export default function Subscription() {
         <Typography variant="h3" mb={2}>
           Payment details
         </Typography>
-        <RadioGroup
-          aria-labelledby="payment-card-radio-buttons-group-label"
-          name="payment-radio-buttons-group"
-          sx={{
-            gap: 2,
-            overflow: 'auto',
-            mb: 2
-          }}
-        >
-          {data?.getCards.map((item: any, index: number) => (
-            <PaymentDetailWrapper key={item.brand + index}>
-              <FormControlLabel
-                value={item.value}
-                control={<Radio />}
-                label={
-                  <Stack>
-                    {/* <Image src={item.image} alt="card-image"></Image> */}
-                    <Typography>{item.brand}</Typography>
-                    <Divider orientation="vertical" sx={{ height: 20 }} />
-                    <Typography>**** **** **** {item.last4}</Typography>
-                    <Typography>{`Exp ${item.exp_month}/${item.exp_year}`}</Typography>
-                  </Stack>
-                }
-              />
-              <IconButton
-                onClick={() => {
-                  console.log('delete card');
-                  setSelectCard(item.userId);
-                  handleDeleteCard;
-                }}
-              >
-                <Close />
-              </IconButton>
-            </PaymentDetailWrapper>
-          ))}
-        </RadioGroup>
-        <Button variant="text" sx={{ p: 0, mt: 2 }} onClick={openLogoutModal}>
-          Add new payment detail
-        </Button>
+        {loading ? (
+          <AlignCenter>
+            <CircularProgress />
+          </AlignCenter>
+        ) : (
+          <>
+            <RadioGroup
+              aria-labelledby="payment-card-radio-buttons-group-label"
+              name="payment-radio-buttons-group"
+              sx={{
+                gap: 2,
+                overflow: 'auto',
+                mb: 2
+              }}
+            >
+              {data?.getMyPaymentMethods?.paymentMethods.map((item: any) => (
+                <PaymentDetailWrapper key={item.id}>
+                  <FormControlLabel
+                    value={item.id}
+                    control={<Radio />}
+                    label={
+                      <Stack>
+                        <Typography>{item.method.paymentMethod}</Typography>
+                        <Divider orientation="vertical" sx={{ height: 20 }} />
+                        <Typography>**** **** **** {item.method.last4}</Typography>
+                        <Typography>{`Exp ${item.method.exp_month}/${item.method.exp_year}`}</Typography>
+                      </Stack>
+                    }
+                  />
+                  <IconButton onClick={() => handleDelete(item.id)}>
+                    <Close />
+                  </IconButton>
+                </PaymentDetailWrapper>
+              ))}
+            </RadioGroup>
+            <Button variant="text" sx={{ p: 0, mt: 2 }} onClick={openAddPaymentModal}>
+              Add new payment detail
+            </Button>
+          </>
+        )}
+        {/* {console.log(data?.getCards.length)} */}
+        {data?.getMyPaymentMethods?.paymentMethods.length === 0 && (
+          <Button variant="contained" sx={{ mt: 2 }} onClick={openAddPaymentModal}>
+            Add new payment detail
+          </Button>
+        )}
       </MainCard>
       <GenericModal
         open={open}
@@ -128,9 +155,21 @@ export default function Subscription() {
         {kind === 'card' && <AddPaymentElement addPayment={addPayment} kind={kind} savePaymentLoading={false} />}
 
         {kind === 'au_bank' && <AddPaymentElement addPayment={addPayment} kind={kind} savePaymentLoading={false} />}
-
-        <div></div>
       </GenericModal>
+      {/* Delete card */}
+      {/* <GenericModal
+        open={openDeleteCard}
+        setOpen={setOpenDeleteCard}
+        openModal={openModalDeleteCard}
+        closeModal={(close: any) => {
+          if (close) {
+            // setOpenModalDeleteCard(false);
+          }
+        }}
+        title="Delete card"
+      >
+        <Typography>Are you sure you want to delete card?</Typography>
+      </GenericModal> */}
     </>
   );
 }

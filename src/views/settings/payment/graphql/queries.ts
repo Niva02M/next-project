@@ -8,20 +8,22 @@ export const CREATE_INTENT_FOR_CUSTOMER_QUERY = gql`
   }
 `;
 
-export const GET_ALL_CARDS_QUERY = gql`
-  query GetCards {
-    getCards {
-      brand
-      cardId
-      country
-      exp_month
-      exp_year
-      fingerprint
-      funding
-      is_default_source
-      last4
-      name
-      userId
+export const GET_PAYMENT_METHODS = gql`
+  query PaymentMethods {
+    getMyPaymentMethods {
+      paymentMethods {
+        billing_details {
+          name
+        }
+        id
+        method {
+          exp_month
+          exp_year
+          last4
+          paymentMethod
+        }
+      }
+      defaultMethod
     }
   }
 `;

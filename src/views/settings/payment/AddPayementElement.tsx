@@ -17,7 +17,7 @@ export default function AddPaymentElement({
   savePaymentLoading
 }: {
   kind: string;
-  addPayment: any
+  addPayment: any;
   savePaymentLoading?: boolean;
 }) {
   const { data } = useQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
