@@ -24,5 +24,7 @@
   "clients":  "Clients",
   "verification-code-sent": "Verification code sent to your phone number please use that code to verify your phone number.",
   "code-verify-successfully": "Code verified successfully",
-  "password-reset-code-sent": "Password reset code sent."
+  "password-reset-code-sent": "Password reset code sent.",
+  "add-new-payment-mehtod": "New payment method added",
+  "default-payment-method":"Default payment method updated."
 }

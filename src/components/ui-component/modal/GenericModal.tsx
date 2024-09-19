@@ -47,6 +47,8 @@ export default function GenericModal({
   useEffect(() => {
     if (openModal) {
       handleOpen();
+    } else {
+      handleClose();
     }
   }, [openModal]);
   return (
@@ -113,23 +115,34 @@ export default function GenericModal({
             </Stack>
           )}
           {btnDirection === 'row' && (
-            <Stack direction={btnDirection} spacing={3} mt={2}>
-              {btnTextYes && (
-                <LoadingButton
-                  loading={isLoading}
-                  disabled={isLoading}
-                  onClick={handleYes}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                >
-                  {btnTextYes}
-                </LoadingButton>
-              )}
+            <Stack
+              direction={btnDirection}
+              justifyContent={'flex-end'}
+              spacing={2}
+              mt={2}
+              sx={{
+                '.MuiButton-root': {
+                  minWidth: 80
+                }
+              }}
+            >
               {btnTextNo && (
-                <Button onClick={handleNo} variant="outlined" color="primary" size="large">
+                <Button
+                  onClick={() => {
+                    handleClose();
+                    handleNo;
+                  }}
+                  variant="outlined"
+                  color="primary"
+                >
                   {btnTextNo}
                 </Button>
+              )}
+
+              {btnTextYes && (
+                <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleYes} variant="contained" color="primary">
+                  {btnTextYes}
+                </LoadingButton>
               )}
             </Stack>
           )}
