@@ -201,7 +201,6 @@ export default function Subscription() {
                     onChange={() => {
                       setSelected(item.id);
                       setOpenModalDefaultCard(true);
-                      // makeDefaultPayment();
                     }}
                     label={
                       <Stack>
