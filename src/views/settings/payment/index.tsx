@@ -73,6 +73,7 @@ const RenderCard = ({ card }: { card: string }) => {
 
 export default function Subscription() {
   const methodBank = 'au_becs_debit';
+  const session = useSession();
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selected, setSelected] = useState('');
@@ -87,10 +88,6 @@ export default function Subscription() {
   const openAddPaymentModal = () => {
     setOpenModal(true);
   };
-
-  const session = useSession();
-
-  console.log('session ===>', session);
 
   const { data, loading, refetch } = useQuery(GET_PAYMENT_METHODS);
   const [handleDeleteCard, { loading: deleteCardLoading }] = useMutation(DELETE_CARD_DEFAULT_MUTATION);
@@ -121,7 +118,7 @@ export default function Subscription() {
       await handleDefaultCard({
         variables: {
           body: {
-            cardId: selected
+            paymentMethodId: selected
           }
         }
       });
@@ -158,7 +155,8 @@ export default function Subscription() {
           variables: {
             input: {
               paymentMethod: result?.setupIntent?.payment_method,
-              userId: '66974c6f3988836dc89ea085' // replace with dynamic value
+              //@ts-ignore
+              userId: session.data?.user?.user?._id!
             }
           }
         });
@@ -198,7 +196,7 @@ export default function Subscription() {
                 <PaymentDetailWrapper key={item.id}>
                   <FormControlLabel
                     value={item.id}
-                    // checked={defaultPayment === item.id && true}
+                    checked={defaultPayment === item.id ? true : false}
                     control={<Radio />}
                     onChange={() => {
                       setSelected(item.id);
@@ -232,7 +230,6 @@ export default function Subscription() {
             </Button>
           </>
         )}
-        {/* {console.log(data?.getCards.length)} */}
         {data?.getMyPaymentMethods?.paymentMethods.length === 0 && (
           <Button variant="contained" sx={{ mt: 2 }} onClick={openAddPaymentModal}>
             {ADD_PAYMENT_DETAIL}
