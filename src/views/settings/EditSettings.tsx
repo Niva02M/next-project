@@ -25,7 +25,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries';
 import MainCard from 'ui-component/cards/MainCard';
 
-export default function Settings() {
+export default function EditSettings() {
   const { data } = useQuery(GET_PROFILE_QUERY);
   const loggedInUserId = data?.me?._id;
   const localStorageKey = `settings_${loggedInUserId}`;
@@ -78,7 +78,6 @@ export default function Settings() {
         onSubmit={(values) => handleSubmitForm(values)}
       >
         {({ errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
-
           const customHandleChange = (event: React.ChangeEvent<any>) => {
             handleChange(event);
             handleFormChange({

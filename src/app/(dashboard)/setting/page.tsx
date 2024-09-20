@@ -1,4 +1,4 @@
-import Settings from 'views/settings/Settings';
+import Settings from 'views/settings';
 
 // ==============================|| Profile Setting ||============================== //
 

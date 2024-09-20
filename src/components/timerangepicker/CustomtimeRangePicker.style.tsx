@@ -89,7 +89,7 @@ export const TimeRangeWrapper = styled(Box)(({ theme }) => ({
     '&-popper.datepicker-popper': {
       top: '52px !important',
       width: '100%',
-      transform: 'none !important',
+      transform: 'none !important'
     }
   }
 }));

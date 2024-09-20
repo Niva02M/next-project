@@ -151,7 +151,7 @@ const ProfileSection = () => {
             <Transitions in={open} {...TransitionProps}>
               <Paper>
                 {open && (
-                  <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
+                  <MainCard border={false} content={false} boxShadow shadow={theme.shadows[16]}>
                     <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                       <Box sx={{ p: 2, pt: 0 }}>
                         <List

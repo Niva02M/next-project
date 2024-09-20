@@ -178,13 +178,26 @@ const AuthResetPassword = ({ ...others }) => {
             <InputLabel htmlFor="outlined-adornment-confirm-password">Repeat New Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-confirm-password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={values.confirmPassword}
               name="confirmPassword"
               label="Confirm Password"
               placeholder="Repeat password"
               onBlur={handleBlur}
               onChange={handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="large"
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
               inputProps={{}}
             />
           </FormControl>
@@ -209,7 +222,7 @@ const AuthResetPassword = ({ ...others }) => {
           )}
           <Box
             sx={{
-              mt: 1
+              mt: 3
             }}
           >
             <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">

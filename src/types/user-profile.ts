@@ -108,3 +108,14 @@ export interface PostProps {
   post: PostDataType;
   replyAdd: (postId: string, commentId: string, reply: Reply) => Promise<void>;
 }
+
+export type UserData = {
+  authProvider: string;
+  authProviderId: string;
+  firstName: string;
+  lastName: string;
+  loginFlowType: string;
+  profileImage: string;
+  __typename: string;
+  _id: string;
+};

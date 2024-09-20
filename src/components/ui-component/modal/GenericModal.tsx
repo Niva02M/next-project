@@ -8,10 +8,10 @@ import { LoadingButton } from '@mui/lab';
 interface IGenericModalProps {
   open: boolean;
   setOpen: any;
-  title?: string;
   children: any;
   openModal: boolean;
   closeModal: any;
+  title?: string;
   maxWidth?: number;
   btnDirection?: 'column' | 'row';
   btnTextYes?: string;
@@ -47,12 +47,22 @@ export default function GenericModal({
   useEffect(() => {
     if (openModal) {
       handleOpen();
+    } else {
+      handleClose();
     }
   }, [openModal]);
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Paper sx={{ width: { xs: '90%', md: '100%' }, maxWidth: maxWidth ? maxWidth : 830, p: '27px 20px' }}>
+        <Paper
+          sx={{
+            width: { xs: '90%', md: '100%' },
+            maxWidth: maxWidth ? maxWidth : 830,
+            p: '27px 20px',
+            maxHeight: '90%',
+            overflowY: 'auto'
+          }}
+        >
           {title && (
             <Stack direction="row" alignItems="flex-start" justifyContent="space-between" columnGap={2} mb={2}>
               {titleIcon ? (
@@ -105,23 +115,34 @@ export default function GenericModal({
             </Stack>
           )}
           {btnDirection === 'row' && (
-            <Stack direction={btnDirection} spacing={3} mt={2}>
-              {btnTextYes && (
-                <LoadingButton
-                  loading={isLoading}
-                  disabled={isLoading}
-                  onClick={handleYes}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                >
-                  {btnTextYes}
-                </LoadingButton>
-              )}
+            <Stack
+              direction={btnDirection}
+              justifyContent={'flex-end'}
+              spacing={2}
+              mt={2}
+              sx={{
+                '.MuiButton-root': {
+                  minWidth: 80
+                }
+              }}
+            >
               {btnTextNo && (
-                <Button onClick={handleNo} variant="outlined" color="primary" size="large">
+                <Button
+                  onClick={() => {
+                    handleClose();
+                    handleNo;
+                  }}
+                  variant="outlined"
+                  color="primary"
+                >
                   {btnTextNo}
                 </Button>
+              )}
+
+              {btnTextYes && (
+                <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleYes} variant="contained" color="primary">
+                  {btnTextYes}
+                </LoadingButton>
               )}
             </Stack>
           )}
