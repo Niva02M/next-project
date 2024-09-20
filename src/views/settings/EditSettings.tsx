@@ -78,7 +78,6 @@ export default function EditSettings() {
         onSubmit={(values) => handleSubmitForm(values)}
       >
         {({ errors, values, handleBlur, handleChange, handleSubmit, isSubmitting }) => {
-
           const customHandleChange = (event: React.ChangeEvent<any>) => {
             handleChange(event);
             handleFormChange({
