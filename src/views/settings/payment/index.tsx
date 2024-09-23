@@ -42,7 +42,7 @@ import {
   DELETE_CARD_MESSAGE,
   PAYMENT_DETAILS,
   PAYMENT_TYPE,
-  SUBSCRIPTION_SETTINGS
+  PAYMENT_SETTINGS
 } from '../constant';
 import { useSession } from 'next-auth/react';
 
@@ -172,7 +172,7 @@ export default function Payment() {
   return (
     <>
       <MainCard>
-        <Typography variant="h2">{SUBSCRIPTION_SETTINGS}</Typography>
+        <Typography variant="h2">{PAYMENT_SETTINGS}</Typography>
         <Divider sx={{ my: 3 }} />
         <Typography variant="h3" mb={2}>
           {PAYMENT_DETAILS}
