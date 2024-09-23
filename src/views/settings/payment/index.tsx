@@ -71,7 +71,7 @@ const RenderCard = ({ card }: { card: string }) => {
   }
 };
 
-export default function Subscription() {
+export default function Payment() {
   const methodBank = 'au_becs_debit';
   const session = useSession();
   const [open, setOpen] = useState(false);
@@ -213,24 +213,28 @@ export default function Subscription() {
                       </Stack>
                     }
                   />
-                  <IconButton
-                    onClick={() => {
-                      setOpenModalDeleteCard(true);
-                      setSelected(item.id);
-                    }}
-                  >
-                    <Close />
-                  </IconButton>
+                  {data?.getMyPaymentMethods?.paymentMethods.length > 0 && (
+                    <IconButton
+                      onClick={() => {
+                        setOpenModalDeleteCard(true);
+                        setSelected(item.id);
+                      }}
+                    >
+                      <Close />
+                    </IconButton>
+                  )}
                 </PaymentDetailWrapper>
               ))}
             </RadioGroup>
-            <Button variant="text" sx={{ p: 0, mt: 2 }} onClick={openAddPaymentModal}>
-              {ADD_PAYMENT_DETAIL}
-            </Button>
+            {data?.getMyPaymentMethods?.paymentMethods.length > 0 && (
+              <Button variant="text" sx={{ p: 0, mt: 2 }} onClick={openAddPaymentModal}>
+                {ADD_PAYMENT_DETAIL}
+              </Button>
+            )}
           </>
         )}
         {data?.getMyPaymentMethods?.paymentMethods.length === 0 && (
-          <Button variant="contained" sx={{ mt: 2 }} onClick={openAddPaymentModal}>
+          <Button variant="contained" onClick={openAddPaymentModal}>
             {ADD_PAYMENT_DETAIL}
           </Button>
         )}
