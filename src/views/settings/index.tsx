@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { TabPanel } from 'views/user-management/admins/view';
 import EditSettings from './EditSettings';
 import { settingsTabOption } from './constant';
-import Subscription from './payment';
+import Payment from './payment';
 
 export default function Settings() {
   const [value, setValue] = useState<number>(0);
@@ -51,7 +51,7 @@ export default function Settings() {
                 <EditSettings />
               </TabPanel>
               <TabPanel value={value} index={1}>
-                <Subscription />
+                <Payment />
               </TabPanel>
             </Box>
           </Paper>

@@ -9,6 +9,7 @@ export const PaymentDetailWrapper = styled(Stack)(({ theme }) => ({
   padding: '16px',
   gap: 20,
   minWidth: 640,
+  minHeight: 74,
   '.MuiFormControlLabel-root': {
     flex: 1,
     margin: 0,
