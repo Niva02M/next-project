@@ -213,7 +213,7 @@ export default function Payment() {
                       </Stack>
                     }
                   />
-                  {data?.getMyPaymentMethods?.paymentMethods.length > 0 && (
+                  {data?.getMyPaymentMethods?.paymentMethods.length > 1 && (
                     <IconButton
                       onClick={() => {
                         setOpenModalDeleteCard(true);
