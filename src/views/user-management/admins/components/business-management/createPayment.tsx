@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
 // material-ui
-import { Box, Button, CircularProgress, Grid } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 
 // assets
 // import Spinner from 'components/spinner';
@@ -32,7 +32,6 @@ const CreatePaymentPage = () => {
     const [handlePaymentIntent, { data, error }] = useMutation(CREATE_PAYMENT_INTENT);
 
     useEffect(() => {
-        console.log(data?.createPaymentIntent, 'data?.createPaymentIntent');
         if (data?.createPaymentIntent) {
             setClientSecret(data?.createPaymentIntent?.clientSecret);
         }
@@ -53,7 +52,6 @@ const CreatePaymentPage = () => {
         setAmount(e.target.value);
     };
 
-    console.log(amount, 'amount');
 
     return pageLoading ? (
         <CircularProgress />
