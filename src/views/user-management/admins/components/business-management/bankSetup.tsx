@@ -42,7 +42,6 @@ const BankSetupPage = () => {
                 const { data: connectAccount } = await handleCreateCustomConnectAccount({
                     variables: {}
                 });
-                console.log("connectAccount",connectAccount)
                 if (connectAccount?.createCustomConnectAccount?.connectAccountId) {
                     await handleCreateBankAccount({
                         variables: {

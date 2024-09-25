@@ -6,9 +6,6 @@ import { Elements } from '@stripe/react-stripe-js';
 // material-ui
 import { CircularProgress, Grid } from '@mui/material';
 
-// assets
-// import Spinner from 'components/spinner';
-// import useSnackbar from 'hooks/common/useSnackbar';
 
 // grapqhl
 import { CREATE_PAYMENT_INTENT } from './graphql/mutations';
