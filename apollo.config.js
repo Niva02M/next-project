@@ -10,8 +10,8 @@ import { AuthenticationStatus, AuthStatusCode } from 'store/constant';
 
 const httpLink = createHttpLink({
   // eslint-disable-next-line no-undef
-  // uri: process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://dev-et-api.draftserver.com/api'
-  uri: 'http://localhost:3000/api'
+  uri: process.env.NEXT_PUBLIC_API_ENDPOINT ?? 'https://dev-et-api.draftserver.com/api'
+  // uri: 'http://localhost:3000/api'
   // uri: 'https://1493-202-166-198-75.ngrok-free.app/api'
 });
 
