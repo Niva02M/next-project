@@ -18,24 +18,28 @@ export default function AddPaymentElement({
 }) {
   const [secret, setSecret] = useState('');
 
-  const { data } = useQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
-    variables: {
-      kind: kind
-    }
+  const { data, refetch } = useQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
+    variables: { kind },
+    fetchPolicy: 'network-only' // Always fetch fresh data when refetching
   });
 
   useEffect(() => {
-    if (data?.createIntentForCustomer) setSecret(`${data?.createIntentForCustomer?.clientSecret}`);
-  }, [data?.createIntentForCustomer]);
+    const newSecret = data?.createIntentForCustomer?.clientSecret;
+
+    if (newSecret && newSecret !== secret) {
+      setSecret(newSecret);
+    } else if (newSecret === secret) {
+      refetch();
+    }
+  }, [data, secret, refetch]);
+
   const options = {
     clientSecret: secret
   };
 
   return secret ? (
-    <>
-      <Elements stripe={stripePromise} options={options}>
-        <StripePaymentAdd save={addPayment} {...{ savePayLoading }} />
-      </Elements>
-    </>
+    <Elements stripe={stripePromise} options={options}>
+      <StripePaymentAdd save={addPayment} savePaymemtMethodLoading={savePayLoading} />
+    </Elements>
   ) : null;
 }

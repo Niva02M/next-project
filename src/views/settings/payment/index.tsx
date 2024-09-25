@@ -233,7 +233,7 @@ export default function Payment() {
             )}
           </>
         )}
-        {data?.getMyPaymentMethods?.paymentMethods.length === 0 && (
+        {(!data || !data?.getMyPaymentMethods?.paymentMethods.length) && (
           <Button variant="contained" onClick={openAddPaymentModal}>
             {ADD_PAYMENT_DETAIL}
           </Button>
