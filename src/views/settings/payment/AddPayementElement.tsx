@@ -1,19 +1,14 @@
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-// import { CREATE_INTENT_FOR_CUSTOMER_QUERY } from './graphql/queries';
-// import { useQuery } from '@apollo/client';
-// import { useEffect, useState } from 'react';
 import { StripePaymentAdd } from './StripePaymentAdd';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK || '');
 
 export default function AddPaymentElement({
-  // kind,
   addPayment,
   savePayLoading,
   clientSecret
 }: {
-  // kind: string;
   addPayment: any;
   savePayLoading: boolean;
   clientSecret: any;
