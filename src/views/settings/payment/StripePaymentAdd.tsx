@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 
@@ -14,20 +14,20 @@ export const StripePaymentAdd = ({ save, savePaymemtMethodLoading }: PaymentMeth
   return (
     <>
       <PaymentElement />
-      <Button
+      <LoadingButton
         onClick={async (e) => {
           e.preventDefault();
           save(stripe!, elements!);
         }}
-        type="submit"
-        variant="contained"
-        color="secondary"
-        fullWidth
+        loading={savePaymemtMethodLoading}
         disabled={!stripe || savePaymemtMethodLoading}
-        sx={{ mt: 2 }}
+        variant="contained"
+        size="large"
+        type="submit"
+        sx={{ mt: 2, display: 'flex', ml: 'auto' }}
       >
         Add payment details
-      </Button>
+      </LoadingButton>
     </>
   );
 };
