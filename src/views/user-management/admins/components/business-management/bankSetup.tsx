@@ -121,9 +121,6 @@ const BankSetupPage = () => {
                                         maxWidth: '50%',
                                         marginTop: '1rem'
                                     }}
-                                    onClick={()=>{
-                                        console.log("bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys],",bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys])
-                                    }}
                                 >
                                     Onboard
                                 </Button>

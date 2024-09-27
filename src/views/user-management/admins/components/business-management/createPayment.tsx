@@ -35,7 +35,6 @@ const CreatePaymentPage = () => {
     }, [data]);
 
     const handleProceed = () => {
-        console.log(amount);
         handlePaymentIntent({
             variables: {
                 input: {
