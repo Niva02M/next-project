@@ -9,6 +9,7 @@ import { tabsOption } from '../constant';
 import { TabWrapper } from 'components/tab-wrapper/TabWrapper.styles';
 import UserProfile from './UserProfile';
 import ChangePassword from './ChangePassword';
+import BankSetupPage from '../components/business-management/bankSetup';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
   return (
@@ -63,6 +64,9 @@ const AdminProfile = () => {
               </TabPanel>
               <TabPanel value={value} index={1}>
                 <ChangePassword />
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                <BankSetupPage />
               </TabPanel>
             </Box>
           </Paper>
