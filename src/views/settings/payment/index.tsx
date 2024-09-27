@@ -20,18 +20,11 @@ import MainCard from 'ui-component/cards/MainCard';
 import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
-import { GET_PAYMENT_METHODS } from './graphql/queries';
-import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_INTENT_FOR_CUSTOMER_QUERY, GET_PAYMENT_METHODS } from './graphql/queries';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { DELETE_CARD_DEFAULT_MUTATION, MAKE_CARD_DEFAULT_MUTATION, SAVE_PAYMENT_METHOD } from './graphql/mutation';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AlignCenter from 'components/align-center/AlignCenter';
-import Visa from 'assets/payment/visa';
-import Master from 'assets/payment/master';
-import Amex from 'assets/payment/amex';
-import Jcb from 'assets/payment/jcb';
-import Unionpay from 'assets/payment/unionpay';
-import Bank from 'assets/payment/bank';
-import Base from 'assets/payment/base';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 import {
   ADD_PAYMENT_DETAIL,
@@ -42,34 +35,10 @@ import {
   DELETE_CARD_MESSAGE,
   PAYMENT_DETAILS,
   PAYMENT_TYPE,
-  PAYMENT_SETTINGS
+  PAYMENT_SETTINGS,
+  RenderCard
 } from '../constant';
 import { useSession } from 'next-auth/react';
-
-const RenderCard = ({ card }: { card: string }) => {
-  switch (card) {
-    case 'visa':
-      return <Visa />;
-
-    case 'mastercard':
-      return <Master />;
-
-    case 'amex':
-      return <Amex />;
-
-    case 'jcb':
-      return <Jcb />;
-
-    case 'unionpay':
-      return <Unionpay />;
-
-    case 'au_becs_debit':
-      return <Bank />;
-
-    default:
-      return <Base />;
-  }
-};
 
 export default function Payment() {
   const methodBank = 'au_becs_debit';
@@ -84,6 +53,7 @@ export default function Payment() {
   const [openDefaultCard, setOpenDefaultCard] = useState(true);
   const [openModalDefaultCard, setOpenModalDefaultCard] = useState(false);
   const [defaultPayment, setDefaultPayment] = useState<string | null>(null);
+  const [secret, setSecret] = useState('');
 
   const openAddPaymentModal = () => {
     setOpenModal(true);
@@ -93,6 +63,24 @@ export default function Payment() {
   const [handleDeleteCard, { loading: deleteCardLoading }] = useMutation(DELETE_CARD_DEFAULT_MUTATION);
   const [handleSavePayment, { loading: savePayLoading }] = useMutation(SAVE_PAYMENT_METHOD);
   const [handleDefaultCard] = useMutation(MAKE_CARD_DEFAULT_MUTATION);
+  const [handleSetupIntent, { loading: setupIntentLoading }] = useLazyQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
+    fetchPolicy: 'network-only',
+    onCompleted(data) {
+      if (data?.createIntentForCustomer?.clientSecret) {
+        setSecret(data?.createIntentForCustomer?.clientSecret);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (kind) {
+      handleSetupIntent({
+        variables: {
+          kind
+        }
+      });
+    }
+  }, [handleSetupIntent, kind]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -233,7 +221,7 @@ export default function Payment() {
             )}
           </>
         )}
-        {data?.getMyPaymentMethods?.paymentMethods.length === 0 && (
+        {(!data || !data?.getMyPaymentMethods?.paymentMethods.length) && (
           <Button variant="contained" onClick={openAddPaymentModal}>
             {ADD_PAYMENT_DETAIL}
           </Button>
@@ -259,6 +247,7 @@ export default function Payment() {
             name="kind"
             value={kind}
             onChange={(event) => {
+              setSecret('');
               setKind(event.target.value);
             }}
           >
@@ -272,9 +261,19 @@ export default function Payment() {
             ))}
           </Select>
         </Box>
-        {kind === 'card' && <AddPaymentElement addPayment={addPayment} kind={kind} savePayLoading={savePayLoading} />}
-
-        {kind === 'au_bank' && <AddPaymentElement addPayment={addPayment} kind={kind} savePayLoading={savePayLoading} />}
+        {setupIntentLoading && (
+          <AlignCenter>
+            <CircularProgress />
+          </AlignCenter>
+        )}
+        {/* Stripe card ui */}
+        {!setupIntentLoading && kind === 'card' && secret && (
+          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
+        )}
+        {/* Stripe bank ui */}
+        {!setupIntentLoading && kind === 'au_bank' && secret && (
+          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
+        )}
       </GenericModal>
 
       {/* Delete card */}
