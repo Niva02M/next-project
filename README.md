@@ -17,7 +17,7 @@ This project aims to provide a robust and customizable Webapp template using mat
 
 ### Installation Process
 
-1. **Assuming Docker is already installed on your system.**\
+1. **Assuming Docker is already installed on your system.** <br />
 	 Note: On ebtheme webapp `container` is set as `webapp` to update container goto **docker-compose.yml** file.
 	 
     ```sh
@@ -44,7 +44,7 @@ This project aims to provide a robust and customizable Webapp template using mat
     docker-compose up
     ```
 
-6. Open your browser and navigate to `localhost:8001` to view the project. \
+6. Open your browser and navigate to `localhost:8001` to view the project. <br/>
 (Note: The port `8001` may be different. To update port, it is mention on docker-compose.yml file.)
     ```sh
     ports:
@@ -66,7 +66,7 @@ This project aims to provide a robust and customizable Webapp template using mat
     docker compose run <container> yarn preview
     ```
 
-10. Remove the `node_modules` folder from the Docker environment \
+10. Remove the `node_modules` folder from the Docker environment <br/>
     (Note: Docker must be running to execute this command.):
     ```sh
     docker exec -it <container-name> rm -rf node_modules
