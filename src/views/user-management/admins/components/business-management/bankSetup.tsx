@@ -26,7 +26,6 @@ type BankAccountTypeKeys = keyof typeof bankAccounTypeMap;
 const BankSetupPage = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const { successSnack, errorSnack } = useSuccErrSnack();
-  const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
   const [handleCreateBankAccount, { data, loading }] = useMutation(CREATE_BANK_ACCOUNT_LINK);
@@ -110,7 +109,15 @@ const BankSetupPage = () => {
                     <RadioGroup defaultValue="standard" name="bankAccountType">
                       <FormControlLabel value="standard" control={<Radio />} label="Standard" onChange={handleChange} />
                       <FormControlLabel value="express" control={<Radio />} label="Express" onChange={handleChange} />
-                      <FormControlLabel value="custom" control={<Radio />} label="Custom" onChange={handleChange} />
+                      <FormControlLabel
+                        value="custom"
+                        control={<Radio />}
+                        label="Custom"
+                        onChange={() => {
+                          handleChange;
+                          setOpenModal(true);
+                        }}
+                      />
                     </RadioGroup>
                   </FormControl>
                   <Button
@@ -132,7 +139,7 @@ const BankSetupPage = () => {
           </form>
         )}
       </Formik>
-      <AddPaymentDetailModal open={open} setOpen={setOpen} openModal={openModal} setOpenModal={setOpenModal} />
+      <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} />
     </>
   );
 };

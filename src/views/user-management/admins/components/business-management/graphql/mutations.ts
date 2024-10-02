@@ -27,3 +27,11 @@ export const CREATE_PAYMENT_INTENT = gql`
     }
   }
 `;
+
+export const ADD_BANK_DETAIL = gql`
+  mutation AddBankDetail($body: CreateBankDetailInput!) {
+    addBankDetail(body: $body) {
+      message
+    }
+  }
+`;
