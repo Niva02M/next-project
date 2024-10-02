@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 // material-ui
-import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField } from '@mui/material';
+import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
 // assets
@@ -10,8 +10,6 @@ import MainCard from 'ui-component/cards/MainCard';
 
 import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import GenericModal from 'ui-component/modal/GenericModal';
-import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
 import AddPaymentDetailModal from '../modal/AddPaymentDetailModal';
 
 // grapqhl

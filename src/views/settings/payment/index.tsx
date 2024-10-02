@@ -43,14 +43,11 @@ import { useSession } from 'next-auth/react';
 export default function Payment() {
   const methodBank = 'au_becs_debit';
   const session = useSession();
-  const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selected, setSelected] = useState('');
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [kind, setKind] = useState('card');
-  const [openDeleteCard, setOpenDeleteCard] = useState(true);
   const [openModalDeleteCard, setOpenModalDeleteCard] = useState(false);
-  const [openDefaultCard, setOpenDefaultCard] = useState(true);
   const [openModalDefaultCard, setOpenModalDefaultCard] = useState(false);
   const [defaultPayment, setDefaultPayment] = useState<string | null>(null);
   const [secret, setSecret] = useState('');
@@ -228,17 +225,7 @@ export default function Payment() {
         )}
       </MainCard>
       {/* Add new payment */}
-      <GenericModal
-        open={open}
-        setOpen={setOpen}
-        openModal={openModal}
-        closeModal={(close: any) => {
-          if (close) {
-            setOpenModal(false);
-          }
-        }}
-        title={ADD_PAYMENT_DETAILS}
-      >
+      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAILS}>
         <Box mb={2.5}>
           <InputLabel>{PAYMENT_TYPE}</InputLabel>
           <Select
@@ -278,18 +265,12 @@ export default function Payment() {
 
       {/* Delete card */}
       <GenericModal
-        open={openDeleteCard}
-        setOpen={setOpenDeleteCard}
         openModal={openModalDeleteCard}
+        closeModal={() => setOpenModalDeleteCard(false)}
         btnDirection="row"
         btnTextYes="Yes"
         btnTextNo="No"
         handleYes={() => handleDelete(selected)}
-        closeModal={(close: any) => {
-          if (close) {
-            setOpenModalDeleteCard(false);
-          }
-        }}
         title={DELETE_CARD}
         maxWidth={620}
         isLoading={deleteCardLoading}
@@ -299,18 +280,12 @@ export default function Payment() {
 
       {/* Default card */}
       <GenericModal
-        open={openDefaultCard}
-        setOpen={setOpenDefaultCard}
         openModal={openModalDefaultCard}
         btnDirection="row"
         btnTextYes="Yes"
         btnTextNo="No"
         handleYes={() => makeDefaultPayment()}
-        closeModal={(close: any) => {
-          if (close) {
-            setOpenModalDefaultCard(false);
-          }
-        }}
+        closeModal={() => setOpenModalDefaultCard(false)}
         title={DEFAULT_CARD_TITLE}
         maxWidth={620}
         isLoading={deleteCardLoading}

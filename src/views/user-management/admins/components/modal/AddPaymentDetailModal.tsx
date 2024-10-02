@@ -1,35 +1,31 @@
-import { FormControl, FormHelperText, FormLabel, InputLabel, TextField, Typography } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
-import React from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
 
 type AddPaymentDetailModalType = {
   open: boolean;
-  setOpen: () => void;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   openModal: boolean;
-  setOpenModal: () => void;
+  setOpenModal: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function AddPaymentDetailModal({ open, setOpen, openModal, setOpenModal }: AddPaymentDetailModalType) {
-    const handleFormSubmit = () => {};
-    const [initialValues, setInitialValues] = {
-        accountName: '',
-        accountNumber: '',
-        bsb: ''
-    }
+  const [initialValues, setInitialValues] = useState({
+    accountName: '',
+    accountNumber: '',
+    bsb: ''
+  });
+  const handleFormSubmit = () => {
+    setInitialValues({
+      accountName: '',
+      accountNumber: '',
+      bsb: ''
+    });
+  };
   return (
-    <GenericModal
-      open={open}
-      setOpen={setOpen}
-      openModal={openModal}
-      closeModal={(close: any) => {
-        if (close) {
-          setOpenModal(false);
-        }
-      }}
-      title={ADD_PAYMENT_DETAILS}
-    >
+    <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAILS}>
       <Formik initialValues={initialValues} onSubmit={handleFormSubmit}>
         {({
           values,

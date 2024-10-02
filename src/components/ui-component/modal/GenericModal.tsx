@@ -1,16 +1,13 @@
 'use client';
-import React, { ReactElement, useEffect, useState } from 'react';
-
+import React from 'react';
 import { Button, IconButton, Modal, Paper, Stack, Typography, useTheme } from '@mui/material';
 import { CloseIcon } from 'components/icons';
 import { LoadingButton } from '@mui/lab';
 
 interface IGenericModalProps {
-  open: boolean;
-  setOpen: any;
-  children: any;
   openModal: boolean;
-  closeModal: any;
+  closeModal: () => void;
+  children: React.ReactNode;
   title?: string;
   maxWidth?: number;
   btnDirection?: 'column' | 'row';
@@ -19,135 +16,98 @@ interface IGenericModalProps {
   handleYes?: () => void;
   handleNo?: () => void;
   isLoading?: boolean;
-  titleIcon?: ReactElement;
+  titleIcon?: React.ReactElement;
 }
 
 export default function GenericModal({
   title,
   openModal,
   closeModal,
-  maxWidth,
-  btnDirection,
+  maxWidth = 830,
+  btnDirection = 'row',
   btnTextYes,
   btnTextNo,
   handleYes,
   handleNo,
   isLoading,
   titleIcon,
-  children
+  children,
 }: IGenericModalProps) {
   const theme = useTheme();
-  let [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    setOpen(false);
-    closeModal(true);
-  };
-  useEffect(() => {
-    if (openModal) {
-      handleOpen();
-    } else {
-      handleClose();
-    }
-  }, [openModal]);
+  const handleClose = () => closeModal();
+
   return (
-    <>
-      <Modal open={open} onClose={handleClose}>
-        <Paper
+    <Modal open={openModal} onClose={handleClose}>
+      <Paper
+        sx={{
+          width: { xs: '90%', md: '100%' },
+          maxWidth: maxWidth,
+          p: '27px 20px',
+          maxHeight: '90%',
+          overflowY: 'auto'
+        }}
+      >
+        {title && (
+          <Stack direction="row" alignItems="flex-start" justifyContent="space-between" gap={2} mb={2}>
+            {titleIcon ? (
+              <Stack
+                direction="row"
+                spacing={2.5}
+                alignItems="flex-start"
+                sx={{
+                  svg: {
+                    width: 24,
+                    path: {
+                      fill: theme.palette.error.dark
+                    }
+                  }
+                }}
+              >
+                {titleIcon}
+                <Typography variant="h3" flex={1}>
+                  {title}
+                </Typography>
+              </Stack>
+            ) : (
+              <Typography variant="h3">{title}</Typography>
+            )}
+            <IconButton onClick={handleClose} sx={{ p: 0 }}>
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+        )}
+        {children}
+        <Stack
+          direction={btnDirection}
+          spacing={btnDirection === 'column' ? 3 : 2}
+          mt={2}
+          justifyContent={btnDirection === 'row' ? 'flex-end' : 'flex-start'}
           sx={{
-            width: { xs: '90%', md: '100%' },
-            maxWidth: maxWidth ? maxWidth : 830,
-            p: '27px 20px',
-            maxHeight: '90%',
-            overflowY: 'auto'
+            '.MuiButton-root': {
+              minWidth: 80
+            }
           }}
         >
-          {title && (
-            <Stack direction="row" alignItems="flex-start" justifyContent="space-between" columnGap={2} mb={2}>
-              {titleIcon ? (
-                <Stack
-                  direction="row"
-                  spacing={2.5}
-                  alignItems="flex-start"
-                  sx={{
-                    svg: {
-                      width: 24,
-                      path: {
-                        fill: theme.palette.error.dark
-                      }
-                    }
-                  }}
-                >
-                  {titleIcon}{' '}
-                  <Typography variant="h3" flex={1}>
-                    {title}
-                  </Typography>{' '}
-                </Stack>
-              ) : (
-                <Typography variant="h3">{title}</Typography>
-              )}
-              <IconButton className="close" onClick={handleClose} sx={{ p: 0 }}>
-                <CloseIcon />
-              </IconButton>
-            </Stack>
-          )}
-          {children}
-          {btnDirection === 'column' && (
-            <Stack direction={btnDirection} spacing={3} mt={2}>
-              {btnTextNo && (
-                <Button
-                  onClick={() => {
-                    handleClose();
-                    handleNo;
-                  }}
-                  variant="outlined"
-                  color="primary"
-                >
-                  {btnTextNo}
-                </Button>
-              )}
-              {btnTextYes && (
-                <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleYes} variant="contained" color="primary">
-                  {btnTextYes}
-                </LoadingButton>
-              )}
-            </Stack>
-          )}
-          {btnDirection === 'row' && (
-            <Stack
-              direction={btnDirection}
-              justifyContent={'flex-end'}
-              spacing={2}
-              mt={2}
-              sx={{
-                '.MuiButton-root': {
-                  minWidth: 80
-                }
+          {btnTextNo && (
+            <Button
+              onClick={() => {
+                handleClose();
+                handleNo?.();
               }}
+              variant="outlined"
+              color="primary"
             >
-              {btnTextNo && (
-                <Button
-                  onClick={() => {
-                    handleClose();
-                    handleNo;
-                  }}
-                  variant="outlined"
-                  color="primary"
-                >
-                  {btnTextNo}
-                </Button>
-              )}
-
-              {btnTextYes && (
-                <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleYes} variant="contained" color="primary">
-                  {btnTextYes}
-                </LoadingButton>
-              )}
-            </Stack>
+              {btnTextNo}
+            </Button>
           )}
-        </Paper>
-      </Modal>
-    </>
+          {btnTextYes && (
+            <LoadingButton loading={isLoading} disabled={isLoading} onClick={handleYes} variant="contained" color="primary">
+              {btnTextYes}
+            </LoadingButton>
+          )}
+        </Stack>
+      </Paper>
+    </Modal>
   );
 }

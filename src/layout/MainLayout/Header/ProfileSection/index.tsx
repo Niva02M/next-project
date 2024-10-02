@@ -209,8 +209,6 @@ const ProfileSection = () => {
       </Popper>
       {/* Logout modal start */}
       <GenericModal
-        open={open}
-        setOpen={setOpen}
         title="Are you sure you want to logout Ebtheme web?"
         openModal={openModal}
         btnDirection="column"
@@ -219,11 +217,7 @@ const ProfileSection = () => {
         handleYes={handleLogout}
         isLoading={isLoading}
         titleIcon={<InfoIcon />}
-        closeModal={(close: any) => {
-          if (close) {
-            setOpenModal(false);
-          }
-        }}
+        closeModal={() => setOpenModal(false)}
       >
         <Typography>You are about to logout from Ebtheme. Are you sure you want to logout ?</Typography>
       </GenericModal>
