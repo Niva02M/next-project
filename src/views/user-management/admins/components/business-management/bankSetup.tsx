@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { Formik } from 'formik';
 // material-ui
-import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
 // assets
@@ -11,6 +11,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AddPaymentDetailModal from '../modal/AddPaymentDetailModal';
+import { PayoutDetailWrapper } from './Payout.styles';
+import { Close } from '@mui/icons-material';
 
 // grapqhl
 
@@ -139,6 +141,47 @@ const BankSetupPage = () => {
           </form>
         )}
       </Formik>
+      <Stack>
+        <Typography variant="h3" mb={3}>
+          Payout details
+        </Typography>
+        <Box sx={{ overflowX: 'auto' }}>
+          <PayoutDetailWrapper>
+            <FormControlLabel
+              // value={item.id}
+              // checked={defaultPayment === item.id ? true : false}
+              control={<Radio />}
+              onChange={() => {
+                // setSelected(item.id);
+                // setOpenModalDefaultCard(true);
+              }}
+              label={
+                <Stack>
+                  <Typography flex={1}>Bank name</Typography>
+                  <Typography flex={1}>Acc no: 000123456</Typography>
+                  <Typography flex={1}>BSB: 000123456</Typography>
+                  <Typography flex={1}>Status: <Chip label={'Active'} color="success"></Chip></Typography>
+                </Stack>
+              }
+              sx={{
+                '.MuiFormControlLabel-label': {
+                  flex: 1
+                }
+              }}
+            />
+            {/* {data?.getMyPaymentMethods?.paymentMethods.length > 1 && ( */}
+            <IconButton
+              onClick={() => {
+                // setOpenModalDeleteCard(true);
+                // setSelected(item.id);
+              }}
+            >
+              <Close />
+            </IconButton>
+            {/* )} */}
+          </PayoutDetailWrapper>
+        </Box>
+      </Stack>
       <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} />
     </>
   );
