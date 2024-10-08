@@ -1,13 +1,16 @@
 // profile tabs option
 export const tabsOption = [
   {
-    label: 'User profile'
+    label: 'User profile',
+    url: '/profile-setting'
   },
   {
-    label: 'Password settings'
+    label: 'Password settings',
+    url: '/profile-setting/change-password'
   },
   {
-    label: 'Add bank account'
+    label: 'Add bank account',
+    url: '/profile-setting/add-bank'
   }
 ];
 

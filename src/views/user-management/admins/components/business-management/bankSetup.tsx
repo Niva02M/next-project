@@ -1,18 +1,29 @@
+'use-client';
 import { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Formik } from 'formik';
 // material-ui
-import { Box, Button, Chip, CircularProgress, FormControl, FormControlLabel, FormLabel, Grid, IconButton, Radio, RadioGroup, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography
+} from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
-
-// assets
-import MainCard from 'ui-component/cards/MainCard';
 
 import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AddPaymentDetailModal from '../modal/AddPaymentDetailModal';
-import { PayoutDetailWrapper } from './Payout.styles';
-import { Close } from '@mui/icons-material';
+import AlignCenter from 'components/align-center/AlignCenter';
+import { GET_MY_BANK_DETAIL } from './graphql/queries';
+import PayoutCard from './PayoutCard';
 
 // grapqhl
 
@@ -21,7 +32,8 @@ import { Close } from '@mui/icons-material';
 const bankAccounTypeMap = {
   standard: 'STANDARD',
   express: 'EXPRESS',
-  custom: 'CUSTOM'
+  custom: 'CUSTOM',
+  customForm: 'CUSTOM-FORM'
 };
 type BankAccountTypeKeys = keyof typeof bankAccounTypeMap;
 
@@ -29,7 +41,7 @@ const BankSetupPage = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [openModal, setOpenModal] = useState(false);
-
+  const { data: dataBankDetail, loading: loadingBankDetail } = useQuery(GET_MY_BANK_DETAIL);
   const [handleCreateBankAccount, { data, loading }] = useMutation(CREATE_BANK_ACCOUNT_LINK);
   const [handleCreateCustomConnectAccount] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
 
@@ -80,8 +92,22 @@ const BankSetupPage = () => {
     }
   }, [data]);
 
+  if (loadingBankDetail) {
+    return (
+      <AlignCenter>
+        <CircularProgress />
+      </AlignCenter>
+    );
+  }
+
+  if (dataBankDetail?.getMyBankDetail?.paymentDetail) {
+    return <PayoutCard detail={dataBankDetail?.getMyBankDetail?.paymentDetail} />;
+  }
+
   return pageLoading ? (
-    <CircularProgress />
+    <AlignCenter>
+      <CircularProgress />
+    </AlignCenter>
   ) : (
     <>
       <Formik
@@ -93,95 +119,42 @@ const BankSetupPage = () => {
       >
         {({
           values,
-          errors,
-          touched,
           handleChange,
-          handleBlur,
           handleSubmit,
-          setFieldValue,
           isSubmitting
           /* and other goodies */
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <MainCard title="Setup Bank" sx={{ position: 'relative' }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid display="flex" flexDirection={'column'} item xs={12} sm={10} md={8} lg={5}>
-                  <FormControl>
-                    <FormLabel>Account Type</FormLabel>
-                    <RadioGroup defaultValue="standard" name="bankAccountType">
-                      <FormControlLabel value="standard" control={<Radio />} label="Standard" onChange={handleChange} />
-                      <FormControlLabel value="express" control={<Radio />} label="Express" onChange={handleChange} />
-                      <FormControlLabel
-                        value="custom"
-                        control={<Radio />}
-                        label="Custom"
-                        onChange={() => {
-                          handleChange;
-                          setOpenModal(true);
-                        }}
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    disabled={isSubmitting || loading}
-                    endIcon={<ArrowRightAltRoundedIcon />}
-                    sx={{
-                      maxWidth: '50%',
-                      marginTop: '1rem'
-                    }}
-                  >
-                    Onboard
-                  </Button>
-                </Grid>
-              </Grid>
-            </MainCard>
-          </form>
-        )}
+        }) => {
+          return (
+            <form onSubmit={handleSubmit}>
+              <Typography variant="h3" mb={2}>
+                Setup bank
+              </Typography>
+              <Stack spacing={1.5} alignItems={'flex-start'}>
+                <FormControl>
+                  <FormLabel>Bank account type</FormLabel>
+                  <RadioGroup defaultValue="standard" name="bankAccountType">
+                    <FormControlLabel value="standard" control={<Radio />} label="Standard" onChange={handleChange} />
+                    <FormControlLabel value="express" control={<Radio />} label="Express" onChange={handleChange} />
+                    <FormControlLabel value="custom" control={<Radio />} label="Custom" onChange={handleChange} />
+                    <FormControlLabel value="customForm" control={<Radio />} label="Custom Form" onChange={handleChange} />
+                  </RadioGroup>
+                </FormControl>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type={values.bankAccountType !== 'customForm' ? 'submit' : 'button'}
+                  disabled={isSubmitting || loading}
+                  endIcon={<ArrowRightAltRoundedIcon />}
+                  size="large"
+                  {...(values.bankAccountType === 'customForm' && { onClick: () => setOpenModal(true) })}
+                >
+                  Onboard
+                </Button>
+              </Stack>
+            </form>
+          );
+        }}
       </Formik>
-      <Stack>
-        <Typography variant="h3" mb={3}>
-          Payout details
-        </Typography>
-        <Box sx={{ overflowX: 'auto' }}>
-          <PayoutDetailWrapper>
-            <FormControlLabel
-              // value={item.id}
-              // checked={defaultPayment === item.id ? true : false}
-              control={<Radio />}
-              onChange={() => {
-                // setSelected(item.id);
-                // setOpenModalDefaultCard(true);
-              }}
-              label={
-                <Stack>
-                  <Typography flex={1}>Bank name</Typography>
-                  <Typography flex={1}>Acc no: 000123456</Typography>
-                  <Typography flex={1}>BSB: 000123456</Typography>
-                  <Typography flex={1}>Status: <Chip label={'Active'} color="success"></Chip></Typography>
-                </Stack>
-              }
-              sx={{
-                '.MuiFormControlLabel-label': {
-                  flex: 1
-                }
-              }}
-            />
-            {/* {data?.getMyPaymentMethods?.paymentMethods.length > 1 && ( */}
-            <IconButton
-              onClick={() => {
-                // setOpenModalDeleteCard(true);
-                // setSelected(item.id);
-              }}
-            >
-              <Close />
-            </IconButton>
-            {/* )} */}
-          </PayoutDetailWrapper>
-        </Box>
-      </Stack>
       <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} />
     </>
   );

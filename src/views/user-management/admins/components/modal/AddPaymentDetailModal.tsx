@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, FormHelperText, InputLabel, Stack, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
@@ -30,7 +30,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
   };
   const [handleBankDetail] = useMutation(ADD_BANK_DETAIL);
   const { successSnack, errorSnack } = useSuccErrSnack();
- 
+
   const handleFormSubmit = async (values: any) => {
     try {
       const response = await handleBankDetail({
@@ -46,7 +46,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
           }
         }
       });
-      successSnack(response?.data?.message);
+      successSnack(response?.data?.addBankDetail?.message);
       setOpenModal(false);
     } catch (err: any) {
       errorSnack(err?.message);
@@ -63,8 +63,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
           handleChange,
           handleBlur,
           handleSubmit,
-          setFieldValue,
-          isSubmitting
+          setFieldValue
           /* and other goodies */
         }) => (
           <form onSubmit={handleSubmit}>

@@ -22,7 +22,11 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
         root: {
           fontWeight: 500,
           borderRadius: '36px',
-          textTransform: 'none'
+          textTransform: 'none',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none'
+          }
         },
         sizeMedium: {
           padding: '9px 24px',

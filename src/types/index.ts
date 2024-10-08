@@ -27,6 +27,7 @@ export interface TabsProps {
   children?: React.ReactElement | React.ReactNode | string;
   value: string | number;
   index: number;
+  href?: string;
 }
 
 export interface GenericCardProps {
