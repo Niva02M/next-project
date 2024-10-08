@@ -38,11 +38,9 @@ import {
   PAYMENT_SETTINGS,
   RenderCard
 } from '../constant';
-import { useSession } from 'next-auth/react';
 
 export default function Payment() {
   const methodBank = 'au_becs_debit';
-  const session = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [selected, setSelected] = useState('');
   const { successSnack, errorSnack } = useSuccErrSnack();
@@ -139,9 +137,7 @@ export default function Payment() {
         await handleSavePayment({
           variables: {
             input: {
-              paymentMethod: result?.setupIntent?.payment_method,
-              //@ts-ignore
-              userId: session.data?.user?.user?._id!
+              paymentMethod: result?.setupIntent?.payment_method
             }
           }
         });
