@@ -1,6 +1,6 @@
-import { Box, Button, FormControl, FormHelperText, InputLabel, Stack, TextField, Typography } from '@mui/material';
+import { Box, FormControl, FormHelperText, InputLabel, Stack, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
@@ -14,6 +14,7 @@ import {
   UPLOAD_FRONT_DOCUMENT
 } from '../constant';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { LoadingButton } from '@mui/lab';
 
 type AddPaymentDetailModalType = {
   openModal: boolean;
@@ -28,7 +29,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
     frontDocument: '',
     backDocument: ''
   };
-  const [handleBankDetail] = useMutation(ADD_BANK_DETAIL);
+  const [handleBankDetail, { loading }] = useMutation(ADD_BANK_DETAIL);
   const { successSnack, errorSnack } = useSuccErrSnack();
 
   const handleFormSubmit = async (values: any) => {
@@ -157,9 +158,9 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
                   </FormControl>
                 </Stack>
               </Box>
-              <Button type="submit" variant="contained" size="large">
+              <LoadingButton type="submit" loading={loading} variant="contained" disabled={loading} size="large">
                 Save changes
-              </Button>
+              </LoadingButton>
             </Stack>
           </form>
         )}
