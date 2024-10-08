@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const SAVE_PAYMENT_METHOD = gql`
   mutation SavePaymentMethod($input: SavePaymentMethodDto!) {
-    SavePaymentMethod(input: $input)
+    savePaymentMethod(input: $input)
   }
 `;
 

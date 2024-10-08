@@ -147,7 +147,6 @@ export default function UserProfile() {
                       <input
                         accept="image/*"
                         id="upload-avatar"
-                        multiple
                         type="file"
                         onChange={(e) => handleProfilePicutreChange(e, setFieldValue)}
                       />
