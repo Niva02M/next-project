@@ -3,19 +3,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { Formik } from 'formik';
 // material-ui
-import {
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
 import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
