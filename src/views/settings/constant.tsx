@@ -8,10 +8,12 @@ import Visa from 'assets/payment/visa';
 
 export const settingsTabOption = [
   {
-    label: 'Edit settings'
+    label: 'Edit settings',
+    url: '/setting'
   },
   {
-    label: 'Payment settings'
+    label: 'Payment settings',
+    url: '/setting/payment'
   }
 ];
 

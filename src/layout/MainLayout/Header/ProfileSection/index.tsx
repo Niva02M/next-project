@@ -34,6 +34,7 @@ import { InfoIcon } from 'components/icons';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries';
+import pageRoutes from 'constants/routes';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -168,7 +169,7 @@ const ProfileSection = () => {
                           <ListItemButton
                             sx={{ borderRadius: `${borderRadius}px` }}
                             selected={selectedIndex === 0}
-                            onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0, '/profile-setting')}
+                            onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0, pageRoutes.profile)}
                           >
                             <ListItemIcon>
                               <IconSettings stroke={1.5} size="20px" />

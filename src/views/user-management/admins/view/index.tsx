@@ -14,17 +14,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import AlignCenter from 'components/align-center/AlignCenter';
 
 export function TabPanel({ children, value, index, ...other }: TabsProps) {
-  const isVisible = value === index;
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-      className={`tab-content ${isVisible ? '' : 'hidden'}`}
-    >
-      {isVisible && <div>{children}</div>}
+    <div role="tabpanel" hidden={value !== index} id={`simple-tabpanel-${index}`} aria-labelledby={`simple-tab-${index}`} {...other}>
+      {value === index && <div>{children}</div>}
     </div>
   );
 }
