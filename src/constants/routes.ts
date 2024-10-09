@@ -11,7 +11,10 @@ const pageRoutes = {
   verifyRegistration: '/verify-registration',
   verifyRegistrationPhone: '/verify-registration-phone',
   forgotPasswordVerification: '/forgot-password/code-verification',
-  resetPassword: '/reset-password'
+  resetPassword: '/reset-password',
+  profile: '/profile',
+  changePassword: '/profile/change-password',
+  addBank: '/profile/add-bank'
 };
 
 export default pageRoutes;

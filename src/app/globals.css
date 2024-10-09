@@ -175,12 +175,3 @@ html[dir='rtl'] .apexcharts-tooltip .apexcharts-tooltip-marker {
 .ReactModal__Overlay {
   z-index: 99999 !important;
 }
-
-.tab-content {
-  transition: opacity 0.5s ease;
-  opacity: 1;
-}
-
-.tab-content.hidden {
-  opacity: 0;
-}

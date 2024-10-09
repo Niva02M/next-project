@@ -1,16 +1,18 @@
+import pageRoutes from 'constants/routes';
+
 // profile tabs option
 export const tabsOption = [
   {
     label: 'User profile',
-    url: '/profile-setting'
+    url: pageRoutes.profile
   },
   {
     label: 'Password settings',
-    url: '/profile-setting/change-password'
+    url: pageRoutes.changePassword
   },
   {
     label: 'Add bank account',
-    url: '/profile-setting/add-bank'
+    url: pageRoutes.addBank
   }
 ];
 
