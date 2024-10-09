@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 // material-ui
-import { Grid } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 // third-party
@@ -28,47 +28,43 @@ const AuthCodeVerification = ({ handleContinue, remainingTimer, isLoading }: IAu
   };
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <OtpInput
-          value={otp}
-          onChange={(otpNumber: string) => setOtp(otpNumber)}
-          numInputs={otpLength}
-          containerStyle={{ justifyContent: 'space-between', gap: '24px' }}
-          inputStyle={{
-            width: '100%',
-            padding: '5px 8px',
-            fontSize: '28px',
-            lineHeight: '1.4',
-            border: 'none',
-            borderRadius: '12px',
-            height: '54px',
-            backgroundColor: theme.palette.primary.light,
-            ':hover': {
-              borderColor: theme.palette.primary.main
-            }
-          }}
-          focusStyle={{
-            outline: 'none',
-            border: `2px solid ${theme.palette.primary.main}`
-          }}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <LoadingButton
-          loading={!!isLoading}
-          disabled={!otp || !remainingTimer || otp.length < otpLength}
-          onClick={onContinue}
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          className="gradient"
-        >
-          Continue
-        </LoadingButton>
-      </Grid>
-    </Grid>
+    <Stack spacing={3}>
+      <OtpInput
+        value={otp}
+        onChange={(otpNumber: string) => setOtp(otpNumber)}
+        numInputs={otpLength}
+        containerStyle={{ justifyContent: 'space-between', gap: '24px' }}
+        inputStyle={{
+          width: '100%',
+          padding: '5px 8px',
+          fontSize: '28px',
+          lineHeight: '1.4',
+          border: 'none',
+          borderRadius: '12px',
+          height: '54px',
+          backgroundColor: theme.palette.primary.light,
+          ':hover': {
+            borderColor: theme.palette.primary.main
+          }
+        }}
+        focusStyle={{
+          outline: 'none',
+          border: `2px solid ${theme.palette.primary.main}`
+        }}
+      />
+      <LoadingButton
+        loading={!!isLoading}
+        disabled={!otp || !remainingTimer || otp.length < otpLength}
+        onClick={onContinue}
+        fullWidth
+        size="large"
+        type="submit"
+        variant="contained"
+        className="gradient"
+      >
+        Continue
+      </LoadingButton>
+    </Stack>
   );
 };
 
