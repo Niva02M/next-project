@@ -200,6 +200,7 @@ export default function UserProfile() {
                         value={values.authProviderId}
                         onBlur={handleBlur}
                         onChange={handleChange}
+                        disabled
                       />
                     </FormControl>
                     {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
@@ -216,6 +217,7 @@ export default function UserProfile() {
                         placeholder="Phone number"
                         onBlur={handleBlur}
                         onChange={handleChange}
+                        disabled
                       />
                     </FormControl>
                     {touched.authProviderId && errors.authProviderId && <FormHelperText error>{errors.authProviderId}</FormHelperText>}
