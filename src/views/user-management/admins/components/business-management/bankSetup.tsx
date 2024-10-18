@@ -31,7 +31,7 @@ const BankSetupPage = () => {
   const [openModal, setOpenModal] = useState(false);
   const { data: dataBankDetail, loading: loadingBankDetail } = useQuery(GET_MY_BANK_DETAIL);
   const [handleCreateBankAccount, { data, loading }] = useMutation(CREATE_BANK_ACCOUNT_LINK);
-  const [handleCreateCustomConnectAccount] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
+  const [handleGenerateCustomAccountOnboarding] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
 
   const handleFormSubmit = async (
     values: {
@@ -42,7 +42,7 @@ const BankSetupPage = () => {
     try {
       setPageLoading(true);
       if (values.bankAccountType === 'custom') {
-        const { data: connectAccount } = await handleCreateCustomConnectAccount({
+        const { data: connectAccount } = await handleGenerateCustomAccountOnboarding({
           variables: {}
         });
         if (connectAccount?.createCustomConnectAccount?.connectAccountId) {

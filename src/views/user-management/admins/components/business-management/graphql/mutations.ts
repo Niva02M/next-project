@@ -11,18 +11,35 @@ export const CREATE_BANK_ACCOUNT_LINK = gql`
   }
 `;
 
+// export const CREATE_CUSTOM_CONNECT_ACCOUNT = gql`
+//   mutation CreateCustomConnectAccount {
+//     createCustomConnectAccount {
+//       connectAccountId
+//       message
+//     }
+//   }
+// `;
+
 export const CREATE_CUSTOM_CONNECT_ACCOUNT = gql`
-  mutation CreateCustomConnectAccount {
-    createCustomConnectAccount {
+  mutation GenerateCustomAccountOnboardingLink {
+    generateCustomAccountOnboardingLink {
       connectAccountId
       message
     }
   }
 `;
 
+// export const CREATE_PAYMENT_INTENT = gql`
+//   mutation ($input: CreatePaymentIntentInput!) {
+//     createPaymentIntent(body: $input) {
+//       clientSecret
+//     }
+//   }
+// `;
+
 export const CREATE_PAYMENT_INTENT = gql`
-  mutation ($input: CreatePaymentIntentInput!) {
-    createPaymentIntent(body: $input) {
+  mutation CreateIntentForCustomer($kind: String) {
+    createIntentForCustomer(kind: $kind) {
       clientSecret
     }
   }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
@@ -8,6 +8,7 @@ import { CircularProgress, Grid } from '@mui/material';
 
 // grapqhl
 import { CREATE_PAYMENT_INTENT } from './graphql/mutations';
+
 import PaymentForm from './paymentForm';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -31,12 +32,20 @@ const CreatePaymentPage = () => {
     }
   }, [data]);
 
+  // const handleProceed = () => {
+  //   handlePaymentIntent({
+  //     variables: {
+  //       input: {
+  //         amount: Number(amount)
+  //       }
+  //     }
+  //   });
+  // };
+
   const handleProceed = () => {
     handlePaymentIntent({
       variables: {
-        input: {
-          amount: Number(amount)
-        }
+        kind: Number(amount)
       }
     });
   };
