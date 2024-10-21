@@ -26,6 +26,11 @@ export const CREATE_PAYMENT_INTENT = gql`
       clientSecret
     }
   }
+  # mutation CreateIntentForCustomer($kind: String) {
+  # createIntentForCustomer(kind: $kind) {
+  #   clientSecret
+  # }
+# }
 `;
 
 export const CREATE_CUSTOM_STRIPE_ACCOUNT = gql`

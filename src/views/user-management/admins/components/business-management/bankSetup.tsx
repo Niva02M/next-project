@@ -88,8 +88,8 @@ const BankSetupPage = () => {
     );
   }
 
-  if (dataBankDetail?.getMyBankDetail?.paymentDetail) {
-    return <PayoutCard detail={dataBankDetail?.getMyBankDetail?.paymentDetail} />;
+  if (dataBankDetail?.getUserStripeAccountDetails?.externalAccounts) {
+    return <PayoutCard detail={dataBankDetail?.getUserStripeAccountDetails?.externalAccounts} />;
   }
 
   return pageLoading ? (
