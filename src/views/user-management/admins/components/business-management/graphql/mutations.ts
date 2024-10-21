@@ -29,25 +29,17 @@ export const CREATE_CUSTOM_CONNECT_ACCOUNT = gql`
   }
 `;
 
-// export const CREATE_PAYMENT_INTENT = gql`
-//   mutation ($input: CreatePaymentIntentInput!) {
-//     createPaymentIntent(body: $input) {
-//       clientSecret
-//     }
-//   }
-// `;
-
 export const CREATE_PAYMENT_INTENT = gql`
-  mutation CreateIntentForCustomer($kind: String) {
-    createIntentForCustomer(kind: $kind) {
+  mutation ($input: CreatePaymentIntentInput!) {
+    createPaymentIntent(body: $input) {
       clientSecret
     }
   }
 `;
 
-export const ADD_BANK_DETAIL = gql`
-  mutation AddBankDetail($body: CreateBankDetailInput!) {
-    addBankDetail(body: $body) {
+export const CREATE_CUSTOM_STRIPE_ACCOUNT = gql`
+  mutation CreateCustomStripeAccount($body: CreateBankDetailInput!) {
+    createCustomStripeAccount(body: $body) {
       message
     }
   }

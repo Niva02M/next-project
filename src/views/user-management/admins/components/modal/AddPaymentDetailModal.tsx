@@ -5,7 +5,7 @@ import GenericModal from 'ui-component/modal/GenericModal';
 import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
 import { useMutation } from '@apollo/client';
-import { ADD_BANK_DETAIL } from '../business-management/graphql/mutations';
+import { CREATE_CUSTOM_STRIPE_ACCOUNT } from '../business-management/graphql/mutations';
 import {
   INFORMATION_STRIPE_IDENTIY_VERIFICATION_CHECK,
   MAXIMUM_SIZE_200KB,
@@ -29,7 +29,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
     frontDocument: '',
     backDocument: ''
   };
-  const [handleBankDetail, { loading }] = useMutation(ADD_BANK_DETAIL);
+  const [handleBankDetail, { loading }] = useMutation(CREATE_CUSTOM_STRIPE_ACCOUNT);
   const { successSnack, errorSnack } = useSuccErrSnack();
 
   const handleFormSubmit = async (values: any) => {
@@ -47,7 +47,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
           }
         }
       });
-      successSnack(response?.data?.addBankDetail?.message);
+      successSnack(response?.data?.createCustomStripeAccount?.message);
       setOpenModal(false);
     } catch (err: any) {
       errorSnack(err?.message);

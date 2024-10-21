@@ -27,27 +27,19 @@ const CreatePaymentPage = () => {
   const [handlePaymentIntent, { data, loading }] = useMutation(CREATE_PAYMENT_INTENT);
 
   useEffect(() => {
-    if (data?.createPaymentIntent) {
-      setClientSecret(data?.createPaymentIntent?.clientSecret);
+    if (data?.createIntentForCustomer) {
+      setClientSecret(data?.createIntentForCustomer?.clientSecret);
     }
   }, [data]);
-
-  // const handleProceed = () => {
-  //   handlePaymentIntent({
-  //     variables: {
-  //       input: {
-  //         amount: Number(amount)
-  //       }
-  //     }
-  //   });
-  // };
 
   const handleProceed = () => {
     handlePaymentIntent({
       variables: {
-        kind: Number(amount)
+        input: {
+          amount: Number(amount)
+        }
       }
-    });
+    })
   };
 
   const onChangeInput = (e: any) => {
