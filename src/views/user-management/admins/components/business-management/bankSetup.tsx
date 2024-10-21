@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
-import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
+import { GENERATE_ACCOUNT_ONBOARDING_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AddPaymentDetailModal from '../modal/AddPaymentDetailModal';
 import AlignCenter from 'components/align-center/AlignCenter';
@@ -30,7 +30,7 @@ const BankSetupPage = () => {
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [openModal, setOpenModal] = useState(false);
   const { data: dataBankDetail, loading: loadingBankDetail } = useQuery(GET_MY_BANK_DETAIL);
-  const [handleCreateBankAccount, { data, loading }] = useMutation(CREATE_BANK_ACCOUNT_LINK);
+  const [handleGenerateBankAccount, { data, loading }] = useMutation(GENERATE_ACCOUNT_ONBOARDING_LINK);
   const [handleGenerateCustomAccountOnboarding] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
 
   const handleFormSubmit = async (
@@ -45,19 +45,19 @@ const BankSetupPage = () => {
         const { data: connectAccount } = await handleGenerateCustomAccountOnboarding({
           variables: {}
         });
-        if (connectAccount?.createCustomConnectAccount?.connectAccountId) {
-          await handleCreateBankAccount({
+        if (connectAccount?.generateAccountOnboardingLink?.connectAccountId) {
+          await handleGenerateBankAccount({
             variables: {
               body: {
                 bankAccountType: bankAccounTypeMap[values.bankAccountType],
-                connectAccountId: connectAccount?.createCustomConnectAccount?.connectAccountId
+                connectAccountId: connectAccount?.generateAccountOnboardingLink?.connectAccountId
               }
             }
           });
           setPageLoading(false);
         }
       } else {
-        await handleCreateBankAccount({
+        await handleGenerateBankAccount({
           variables: {
             body: { bankAccountType: bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys] }
           }
