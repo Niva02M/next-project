@@ -21,7 +21,7 @@ import AddPaymentElement from './AddPayementElement';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { PaymentDetailWrapper } from './Payment.styles';
 import { CREATE_INTENT_FOR_CUSTOMER_QUERY, GET_PAYMENT_METHODS } from './graphql/queries';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_CARD_DEFAULT_MUTATION, MAKE_CARD_DEFAULT_MUTATION, SAVE_PAYMENT_METHOD } from './graphql/mutation';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AlignCenter from 'components/align-center/AlignCenter';
@@ -58,7 +58,7 @@ export default function Payment() {
   const [handleDeleteCard, { loading: deleteCardLoading }] = useMutation(DELETE_CARD_DEFAULT_MUTATION);
   const [handleSavePayment, { loading: savePayLoading }] = useMutation(SAVE_PAYMENT_METHOD);
   const [handleDefaultCard] = useMutation(MAKE_CARD_DEFAULT_MUTATION);
-  const [handleSetupIntent, { loading: setupIntentLoading }] = useLazyQuery(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
+  const [handleSetupIntent, { loading: setupIntentLoading }] = useMutation(CREATE_INTENT_FOR_CUSTOMER_QUERY, {
     fetchPolicy: 'network-only',
     onCompleted(data) {
       if (data?.createIntentForCustomer?.clientSecret) {
@@ -129,6 +129,8 @@ export default function Payment() {
           }
         }
       });
+
+      console.log('result ====>', result);
 
       if (result.error) {
         errorSnack(result?.error?.message!);

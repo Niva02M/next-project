@@ -29,7 +29,7 @@ const BankSetupPage = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [openModal, setOpenModal] = useState(false);
-  const { data: dataBankDetail, loading: loadingBankDetail } = useQuery(GET_MY_BANK_DETAIL);
+  const { data: dataBankDetail, loading: loadingBankDetail, refetch } = useQuery(GET_MY_BANK_DETAIL);
   const [handleGenerateBankAccount, { data, loading }] = useMutation(GENERATE_ACCOUNT_ONBOARDING_LINK);
   const [handleGenerateCustomAccountOnboarding] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
 
@@ -88,8 +88,8 @@ const BankSetupPage = () => {
     );
   }
 
-  if (dataBankDetail?.getUserStripeAccountDetails?.externalAccounts) {
-    return <PayoutCard detail={dataBankDetail?.getUserStripeAccountDetails?.externalAccounts} />;
+  if (dataBankDetail?.getUserStripeAccountDetails) {
+    return <PayoutCard detail={dataBankDetail?.getUserStripeAccountDetails} refetch={refetch} />;
   }
 
   return pageLoading ? (
@@ -143,7 +143,7 @@ const BankSetupPage = () => {
           );
         }}
       </Formik>
-      <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} />
+      <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} refetch={refetch} />
     </>
   );
 };

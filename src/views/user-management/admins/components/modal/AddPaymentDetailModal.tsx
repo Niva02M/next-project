@@ -19,9 +19,10 @@ import { LoadingButton } from '@mui/lab';
 type AddPaymentDetailModalType = {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
+  refetch: () => void;
 };
 
-export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPaymentDetailModalType) {
+export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch }: AddPaymentDetailModalType) {
   const initialValues = {
     accountName: '',
     accountNumber: '',
@@ -49,6 +50,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
       });
       successSnack(response?.data?.createCustomStripeAccount?.message);
       setOpenModal(false);
+      refetch();
     } catch (err: any) {
       errorSnack(err?.message);
       setOpenModal(false);

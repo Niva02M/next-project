@@ -1,7 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_INTENT_FOR_CUSTOMER_QUERY = gql`
-  query CreateIntentForCustomer($kind: String) {
+  # query CreateIntentForCustomer($kind: String) {
+  #   createIntentForCustomer(kind: $kind) {
+  #     clientSecret
+  #   }
+  # }
+  mutation CreateIntentForCustomer($kind: String) {
     createIntentForCustomer(kind: $kind) {
       clientSecret
     }
