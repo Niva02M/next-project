@@ -28,7 +28,6 @@ import AlignCenter from 'components/align-center/AlignCenter';
 import { Stripe, StripeElements } from '@stripe/stripe-js';
 import {
   ADD_PAYMENT_DETAIL,
-  ADD_PAYMENT_DETAILS,
   DEFAULT_CARD_DESCRIPTION,
   DEFAULT_CARD_TITLE,
   DELETE_CARD,
@@ -223,7 +222,7 @@ export default function Payment() {
         )}
       </MainCard>
       {/* Add new payment */}
-      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAILS}>
+      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAIL}>
         <Box mb={2.5}>
           <InputLabel>{PAYMENT_TYPE}</InputLabel>
           <Select

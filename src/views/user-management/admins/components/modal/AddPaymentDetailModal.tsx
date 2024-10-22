@@ -2,7 +2,7 @@ import { Box, FormControl, FormHelperText, InputLabel, Stack, TextField, Typogra
 import { Formik } from 'formik';
 import React, { Dispatch, SetStateAction } from 'react';
 import GenericModal from 'ui-component/modal/GenericModal';
-import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
+import { ADD_BANK_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
 import { useMutation } from '@apollo/client';
 import { CREATE_CUSTOM_STRIPE_ACCOUNT } from '../business-management/graphql/mutations';
@@ -10,7 +10,7 @@ import {
   INFORMATION_STRIPE_IDENTIY_VERIFICATION_CHECK,
   MAXIMUM_SIZE_200KB,
   paymentDetialValidationSchema,
-  UPLOAD_BACK_DOCUMENT_INFO,
+  UPLOAD_BACK_DOCUMENT,
   UPLOAD_FRONT_DOCUMENT
 } from '../constant';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
@@ -57,7 +57,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
     }
   };
   return (
-    <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAILS}>
+    <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_BANK_DETAILS}>
       <Formik initialValues={initialValues} validationSchema={paymentDetialValidationSchema} onSubmit={handleFormSubmit}>
         {({
           values,
@@ -142,16 +142,11 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
                     )}
                   </FormControl>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="backDocument">{UPLOAD_BACK_DOCUMENT_INFO}</InputLabel>
+                    <InputLabel htmlFor="backDocument">{UPLOAD_BACK_DOCUMENT}</InputLabel>
                     <Typography variant={'body2'} color="grey.500" mb={0.5}>
                       {MAXIMUM_SIZE_200KB}
                     </Typography>
-                    <InputFileUpload
-                      id="backDocument"
-                      name={'backDocument'}
-                      title={UPLOAD_BACK_DOCUMENT_INFO}
-                      setFieldValue={setFieldValue}
-                    />
+                    <InputFileUpload id="backDocument" name={'backDocument'} title={UPLOAD_BACK_DOCUMENT} setFieldValue={setFieldValue} />
                     {touched.backDocument && errors.backDocument && (
                       <FormHelperText error id="standard-weight-helper-text--register">
                         {errors.backDocument}

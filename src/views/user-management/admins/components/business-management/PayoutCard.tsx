@@ -1,4 +1,4 @@
-import { Button, Chip, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, FormControlLabel, InputLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { PayoutDetailWrapper } from './Payout.styles';
 import {
   DELETE_BUSINESS_USER_DESCRIPTION,
@@ -15,8 +15,10 @@ import { DELETE_STRIPE_CONNECT_ACCOUNT, DELETE_USER_BANK_ACCOUNT } from './graph
 import GenericModal from 'ui-component/modal/GenericModal';
 import { useState } from 'react';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import AlignCenter from 'components/align-center/AlignCenter';
 
 export default function PayoutCard({ detail, refetch }: { detail: any; refetch: () => void }) {
+  const [openModal, setOpenModal] = useState(false);
   const [openModalDeleteConnectAccount, setOpenModalDeleteConnectAccount] = useState(false);
   const [openModalDeleteBankAccount, setOpenModalDeleteBankAccount] = useState(false);
   const [selectBankId, setSelectBankId] = useState('');
@@ -104,53 +106,98 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
       <Typography variant="h4" mb={2}>
         External accounts
       </Typography>
-      {detail?.externalAccounts?.map((bankDetail: any) => (
-        <PayoutDetailWrapper key={bankDetail?.id}>
-          <Stack
-            flexDirection="row"
-            flex={1}
-            alignItems="center"
-            sx={{
-              '.MuiTypography-root': {
-                flex: 1
-              }
-            }}
-          >
-            <Typography>{bankDetail?.account_holder_name}</Typography>
-            <Typography>
-              {externalAccounts.ACCOUNT_NUMBER}: *****{bankDetail?.last4}
-            </Typography>
-            <Typography>
-              {externalAccounts.BSB}: {bankDetail?.routing_number}
-            </Typography>
-            <Typography>
-              {externalAccounts.STATUS}:&nbsp;
-              <Chip
-                label={bankDetail?.status}
-                color={bankDetail?.status === 'new' ? 'success' : 'error'}
-                size="small"
-                sx={{ textTransform: 'capitalize' }}
-              />
-            </Typography>
-          </Stack>
-          {detail?.externalAccounts.length > 1 && (
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              onClick={() => {
-                setOpenModalDeleteBankAccount(true);
+      <RadioGroup
+        aria-labelledby="payout-radio-buttons-group-label"
+        name="payout-radio-buttons-group"
+        sx={{
+          gap: 2,
+          overflow: 'auto',
+          mb: 2
+        }}
+      >
+        {detail?.externalAccounts?.map((bankDetail: any) => (
+          <PayoutDetailWrapper key={bankDetail?.id}>
+            <FormControlLabel
+              // value={item.id}
+              checked={detail?.externalAccounts?.default_for_currency}
+              control={<Radio />}
+              onChange={() => {
                 setSelectBankId(bankDetail?.id);
+                // setOpenModalDefaultCard(true);
               }}
-            >
-              Remove
-            </Button>
-          )}
-        </PayoutDetailWrapper>
-      ))}
-      <Button variant="text" sx={{ p: 0 }}>
+              sx={{
+                '.MuiFormControlLabel-label': {
+                  width: '100%'
+                }
+              }}
+              label={
+                <Stack
+                  flexDirection="row"
+                  flex={1}
+                  alignItems="center"
+                  sx={{
+                    '.MuiTypography-root': {
+                      flex: 1
+                    }
+                  }}
+                >
+                  <Typography>{bankDetail?.account_holder_name}</Typography>
+                  <Typography>
+                    {externalAccounts.ACCOUNT_NUMBER}: *****{bankDetail?.last4}
+                  </Typography>
+                  <Typography>
+                    {externalAccounts.BSB}: {bankDetail?.routing_number}
+                  </Typography>
+                  <Typography>
+                    {externalAccounts.STATUS}:&nbsp;
+                    <Chip
+                      label={bankDetail?.status}
+                      color={bankDetail?.status === 'new' ? 'success' : 'error'}
+                      size="small"
+                      sx={{ textTransform: 'capitalize' }}
+                    />
+                  </Typography>
+                </Stack>
+              }
+            />
+            {detail?.externalAccounts.length > 1 && (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => {
+                  setOpenModalDeleteBankAccount(true);
+                  setSelectBankId(bankDetail?.id);
+                }}
+              >
+                Remove
+              </Button>
+            )}
+          </PayoutDetailWrapper>
+        ))}
+      </RadioGroup>
+      <Button variant="text" sx={{ p: 0 }} onClick={() => setOpenModal(true)}>
         Add payout details
       </Button>
+
+      {/* Add user bank account */}
+      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={'Add bank account'}>
+        <InputLabel>Account Name</InputLabel>
+        <TextField type="text" />
+        {/* {setupIntentLoading && (
+          <AlignCenter>
+            <CircularProgress />
+          </AlignCenter>
+        )} */}
+        {/* Stripe card ui */}
+        {/* {!setupIntentLoading && kind === 'card' && secret && (
+          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
+        )} */}
+        {/* Stripe bank ui */}
+        {/* {!setupIntentLoading && kind === 'au_bank' && secret && (
+          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
+        )} */}
+      </GenericModal>
       {/* Remove business user card */}
       <GenericModal
         openModal={openModalDeleteConnectAccount}

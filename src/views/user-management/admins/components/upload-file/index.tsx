@@ -48,7 +48,7 @@ export default function InputFileUpload({
         {imageFileName ? <Typography>{`Uploaded file: ${imageFileName}`}</Typography> : <Typography>{title}</Typography>}
         <VisuallyHiddenInput id={id} name={name} type="file" onChange={(event) => handleImageChange(event, name, setFieldValue)} />
       </Button>
-      {imageSize && <FormHelperText error>Image size exceeds 200KB!</FormHelperText>}
+      {imageSize && <FormHelperText error>Image size should be below 200 KB</FormHelperText>}
     </>
   );
 }

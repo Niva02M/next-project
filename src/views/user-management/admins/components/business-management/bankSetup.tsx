@@ -45,12 +45,12 @@ const BankSetupPage = () => {
         const { data: connectAccount } = await handleGenerateCustomAccountOnboarding({
           variables: {}
         });
-        if (connectAccount?.generateAccountOnboardingLink?.connectAccountId) {
+        if (connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId) {
           await handleGenerateBankAccount({
             variables: {
               body: {
                 bankAccountType: bankAccounTypeMap[values.bankAccountType],
-                connectAccountId: connectAccount?.generateAccountOnboardingLink?.connectAccountId
+                connectAccountId: connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId
               }
             }
           });
@@ -72,10 +72,10 @@ const BankSetupPage = () => {
   };
 
   useEffect(() => {
-    if (data?.createBankAccountLink) {
+    if (data?.generateAccountOnboardingLink) {
       successSnack('Account link created successfully');
       setTimeout(() => {
-        window.location.href = data?.createBankAccountLink?.url;
+        window.location.href = data?.generateAccountOnboardingLink?.url;
       }, 2000);
     }
   }, [data]);
