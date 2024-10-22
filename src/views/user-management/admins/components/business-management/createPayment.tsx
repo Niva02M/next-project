@@ -8,6 +8,7 @@ import { CircularProgress, Grid } from '@mui/material';
 
 // grapqhl
 import { CREATE_PAYMENT_INTENT } from './graphql/mutations';
+
 import PaymentForm from './paymentForm';
 import MainCard from 'ui-component/cards/MainCard';
 
@@ -26,8 +27,8 @@ const CreatePaymentPage = () => {
   const [handlePaymentIntent, { data, loading }] = useMutation(CREATE_PAYMENT_INTENT);
 
   useEffect(() => {
-    if (data?.createPaymentIntent) {
-      setClientSecret(data?.createPaymentIntent?.clientSecret);
+    if (data?.createIntentForCustomer) {
+      setClientSecret(data?.createIntentForCustomer?.clientSecret);
     }
   }, [data]);
 
@@ -38,7 +39,7 @@ const CreatePaymentPage = () => {
           amount: Number(amount)
         }
       }
-    });
+    })
   };
 
   const onChangeInput = (e: any) => {

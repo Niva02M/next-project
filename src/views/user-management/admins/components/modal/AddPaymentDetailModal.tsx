@@ -2,15 +2,15 @@ import { Box, FormControl, FormHelperText, InputLabel, Stack, TextField, Typogra
 import { Formik } from 'formik';
 import React, { Dispatch, SetStateAction } from 'react';
 import GenericModal from 'ui-component/modal/GenericModal';
-import { ADD_PAYMENT_DETAILS } from 'views/settings/constant';
+import { ADD_BANK_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
 import { useMutation } from '@apollo/client';
-import { ADD_BANK_DETAIL } from '../business-management/graphql/mutations';
+import { CREATE_CUSTOM_STRIPE_ACCOUNT } from '../business-management/graphql/mutations';
 import {
   INFORMATION_STRIPE_IDENTIY_VERIFICATION_CHECK,
   MAXIMUM_SIZE_200KB,
   paymentDetialValidationSchema,
-  UPLOAD_BACK_DOCUMENT_INFO,
+  UPLOAD_BACK_DOCUMENT,
   UPLOAD_FRONT_DOCUMENT
 } from '../constant';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
@@ -19,9 +19,10 @@ import { LoadingButton } from '@mui/lab';
 type AddPaymentDetailModalType = {
   openModal: boolean;
   setOpenModal: Dispatch<SetStateAction<boolean>>;
+  refetch: () => void;
 };
 
-export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPaymentDetailModalType) {
+export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch }: AddPaymentDetailModalType) {
   const initialValues = {
     accountName: '',
     accountNumber: '',
@@ -29,7 +30,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
     frontDocument: '',
     backDocument: ''
   };
-  const [handleBankDetail, { loading }] = useMutation(ADD_BANK_DETAIL);
+  const [handleBankDetail, { loading }] = useMutation(CREATE_CUSTOM_STRIPE_ACCOUNT);
   const { successSnack, errorSnack } = useSuccErrSnack();
 
   const handleFormSubmit = async (values: any) => {
@@ -47,15 +48,16 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
           }
         }
       });
-      successSnack(response?.data?.addBankDetail?.message);
+      successSnack(response?.data?.createCustomStripeAccount?.message);
       setOpenModal(false);
+      refetch();
     } catch (err: any) {
       errorSnack(err?.message);
       setOpenModal(false);
     }
   };
   return (
-    <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_PAYMENT_DETAILS}>
+    <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={ADD_BANK_DETAILS}>
       <Formik initialValues={initialValues} validationSchema={paymentDetialValidationSchema} onSubmit={handleFormSubmit}>
         {({
           values,
@@ -140,16 +142,11 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal }: AddPa
                     )}
                   </FormControl>
                   <FormControl fullWidth>
-                    <InputLabel htmlFor="backDocument">{UPLOAD_BACK_DOCUMENT_INFO}</InputLabel>
+                    <InputLabel htmlFor="backDocument">{UPLOAD_BACK_DOCUMENT}</InputLabel>
                     <Typography variant={'body2'} color="grey.500" mb={0.5}>
                       {MAXIMUM_SIZE_200KB}
                     </Typography>
-                    <InputFileUpload
-                      id="backDocument"
-                      name={'backDocument'}
-                      title={UPLOAD_BACK_DOCUMENT_INFO}
-                      setFieldValue={setFieldValue}
-                    />
+                    <InputFileUpload id="backDocument" name={'backDocument'} title={UPLOAD_BACK_DOCUMENT} setFieldValue={setFieldValue} />
                     {touched.backDocument && errors.backDocument && (
                       <FormHelperText error id="standard-weight-helper-text--register">
                         {errors.backDocument}

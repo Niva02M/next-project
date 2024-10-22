@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import { Button, CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
-import { CREATE_BANK_ACCOUNT_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
+import { GENERATE_ACCOUNT_ONBOARDING_LINK, CREATE_CUSTOM_CONNECT_ACCOUNT } from './graphql/mutations';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import AddPaymentDetailModal from '../modal/AddPaymentDetailModal';
 import AlignCenter from 'components/align-center/AlignCenter';
@@ -29,9 +29,9 @@ const BankSetupPage = () => {
   const [pageLoading, setPageLoading] = useState(false);
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [openModal, setOpenModal] = useState(false);
-  const { data: dataBankDetail, loading: loadingBankDetail } = useQuery(GET_MY_BANK_DETAIL);
-  const [handleCreateBankAccount, { data, loading }] = useMutation(CREATE_BANK_ACCOUNT_LINK);
-  const [handleCreateCustomConnectAccount] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
+  const { data: dataBankDetail, loading: loadingBankDetail, refetch } = useQuery(GET_MY_BANK_DETAIL);
+  const [handleGenerateBankAccount, { data, loading }] = useMutation(GENERATE_ACCOUNT_ONBOARDING_LINK);
+  const [handleGenerateCustomAccountOnboarding] = useMutation(CREATE_CUSTOM_CONNECT_ACCOUNT);
 
   const handleFormSubmit = async (
     values: {
@@ -42,22 +42,22 @@ const BankSetupPage = () => {
     try {
       setPageLoading(true);
       if (values.bankAccountType === 'custom') {
-        const { data: connectAccount } = await handleCreateCustomConnectAccount({
+        const { data: connectAccount } = await handleGenerateCustomAccountOnboarding({
           variables: {}
         });
-        if (connectAccount?.createCustomConnectAccount?.connectAccountId) {
-          await handleCreateBankAccount({
+        if (connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId) {
+          await handleGenerateBankAccount({
             variables: {
               body: {
                 bankAccountType: bankAccounTypeMap[values.bankAccountType],
-                connectAccountId: connectAccount?.createCustomConnectAccount?.connectAccountId
+                connectAccountId: connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId
               }
             }
           });
           setPageLoading(false);
         }
       } else {
-        await handleCreateBankAccount({
+        await handleGenerateBankAccount({
           variables: {
             body: { bankAccountType: bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys] }
           }
@@ -72,10 +72,10 @@ const BankSetupPage = () => {
   };
 
   useEffect(() => {
-    if (data?.createBankAccountLink) {
+    if (data?.generateAccountOnboardingLink) {
       successSnack('Account link created successfully');
       setTimeout(() => {
-        window.location.href = data?.createBankAccountLink?.url;
+        window.location.href = data?.generateAccountOnboardingLink?.url;
       }, 2000);
     }
   }, [data]);
@@ -88,8 +88,8 @@ const BankSetupPage = () => {
     );
   }
 
-  if (dataBankDetail?.getMyBankDetail?.paymentDetail) {
-    return <PayoutCard detail={dataBankDetail?.getMyBankDetail?.paymentDetail} />;
+  if (dataBankDetail?.getUserStripeAccountDetails) {
+    return <PayoutCard detail={dataBankDetail?.getUserStripeAccountDetails} refetch={refetch} />;
   }
 
   return pageLoading ? (
@@ -143,7 +143,7 @@ const BankSetupPage = () => {
           );
         }}
       </Formik>
-      <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} />
+      <AddPaymentDetailModal openModal={openModal} setOpenModal={setOpenModal} refetch={refetch} />
     </>
   );
 };

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const CREATE_BANK_ACCOUNT_LINK = gql`
-  mutation CreateBankAccountLink($body: CreateBankAccountLinkInput!) {
-    createBankAccountLink(body: $body) {
+export const GENERATE_ACCOUNT_ONBOARDING_LINK = gql`
+  mutation GenerateAccountOnboardingLink($body: CreateBankAccountLinkInput!) {
+    generateAccountOnboardingLink(body: $body) {
       created
       expires_at
       object
@@ -12,8 +12,8 @@ export const CREATE_BANK_ACCOUNT_LINK = gql`
 `;
 
 export const CREATE_CUSTOM_CONNECT_ACCOUNT = gql`
-  mutation CreateCustomConnectAccount {
-    createCustomConnectAccount {
+  mutation GenerateCustomAccountOnboardingLink {
+    generateCustomAccountOnboardingLink {
       connectAccountId
       message
     }
@@ -28,9 +28,25 @@ export const CREATE_PAYMENT_INTENT = gql`
   }
 `;
 
-export const ADD_BANK_DETAIL = gql`
-  mutation AddBankDetail($body: CreateBankDetailInput!) {
-    addBankDetail(body: $body) {
+export const CREATE_CUSTOM_STRIPE_ACCOUNT = gql`
+  mutation CreateCustomStripeAccount($body: CreateBankDetailInput!) {
+    createCustomStripeAccount(body: $body) {
+      message
+    }
+  }
+`;
+
+export const DELETE_USER_BANK_ACCOUNT = gql`
+  mutation DeleteUserBankAccount($bankId: String!) {
+    deleteUserBankAccount(bankId: $bankId) {
+      message
+    }
+  }
+`;
+
+export const DELETE_STRIPE_CONNECT_ACCOUNT = gql`
+  mutation DeleteStripeConnectAccount($connectAccountId: String!) {
+    deleteStripeConnectAccount(connectAccountId: $connectAccountId) {
       message
     }
   }
