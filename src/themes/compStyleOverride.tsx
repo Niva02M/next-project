@@ -6,6 +6,8 @@ import { ThemeMode } from 'types/config';
 
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
+import { Height } from '@mui/icons-material';
+import { color } from 'framer-motion';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean, disableElevation: boolean) {
   const mode = theme.palette.mode;
@@ -178,6 +180,18 @@ export default function componentStyleOverrides(theme: Theme, borderRadius: numb
                   opacity: '1 !important'
                 }
               }
+            }
+          },
+          '.react-datepicker__input-container input': {
+            height: 53,
+            width: '100%',
+            border: `1px solid ${theme.palette.divider}`,
+            borderColor: mode === ThemeMode.DARK ? alpha(theme.palette.text.primary, 0.28) : theme.palette.grey[500],
+            fontSize: theme.typography.body1.fontSize,
+            padding: '15px 14px',
+            outline: 'none',
+            '&::placeholder': {
+              color: theme.palette.grey[500]
             }
           }
         }

@@ -51,3 +51,19 @@ export const DELETE_STRIPE_CONNECT_ACCOUNT = gql`
     }
   }
 `;
+
+export const ADD_USER_BANK_ACCOUNT_FROM_DETAIL = gql`
+  mutation AddUserBankAccountFromDetail($body: CreateBankTokenInput!) {
+    addUserBankAccountFromDetail(body: $body) {
+      message
+    }
+  }
+`;
+
+export const UPDATE_DEFAULT_BANK_ACCOUNT = gql`
+  mutation UpdateDefaultBankAccount($bankId: String!) {
+    updateDefaultBankAccount(bankId: $bankId) {
+      message
+    }
+  }
+`;

@@ -1,4 +1,4 @@
-import { Box, Button, Chip, CircularProgress, FormControlLabel, InputLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, FormControlLabel, Radio, RadioGroup, Stack, Typography } from '@mui/material';
 import { PayoutDetailWrapper } from './Payout.styles';
 import {
   DELETE_BUSINESS_USER_DESCRIPTION,
@@ -6,25 +6,29 @@ import {
   DELETE_USER_BANK_ACCOUNT_DESCRIPTION,
   DELETE_USER_BANK_ACCOUNT_TITLE,
   PAYOUT_DETAILS,
+  UPDATE_DEFAULT_BANK_ACCOUNT_DESCRIPTION,
+  UPDATE_DEFAULT_BANK_ACCOUNT_TITLE,
   externalAccounts,
   payOutDetials,
   verificationStatus
 } from '../constant';
 import { useMutation } from '@apollo/client';
-import { DELETE_STRIPE_CONNECT_ACCOUNT, DELETE_USER_BANK_ACCOUNT } from './graphql/mutations';
+import { DELETE_STRIPE_CONNECT_ACCOUNT, DELETE_USER_BANK_ACCOUNT, UPDATE_DEFAULT_BANK_ACCOUNT } from './graphql/mutations';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { useState } from 'react';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import AlignCenter from 'components/align-center/AlignCenter';
+import AddUserBankAccountModal from '../modal/AddUserBankAccount';
 
 export default function PayoutCard({ detail, refetch }: { detail: any; refetch: () => void }) {
   const [openModal, setOpenModal] = useState(false);
+  const [openModalDefaultBankAccount, setOpenModalDefaultBankAccount] = useState(false);
   const [openModalDeleteConnectAccount, setOpenModalDeleteConnectAccount] = useState(false);
   const [openModalDeleteBankAccount, setOpenModalDeleteBankAccount] = useState(false);
   const [selectBankId, setSelectBankId] = useState('');
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [handleDeleteStripeConnectAccount, { loading: connectAccountLoading }] = useMutation(DELETE_STRIPE_CONNECT_ACCOUNT);
   const [handleDeleteBankAccount, { loading: bankAccountLoading }] = useMutation(DELETE_USER_BANK_ACCOUNT);
+  const [handleUpdateBankAccount, { loading: updateBankAccountLoading }] = useMutation(UPDATE_DEFAULT_BANK_ACCOUNT);
 
   const deleteConnectAccount = async () => {
     try {
@@ -38,6 +42,22 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
       refetch();
     } catch (error: any) {
       setOpenModalDeleteConnectAccount(false);
+      errorSnack(error.message);
+    }
+  };
+
+  const updateBankAccount = async () => {
+    try {
+      const response = await handleUpdateBankAccount({
+        variables: {
+          bankId: selectBankId
+        }
+      });
+      setOpenModalDefaultBankAccount(false);
+      successSnack(response?.data?.updateDefaultBankAccount?.message);
+      refetch();
+    } catch (error: any) {
+      setOpenModalDefaultBankAccount(false);
       errorSnack(error.message);
     }
   };
@@ -118,12 +138,12 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
         {detail?.externalAccounts?.map((bankDetail: any) => (
           <PayoutDetailWrapper key={bankDetail?.id}>
             <FormControlLabel
-              // value={item.id}
-              checked={detail?.externalAccounts?.default_for_currency}
+              value={bankDetail?.id}
+              checked={bankDetail?.default_for_currency}
               control={<Radio />}
               onChange={() => {
                 setSelectBankId(bankDetail?.id);
-                // setOpenModalDefaultCard(true);
+                setOpenModalDefaultBankAccount(true);
               }}
               sx={{
                 '.MuiFormControlLabel-label': {
@@ -160,7 +180,7 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
                 </Stack>
               }
             />
-            {detail?.externalAccounts.length > 1 && (
+            {!bankDetail?.default_for_currency && (
               <Button
                 variant="contained"
                 color="secondary"
@@ -179,25 +199,23 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
       <Button variant="text" sx={{ p: 0 }} onClick={() => setOpenModal(true)}>
         Add payout details
       </Button>
+      <AddUserBankAccountModal openModal={openModal} setOpenModal={setOpenModal} refetch={refetch} />
 
-      {/* Add user bank account */}
-      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={'Add bank account'}>
-        <InputLabel>Account Name</InputLabel>
-        <TextField type="text" />
-        {/* {setupIntentLoading && (
-          <AlignCenter>
-            <CircularProgress />
-          </AlignCenter>
-        )} */}
-        {/* Stripe card ui */}
-        {/* {!setupIntentLoading && kind === 'card' && secret && (
-          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
-        )} */}
-        {/* Stripe bank ui */}
-        {/* {!setupIntentLoading && kind === 'au_bank' && secret && (
-          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
-        )} */}
+      {/* Update defualt card modal */}
+      <GenericModal
+        openModal={openModalDefaultBankAccount}
+        btnDirection="row"
+        btnTextYes="Yes"
+        btnTextNo="No"
+        handleYes={() => updateBankAccount()}
+        closeModal={() => setOpenModalDefaultBankAccount(false)}
+        title={UPDATE_DEFAULT_BANK_ACCOUNT_TITLE}
+        maxWidth={620}
+        isLoading={updateBankAccountLoading}
+      >
+        <Typography>{UPDATE_DEFAULT_BANK_ACCOUNT_DESCRIPTION}</Typography>
       </GenericModal>
+    
       {/* Remove business user card */}
       <GenericModal
         openModal={openModalDeleteConnectAccount}
