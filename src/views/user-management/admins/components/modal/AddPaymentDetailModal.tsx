@@ -1,6 +1,9 @@
 import { Box, FormControl, FormHelperText, InputLabel, Stack, TextField, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import GenericModal from 'ui-component/modal/GenericModal';
 import { ADD_BANK_DETAILS } from 'views/settings/constant';
 import InputFileUpload from '../upload-file';
@@ -15,8 +18,8 @@ import {
 } from '../constant';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { LoadingButton } from '@mui/lab';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import dayjs, { Dayjs } from 'dayjs';
 
 type AddPaymentDetailModalType = {
   openModal: boolean;
@@ -25,13 +28,13 @@ type AddPaymentDetailModalType = {
 };
 
 export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch }: AddPaymentDetailModalType) {
-  const [startDate, setStartDate] = useState<Date>();
   const initialValues = {
     accountName: '',
     accountNumber: '',
     routingNumber: '',
     frontDocument: '',
-    backDocument: ''
+    backDocument: '',
+    dob: Dayjs
   };
   const [handleBankDetail, { loading }] = useMutation(CREATE_CUSTOM_STRIPE_ACCOUNT);
   const { successSnack, errorSnack } = useSuccErrSnack();
@@ -124,7 +127,22 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
               </FormControl>
               <FormControl>
                 <InputLabel>Date of birth</InputLabel>
-                <DatePicker selected={startDate} onChange={(date) => setStartDate(date!)} placeholderText="DD/MM/YYYY" />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    name="dob"
+                    //@ts-ignore
+                    inputFormat="MM/DD/YYYY"
+                    //@ts-ignore
+                    value={values.dob ? dayjs(values.dob) : null}
+                    onChange={(newValue: Dayjs | null) => {
+                      const formattedDate = newValue ? newValue.format('MM/DD/YYYY') : '';
+                      handleChange({
+                        target: { name: 'dob', value: formattedDate }
+                      });
+                    }}
+                    renderInput={(params: any) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
               </FormControl>
               <Box>
                 <Typography variant={'body2'} color="grey.500" mb={1.5}>

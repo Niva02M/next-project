@@ -1,12 +1,12 @@
-import { FormControl, FormHelperText, InputLabel, Stack, TextField } from '@mui/material';
-import { Formik } from 'formik';
 import React, { Dispatch, SetStateAction } from 'react';
-import GenericModal from 'ui-component/modal/GenericModal';
-import { useMutation } from '@apollo/client';
-import { CREATE_CUSTOM_STRIPE_ACCOUNT } from '../business-management/graphql/mutations';
-import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Stack, TextField } from '@mui/material';
+import { Formik } from 'formik';
 import { LoadingButton } from '@mui/lab';
-import * as Yup from 'yup';
+import { useMutation } from '@apollo/client';
+import useSuccErrSnack from 'hooks/useSuccErrSnack';
+import GenericModal from 'ui-component/modal/GenericModal';
+import { ADD_USER_BANK_ACCOUNT_FROM_DETAIL } from '../business-management/graphql/mutations';
+import { accountHolderTypeSelect, accountTypeSelect, addBankAccountValidationSchema } from '../constant';
 
 type AddUserBankAccountModalType = {
   openModal: boolean;
@@ -19,30 +19,26 @@ export default function AddUserBankAccountModal({ openModal, setOpenModal, refet
     accountName: '',
     accountNumber: '',
     routingNumber: '',
-    frontDocument: '',
-    backDocument: ''
+    accountHolderType: '',
+    accountType: ''
   };
-  const [handleBankDetail, { loading }] = useMutation(CREATE_CUSTOM_STRIPE_ACCOUNT);
+  const [handleAddBankAccount, { loading }] = useMutation(ADD_USER_BANK_ACCOUNT_FROM_DETAIL);
   const { successSnack, errorSnack } = useSuccErrSnack();
-
-  const addBankValidation = Yup.object().shape({});
 
   const handleFormSubmit = async (values: any) => {
     try {
-      const response = await handleBankDetail({
+      const response = await handleAddBankAccount({
         variables: {
           body: {
-            accountHolderType: 'INDIVIDUAL', //static field for now
             accountName: values.accountName,
             accountNumber: values.accountNumber,
-            accountType: 'FUTSU', //static field for now
-            identityDocumentBack: values.backDocument,
-            identityDocumentFront: values.frontDocument,
-            routingNumber: values.routingNumber
+            routingNumber: values.routingNumber,
+            accountHolderType: values.accountHolderType,
+            accountType: values.accountType
           }
         }
       });
-      successSnack(response?.data?.createCustomStripeAccount?.message);
+      successSnack(response?.data?.addUserBankAccountFromDetail?.message);
       setOpenModal(false);
       refetch();
     } catch (err: any) {
@@ -52,7 +48,7 @@ export default function AddUserBankAccountModal({ openModal, setOpenModal, refet
   };
   return (
     <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={'Add bank account'}>
-      <Formik initialValues={initialValues} validationSchema={addBankValidation} onSubmit={handleFormSubmit}>
+      <Formik initialValues={initialValues} validationSchema={addBankAccountValidationSchema} onSubmit={handleFormSubmit}>
         {({
           values,
           errors,
@@ -113,7 +109,52 @@ export default function AddUserBankAccountModal({ openModal, setOpenModal, refet
                   </FormHelperText>
                 )}
               </FormControl>
-
+              <FormControl fullWidth>
+                <InputLabel>{'Account holder type'}</InputLabel>
+                <TextField
+                  fullWidth
+                  name="accountHolderType"
+                  value={values.accountHolderType}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  placeholder="Account holder type"
+                  select
+                >
+                  {accountHolderTypeSelect.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                {touched.accountHolderType && errors.accountHolderType && (
+                  <FormHelperText error id="accountHolderType">
+                    {errors.accountHolderType}
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel>{'Account type'}</InputLabel>
+                <TextField
+                  fullWidth
+                  name="accountType"
+                  value={values.accountType}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  placeholder="Account holder type"
+                  select
+                >
+                  {accountTypeSelect.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                {touched.accountType && errors.accountType && (
+                  <FormHelperText error id="accountType">
+                    {errors.accountType}
+                  </FormHelperText>
+                )}
+              </FormControl>
               <LoadingButton type="submit" loading={loading} variant="contained" disabled={loading} size="large">
                 Save changes
               </LoadingButton>
