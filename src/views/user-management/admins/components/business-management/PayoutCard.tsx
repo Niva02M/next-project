@@ -1,4 +1,4 @@
-import { Box, Button, Chip, CircularProgress, FormControlLabel, InputLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
+import { Button, Chip, FormControl, FormControlLabel, FormHelperText, InputLabel, Radio, RadioGroup, Stack, TextField, Typography } from '@mui/material';
 import { PayoutDetailWrapper } from './Payout.styles';
 import {
   DELETE_BUSINESS_USER_DESCRIPTION,
@@ -15,7 +15,10 @@ import { DELETE_STRIPE_CONNECT_ACCOUNT, DELETE_USER_BANK_ACCOUNT } from './graph
 import GenericModal from 'ui-component/modal/GenericModal';
 import { useState } from 'react';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import AlignCenter from 'components/align-center/AlignCenter';
+import { Formik } from 'formik';
+import { LoadingButton } from '@mui/lab';
+import AddUserBankAccountModal from '../modal/AddUserBankAccount';
+// import AlignCenter from 'components/align-center/AlignCenter';
 
 export default function PayoutCard({ detail, refetch }: { detail: any; refetch: () => void }) {
   const [openModal, setOpenModal] = useState(false);
@@ -179,25 +182,7 @@ export default function PayoutCard({ detail, refetch }: { detail: any; refetch: 
       <Button variant="text" sx={{ p: 0 }} onClick={() => setOpenModal(true)}>
         Add payout details
       </Button>
-
-      {/* Add user bank account */}
-      <GenericModal openModal={openModal} closeModal={() => setOpenModal(false)} title={'Add bank account'}>
-        <InputLabel>Account Name</InputLabel>
-        <TextField type="text" />
-        {/* {setupIntentLoading && (
-          <AlignCenter>
-            <CircularProgress />
-          </AlignCenter>
-        )} */}
-        {/* Stripe card ui */}
-        {/* {!setupIntentLoading && kind === 'card' && secret && (
-          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
-        )} */}
-        {/* Stripe bank ui */}
-        {/* {!setupIntentLoading && kind === 'au_bank' && secret && (
-          <AddPaymentElement addPayment={addPayment} savePayLoading={savePayLoading} clientSecret={secret} />
-        )} */}
-      </GenericModal>
+      <AddUserBankAccountModal openModal={openModal} setOpenModal={setOpenModal} refetch={refetch} />
       {/* Remove business user card */}
       <GenericModal
         openModal={openModalDeleteConnectAccount}
