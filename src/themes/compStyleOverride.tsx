@@ -6,8 +6,6 @@ import { ThemeMode } from 'types/config';
 
 //icons
 import { SquareBoxIcon, SquareBoxCheckedIcon } from 'components/icons';
-import { Height } from '@mui/icons-material';
-import { color } from 'framer-motion';
 
 export default function componentStyleOverrides(theme: Theme, borderRadius: number, outlinedFilled: boolean, disableElevation: boolean) {
   const mode = theme.palette.mode;
