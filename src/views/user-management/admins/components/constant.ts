@@ -1,17 +1,17 @@
 import * as Yup from 'yup';
 
 export const paymentDetialValidationSchema = Yup.object().shape({
-  accountName: Yup.string().min(6).max(100).required().label('Account name'),
-  accountNumber: Yup.string().min(9).max(100).required().label('Account number'),
-  routingNumber: Yup.string().min(6).max(100).required().label('BSB'),
+  accountName: Yup.string().min(6).max(100).required('Enter a valid account name').label('Account name'),
+  accountNumber: Yup.string().min(9).max(20).required('Enter a valid account number').label('Account number'),
+  routingNumber: Yup.string().min(6).max(10).required('Enter a valid BSB number').label('BSB'),
   frontDocument: Yup.string().required().label('Front document'),
   backDocument: Yup.string().required().label('Back document')
 });
 
 export const addBankAccountValidationSchema = Yup.object().shape({
-  accountName: Yup.string().min(6).max(100).required().label('Account name'),
-  accountNumber: Yup.string().min(9).max(100).required().label('Account number'),
-  routingNumber: Yup.string().min(6).max(100).required().label('BSB'),
+  accountName: Yup.string().min(6).max(100).required('Enter a valid account name').label('Account name'),
+  accountNumber: Yup.string().min(9).max(20).required('Enter a valid account number').label('Account number'),
+  routingNumber: Yup.string().min(6).max(10).required('Enter a valid BSB number').label('BSB'),
   accountHolderType: Yup.string().required().label('Account holder type'),
   accountType: Yup.string().required().label('Account type')
 });
