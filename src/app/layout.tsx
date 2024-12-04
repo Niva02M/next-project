@@ -5,6 +5,10 @@ import './globals.css';
 // PROJECT IMPORTS
 import ProviderWrapper from 'store/ProviderWrapper';
 
+if (process.env.NEXT_ENV === 'production') {
+  console.log = () => {}; // Disable console.log in production
+}
+
 export const metadata: Metadata = {
   title: 'Ebtheme web',
   description:
