@@ -32,6 +32,22 @@ pipelines:
                 ZIP_FILE: 'ebthemes-dev-web.zip'
                 VERSION_LABEL: 'ebthemes-dev-web.zip'
 
+    stage:
+      - step:
+          name: '(Stage) Webapp'
+          runs-on: *base-runs-on
+          script:
+            - apt install zip
+            - mv cicd/stage/buildspec.yml .
+            - zip -r ebthemes-stage-web.zip .
+            - <<: *base-code-deploy-pipe
+              variables:
+                <<: *base-code-deploy-vars
+                APPLICATION_NAME: 'ebthemes-stage'
+                S3_BUCKET: 'ebthemes-code-src/stage'
+                ZIP_FILE: 'ebthemes-stage-web.zip'
+                VERSION_LABEL: 'ebthemes-stage-web.zip'
+
   tags:
     "**":
       - step:
