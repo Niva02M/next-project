@@ -2,7 +2,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { StripePaymentAdd } from './StripePaymentAdd';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK || '');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PK ?? '');
 
 export default function AddPaymentElement({
   addPayment,
