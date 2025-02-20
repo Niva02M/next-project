@@ -1,11 +1,10 @@
 FROM node:20.14.0-alpine
 
-WORKDIR /webapp
-COPY package*.json ./
-RUN npm install
+# WORKDIR /app
 
-COPY . .
-# RUN npm run build
+# COPY package*.json ./
+
+# RUN npm install
 
 EXPOSE 3000
-CMD [ "npm", "run", "dev" ]
+# CMD [ "npm", "run", "dev" ]
