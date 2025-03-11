@@ -2,13 +2,13 @@ version: 0.2
 
 env:
   variables:
-    IMAGE: 082670687034.dkr.ecr.ap-southeast-2.amazonaws.com/ebthemes-stage-web:latest
+    IMAGE: 235494784270.dkr.ecr.ap-southeast-2.amazonaws.com/ebt-stage-web:latest
 
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 082670687034.dkr.ecr.ap-southeast-2.amazonaws.com
-      - aws ssm get-parameter --with-decryption --output text --query 'Parameter.Value' --name /ebthemes/stage/web/env | base64 -d > .env
+      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 235494784270.dkr.ecr.ap-southeast-2.amazonaws.com
+      - aws ssm get-parameter --with-decryption --output text --query 'Parameter.Value' --name /ebt/stage/web/env | base64 -d > .env
       - docker pull $IMAGE || true
 
   build:
