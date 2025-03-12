@@ -1,5 +1,6 @@
 version: 0.2
 
+
 env:
   variables:
     IMAGE: 235494784270.dkr.ecr.ap-southeast-2.amazonaws.com/ebt-stage-web:latest
