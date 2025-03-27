@@ -23,14 +23,14 @@ pipelines:
           script:
             - apt install zip
             - mv cicd/dev/buildspec.yml .
-            - zip -r ebt-dev-web.zip .
+            - zip -r ebtheams-dev-web.zip .
             - <<: *base-code-deploy-pipe
               variables:
                 <<: *base-code-deploy-vars
-                APPLICATION_NAME: 'ebt-dev'
-                S3_BUCKET: 'ebt-code-src/dev'
-                ZIP_FILE: 'ebt-dev-web.zip'
-                VERSION_LABEL: 'ebt-dev-web.zip'
+                APPLICATION_NAME: 'ebtheams-dev'
+                S3_BUCKET: 'ebtheams-code-src/dev'
+                ZIP_FILE: 'ebtheams-dev-web.zip'
+                VERSION_LABEL: 'ebtheams-dev-web.zip'
 
     stage:
       - step:
@@ -39,14 +39,14 @@ pipelines:
           script:
             - apt install zip
             - mv cicd/stage/buildspec.yml .
-            - zip -r ebt-stage-web.zip .
+            - zip -r ebtheams-stage-web.zip .
             - <<: *base-code-deploy-pipe
               variables:
                 <<: *base-code-deploy-vars
-                APPLICATION_NAME: 'ebt-stage'
-                S3_BUCKET: 'ebt-code-src/stage'
-                ZIP_FILE: 'ebt-stage-web.zip'
-                VERSION_LABEL: 'ebt-stage-web.zip'
+                APPLICATION_NAME: 'ebtheams-stage'
+                S3_BUCKET: 'ebtheams-code-src/stage'
+                ZIP_FILE: 'ebtheams-stage-web.zip'
+                VERSION_LABEL: 'ebtheams-stage-web.zip'
 
   tags:
     "**":
