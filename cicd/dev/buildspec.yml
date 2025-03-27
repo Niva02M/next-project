@@ -2,12 +2,12 @@ version: 0.2
 
 env:
   variables:
-    IMAGE: 235494784270.dkr.ecr.ap-southeast-2.amazonaws.com/ebt-dev-web:latest
+    IMAGE: 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com/ebt-dev-web:latest
 
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 235494784270.dkr.ecr.ap-southeast-2.amazonaws.com
+      - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com
       - aws ssm get-parameter --with-decryption --output text --query 'Parameter.Value' --name /ebt/dev/web/env | base64 -d > .env
       - docker pull $IMAGE || true
 
