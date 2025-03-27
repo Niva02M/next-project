@@ -1,5 +1,6 @@
 version: 0.2
 
+
 env:
   variables:
     IMAGE: 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com/ebtheams-stage-web:latest
