@@ -21,6 +21,6 @@ COPY --from=builder /webapp/.next ./.next
 COPY --from=builder /webapp/public ./public
 COPY --from=builder /webapp/package.json ./
 COPY --from=deps /app/node_modules ./node_modules
-
+COPY --from=builder /webapp/.env ./.env
 EXPOSE 3002
 CMD ["npm", "run", "start"]
