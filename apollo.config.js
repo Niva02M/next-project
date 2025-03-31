@@ -28,14 +28,14 @@ const authLink = setContext((operation, { headers }) => {
   if (typeof window !== 'undefined') {
     // get the authentication token from local storage if it exists
     let token = returnTokenDependingOnOperation(operation);
+    let csrfToken = localStorage.getItem('csrfToken');
 
     // return the headers to the context so httpLink can read them
     return {
       headers: {
         ...headers,
         authorization: token ? token : '',
-        // 'csrf-token':"1b5my2eWS9v6vqLT-gxxRSxgxPCIj77WjYkap5lZ0LRk"
-        'csrf-token':localStorage.getItem('csrfToken')
+        'csrf-token': csrfToken
       },
       credentials: 'include'
     };
@@ -44,8 +44,7 @@ const authLink = setContext((operation, { headers }) => {
   return {
     headers: {
       ...headers,
-      // 'csrf-token':"1b5my2eWS9v6vqLT-gxxRSxgxPCIj77WjYkap5lZ0LRk"
-      'csrf-token':localStorage.getItem('csrfToken')
+      //'csrf-token':"tcHa07Rt4Gz7xJB9-NV8IsYQweEQGIyJ6iY3VLt3PwF4"
     },
     credentials: 'include'
   };
