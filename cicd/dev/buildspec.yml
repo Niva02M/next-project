@@ -8,7 +8,7 @@ phases:
   pre_build:
     commands:
       - aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com
-      - aws ssm get-parameter --with-decryption --output text --query 'Parameter.Value' --name /ebt/dev/web/env | base64 -d > .env
+      - aws ssm get-parameter --with-decryption --output text --query 'Parameter.Value' --name /ebtheams/dev/web/env | base64 -d > .env
       - docker pull $IMAGE || true
 
   build:
