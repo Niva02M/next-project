@@ -10,7 +10,8 @@ import { AuthenticationStatus, AuthStatusCode } from 'store/constant';
 
 const httpLink = createHttpLink({
   // eslint-disable-next-line no-undef
-  uri: process.env.NEXT_PUBLIC_API_ENDPOINT
+  uri: process.env.NEXT_PUBLIC_API_ENDPOINT,
+  credentials: 'include' 
   // uri: 'http://localhost:3000/api'
 });
 
@@ -32,15 +33,21 @@ const authLink = setContext((operation, { headers }) => {
     return {
       headers: {
         ...headers,
-        authorization: token ? token : ''
-      }
+        authorization: token ? token : '',
+        // 'csrf-token':"1b5my2eWS9v6vqLT-gxxRSxgxPCIj77WjYkap5lZ0LRk"
+        'csrf-token':localStorage.getItem('csrfToken')
+      },
+      credentials: 'include'
     };
   }
 
   return {
     headers: {
-      ...headers
-    }
+      ...headers,
+      // 'csrf-token':"1b5my2eWS9v6vqLT-gxxRSxgxPCIj77WjYkap5lZ0LRk"
+      'csrf-token':localStorage.getItem('csrfToken')
+    },
+    credentials: 'include'
   };
 });
 
