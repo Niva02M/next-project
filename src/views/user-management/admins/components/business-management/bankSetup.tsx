@@ -23,6 +23,12 @@ const bankAccounTypeMap = {
   custom: 'CUSTOM',
   customForm: 'CUSTOM-FORM'
 };
+
+const accountHolderType = {
+  company: 'COMPANY',
+  individual: 'INDIVIDUAL'
+};
+
 type BankAccountTypeKeys = keyof typeof bankAccounTypeMap;
 
 const BankSetupPage = () => {
@@ -43,14 +49,20 @@ const BankSetupPage = () => {
       setPageLoading(true);
       if (values.bankAccountType === 'custom') {
         const { data: connectAccount } = await handleGenerateCustomAccountOnboarding({
-          variables: {}
+          variables: {
+            body: {
+              bankAccountType: bankAccounTypeMap[values.bankAccountType],
+              accountHolderType: accountHolderType.individual
+            }
+          }
         });
         if (connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId) {
           await handleGenerateBankAccount({
             variables: {
               body: {
                 bankAccountType: bankAccounTypeMap[values.bankAccountType],
-                connectAccountId: connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId
+                connectAccountId: connectAccount?.generateCustomAccountOnboardingLink?.connectAccountId,
+                accountHolderType: accountHolderType.individual
               }
             }
           });
@@ -59,7 +71,10 @@ const BankSetupPage = () => {
       } else {
         await handleGenerateBankAccount({
           variables: {
-            body: { bankAccountType: bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys] }
+            body: {
+              bankAccountType: bankAccounTypeMap[values.bankAccountType as BankAccountTypeKeys],
+              accountHolderType: accountHolderType.individual
+            }
           }
         });
       }

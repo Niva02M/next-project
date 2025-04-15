@@ -12,8 +12,8 @@ export const GENERATE_ACCOUNT_ONBOARDING_LINK = gql`
 `;
 
 export const CREATE_CUSTOM_CONNECT_ACCOUNT = gql`
-  mutation GenerateCustomAccountOnboardingLink {
-    generateCustomAccountOnboardingLink {
+  mutation GenerateCustomAccountOnboardingLink($body: CreateBankAccountLinkInput!) {
+    generateCustomAccountOnboardingLink(body: $body) {
       connectAccountId
       message
     }
