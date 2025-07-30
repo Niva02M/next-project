@@ -4,5 +4,5 @@ hooks:
   AfterInstall:
     - location: cicd/dev/deploy
       timeout: 1000
-      runas: ebpearls
+      runas: ebthemes
 

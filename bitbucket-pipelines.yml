@@ -23,14 +23,14 @@ pipelines:
           script:
             - apt install zip
             - mv cicd/dev/buildspec.yml .
-            - zip -r ebtheams-dev-web.zip .
+            - zip -r ebthemes-dev-web.zip .
             - <<: *base-code-deploy-pipe
               variables:
                 <<: *base-code-deploy-vars
-                APPLICATION_NAME: 'ebtheams-dev'
-                S3_BUCKET: 'ebtheams-code-src/dev'
-                ZIP_FILE: 'ebtheams-dev-web.zip'
-                VERSION_LABEL: 'ebtheams-dev-web.zip'
+                APPLICATION_NAME: 'ebthemes-dev'
+                S3_BUCKET: 'ebthemes-code-src/dev'
+                ZIP_FILE: 'ebthemes-dev-web.zip'
+                VERSION_LABEL: 'ebthemes-dev-web.zip'
 
     stage:
       - step:

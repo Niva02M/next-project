@@ -4,7 +4,7 @@ set -e
 
 aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com
 
-cd /home/ebpearls/dev
+cd /home/ebthemes/dev
 docker-compose pull ebt_web_dev
 docker-compose rm -s -f ebt_web_dev
 docker-compose up -d ebt_web_dev
