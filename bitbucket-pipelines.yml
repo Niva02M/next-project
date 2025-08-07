@@ -28,7 +28,7 @@ pipelines:
               variables:
                 <<: *base-code-deploy-vars
                 APPLICATION_NAME: 'ebthemes-dev'
-                S3_BUCKET: 'ebthemes-code-src/dev'
+                S3_BUCKET: 'ebthemes-code-src-ap-south-1/dev'
                 ZIP_FILE: 'ebthemes-dev-web.zip'
                 VERSION_LABEL: 'ebthemes-dev-web.zip'
 
@@ -44,7 +44,7 @@ pipelines:
               variables:
                 <<: *base-code-deploy-vars
                 APPLICATION_NAME: 'ebtheams-stage'
-                S3_BUCKET: 'ebtheams-code-src/stage'
+                S3_BUCKET: 'ebtheams-code-src-ap-south-1/stage'
                 ZIP_FILE: 'ebtheams-stage-web.zip'
                 VERSION_LABEL: 'ebtheams-stage-web.zip'
 

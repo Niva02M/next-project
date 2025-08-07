@@ -1,4 +1,4 @@
-FROM 896720489482.dkr.ecr.ap-southeast-2.amazonaws.com/node:22.4.0-alpine as base
+FROM 896720489482.dkr.ecr.ap-south-1.amazonaws.com/node:22.4.0-alpine as base
 
 # Dependencies stage
 FROM base AS deps
