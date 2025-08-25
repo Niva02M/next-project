@@ -5,4 +5,8 @@ hooks:
     - location: cicd/dev/deploy
       timeout: 1000
       runas: ebthemes
+  ValidateService:
+    - location: cicd/post-comment-in-jira.sh
+      timeout: 1000
+      runas: root
 
