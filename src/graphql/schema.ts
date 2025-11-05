@@ -72,6 +72,7 @@ export const typeDefs = gql`
   # ---------- Root Schema ----------
   type Query {
     hello: String
+    me: User
   }
 
   type Mutation {

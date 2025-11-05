@@ -2,69 +2,59 @@
 
 import { Grid } from '@mui/material';
 import pageRoutes from 'constants/routes';
-import { UserAccountStatus } from 'constants/user';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-// types
 import { GuardProps } from 'types';
 import Loader from 'ui-component/Loader';
 
-// ==============================|| AUTH GUARD ||============================== //
-
-/**
- * Authentication guard for routes
- * @param {PropTypes.node} children children element/node
- */
-
 const setTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem('accessToken', accessToken);
-  localStorage.setItem('refreshToken', refreshToken);
+  if (accessToken) localStorage.setItem('accessToken', accessToken);
+  if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
 };
 
 const AuthGuard = ({ children }: GuardProps) => {
   const { status, data } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      const payload = data?.user as any;
-      if (payload?.user?.status === UserAccountStatus.email_verified || payload?.user?._id) {
-        setTokens(payload?.access_token, payload?.refresh_token);
+    if (status === 'loading') return;
 
-        if (
-          pathname === pageRoutes.login ||
-          pathname === pageRoutes.register ||
-          pathname === pageRoutes.forgotPassword ||
-          pathname === pageRoutes.verifyRegistration ||
-          pathname === pageRoutes.verifyRegistrationPhone
-        ) {
-          router.replace(pageRoutes.dashboard);
-        }
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
-      }
-    } else if (status === 'unauthenticated') {
-      if (pathname === '/register') {
-        router.replace(pathname);
-      } else {
+    if (status === 'unauthenticated') {
+      if (pathname !== pageRoutes.login && pathname !== pageRoutes.register) {
         router.replace(pageRoutes.login);
       }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    } else {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      setIsLoading(false);
+      return;
     }
-  }, [status, data, router]);
+
+    if (status === 'authenticated') {
+      const user = data?.user as any;
+
+      if (!user?.id) {
+        router.replace(pageRoutes.login);
+        return;
+      }
+
+      setTokens(user.access_token, user.refresh_token);
+
+      if (
+        [
+          pageRoutes.login,
+          pageRoutes.register,
+          pageRoutes.forgotPassword,
+          pageRoutes.verifyRegistration,
+          pageRoutes.verifyRegistrationPhone
+        ].includes(pathname)
+      ) {
+        router.replace(pageRoutes.dashboard);
+      }
+
+      setIsLoading(false);
+    }
+  }, [status, data, pathname, router]);
 
   return isLoading ? (
     <Grid container justifyContent="center" alignItems="center" sx={{ height: '100vh' }}>

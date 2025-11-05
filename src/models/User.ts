@@ -14,6 +14,7 @@ export interface IUser extends Document {
   deviceId?: string;
   status?: string;
   provider?: string;
+  providerAccountId?: string;
   emailVerified?: boolean;
   createdAt?: Date;
 }
@@ -26,18 +27,22 @@ const PhoneSchema = new Schema<IPhone>(
   { _id: false }
 );
 
-const UserSchema = new Schema<IUser>({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String },
-  phoneNumber: { type: PhoneSchema },
-  deviceId: { type: String },
-  status: { type: String, default: 'email_verification_pending' },
-  provider: { type: String, default: 'local' },
-  emailVerified: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
-});
+const UserSchema = new Schema<IUser>(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: false },
+    email: { type: String, required: true, unique: true },
+    password: { type: String },
+    phoneNumber: { type: PhoneSchema },
+    deviceId: { type: String },
+    status: { type: String, default: 'email_verification_pending' },
+    provider: { type: String, default: 'local' },
+    providerAccountId: { type: String },
+    emailVerified: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now }
+  },
+  { timestamps: true }
+);
 
 const User: Model<IUser> = (mongoose.models.User as Model<IUser>) || mongoose.model<IUser>('User', UserSchema);
 

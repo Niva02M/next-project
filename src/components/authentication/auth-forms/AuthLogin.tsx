@@ -16,7 +16,7 @@ import { Formik } from 'formik';
 
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { getSession, signIn, signOut, useSession } from 'next-auth/react';
 import { TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';
@@ -113,12 +113,13 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
                 email: values.email,
                 password: values.password,
                 deviceId: generateDeviceId(),
-                redirect: false,
-                callbackUrl: '/'
+                callbackUrl: '/dashboard',
+                redirect: false
               });
 
               if (res?.ok && res?.status === 200) {
                 successSnack('login-successful');
+                router.push('/dashboard');
               } else {
                 if (res?.error?.includes(':')) {
                   errorSnack(res.error?.split(':')?.[1] || '');
