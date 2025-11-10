@@ -119,7 +119,7 @@ const ProfileSection = () => {
     <>
       <IconButton onClick={handleToggle} sx={{ p: 0 }}>
         <Avatar
-          src={data?.me?.profileImage}
+          src={data?.me?.image}
           alt="user-images"
           sx={{
             ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),

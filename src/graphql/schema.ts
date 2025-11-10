@@ -32,8 +32,10 @@ export const typeDefs = gql`
     email: String!
     status: String
     phoneNumber: Phone
+    emailVerified: Boolean
     deviceId: String
     provider: String
+    image: String
   }
 
   # ---------- Auth Inputs ----------
@@ -50,13 +52,23 @@ export const typeDefs = gql`
     email: String!
     password: String!
   }
-
+  input VerifyOtpInput {
+    email: String!
+    otp: String!
+  }
+  input UpdateProfileInput {
+    firstName: String
+    lastName: String
+    image: String
+  }
   # ---------- Auth Responses ----------
   type AuthResponse {
     message: String
     expiry: Expiry
     token: Token
     user: User
+    status: String
+    code: String
   }
 
   type RegisterResponse {
@@ -69,6 +81,26 @@ export const typeDefs = gql`
     message: String
     user: User
   }
+
+  type UpdateProfileResponse {
+    message: String
+    user: User
+  }
+
+  input ChangePasswordInput {
+    currentPassword: String!
+    newPassword: String!
+  }
+  input ResendVerifyOtpInput {
+    email: String!
+    deviceId: String
+  }
+
+  type ResendVerifyOtpResponse {
+    message: String!
+    expiry: Expiry!
+  }
+
   # ---------- Root Schema ----------
   type Query {
     hello: String
@@ -78,5 +110,9 @@ export const typeDefs = gql`
   type Mutation {
     registerUser(body: SignupInput!): RegisterResponse
     loginUser(body: LoginInput!): AuthResponse
+    verifyOtp(body: VerifyOtpInput!): AuthResponse!
+    updateProfile(body: UpdateProfileInput!): UpdateProfileResponse
+    changePassword(body: ChangePasswordInput!): UpdateProfileResponse
+    resendVerifyOtp(body: ResendVerifyOtpInput!): ResendVerifyOtpResponse!
   }
 `;

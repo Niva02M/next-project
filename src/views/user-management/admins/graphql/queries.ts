@@ -4,12 +4,12 @@ export const GET_PROFILE_QUERY = gql`
   query Me {
     me {
       _id
-      authProvider
-      authProviderId
+      email
       firstName
       lastName
-      loginFlowType
-      profileImage
+      provider
+      status
+      image
     }
   }
 `;

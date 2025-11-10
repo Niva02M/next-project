@@ -5,6 +5,8 @@ export interface IPhone {
   number: string;
 }
 
+export type UserStatus = 'email_verification_pending' | 'verified';
+
 export interface IUser extends Document {
   firstName: string;
   lastName: string;
@@ -12,13 +14,20 @@ export interface IUser extends Document {
   password?: string;
   phoneNumber?: IPhone;
   deviceId?: string;
-  status?: string;
+  image?: string;
+  status: UserStatus;
+  otp?: string;
+  otpExpiry?: Date;
   provider?: string;
   providerAccountId?: string;
   emailVerified?: boolean;
   createdAt?: Date;
 }
 
+export interface GraphQLContext {
+  req: Request;
+  user?: IUser | null;
+}
 const PhoneSchema = new Schema<IPhone>(
   {
     dialCode: { type: String },
@@ -30,20 +39,31 @@ const PhoneSchema = new Schema<IPhone>(
 const UserSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
-    lastName: { type: String, required: false },
+    lastName: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String },
     phoneNumber: { type: PhoneSchema },
     deviceId: { type: String },
-    status: { type: String, default: 'email_verification_pending' },
-    provider: { type: String, default: 'local' },
+
+    status: {
+      type: String,
+      enum: ['email_verification_pending', 'verified'],
+      default: 'email_verification_pending'
+    },
+
+    otp: { type: String },
+    otpExpiry: { type: Date },
+
+    provider: { type: String, default: 'credentials' },
     providerAccountId: { type: String },
+
     emailVerified: { type: Boolean, default: false },
+    image: { type: String },
     createdAt: { type: Date, default: Date.now }
   },
   { timestamps: true }
 );
 
-const User: Model<IUser> = (mongoose.models.User as Model<IUser>) || mongoose.model<IUser>('User', UserSchema);
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

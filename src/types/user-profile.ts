@@ -115,7 +115,7 @@ export type UserData = {
   firstName: string;
   lastName: string;
   loginFlowType: string;
-  profileImage: string;
+  image: string;
   __typename: string;
   _id: string;
 };

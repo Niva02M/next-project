@@ -101,7 +101,6 @@ const JWTRegister = ({ ...others }) => {
                   expiryTime: new Date(data?.registerUser.expiry.expiresAt).getTime()
                 });
                 successSnack(REGISTRATION_SUCCESSFUL_OTP_SENT_TO_EMAIL);
-
                 router.push(pageRoutes.verifyRegistration);
               }
             } catch (err: any) {

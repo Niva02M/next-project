@@ -40,13 +40,13 @@ export default function ChangePassword() {
     <Formik
       enableReinitialize
       initialValues={{
-        password: '',
-        new_password: '',
+        currentPassword: '',
+        newPassword: '',
         confirmPassword: ''
       }}
       validationSchema={Yup.object().shape({
-        password: Yup.string().max(255).required().label(OLD_PASSWORD),
-        new_password: Yup.string()
+        currentPassword: Yup.string().max(255).required().label(OLD_PASSWORD),
+        newPassword: Yup.string()
           .min(8)
           .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, { PASSWORD_REG_MESSAGE })
           .required()
@@ -54,7 +54,7 @@ export default function ChangePassword() {
         confirmPassword: Yup.string()
           .required()
           .label(CONFIRM_NEW_PASSWORD)
-          .oneOf([Yup.ref('new_password')], BOTH_PASSWORD_MUST_MATCH)
+          .oneOf([Yup.ref('newPassword')], BOTH_PASSWORD_MUST_MATCH)
       })}
       onSubmit={handleSubmitForm}
     >
@@ -66,26 +66,26 @@ export default function ChangePassword() {
                 <FormControl fullWidth>
                   <InputLabel>{OLD_PASSWORD}</InputLabel>
                   <PasswordField
-                    name="password"
-                    value={values.password}
+                    name="currentPassword"
+                    value={values.currentPassword}
                     placeholder={OLD_PASSWORD}
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />
-                  {touched.password && errors.password && <FormHelperText error>{errors.password}</FormHelperText>}
+                  {touched.currentPassword && errors.currentPassword && <FormHelperText error>{errors.currentPassword}</FormHelperText>}
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
                   <InputLabel>{NEW_PASSWORD}</InputLabel>
                   <PasswordField
-                    name="new_password"
-                    value={values.new_password}
+                    name="newPassword"
+                    value={values.newPassword}
                     placeholder={NEW_PASSWORD}
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />
-                  {touched.new_password && errors.new_password && <FormHelperText error>{errors.new_password}</FormHelperText>}
+                  {touched.newPassword && errors.newPassword && <FormHelperText error>{errors.newPassword}</FormHelperText>}
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
@@ -94,7 +94,7 @@ export default function ChangePassword() {
                   <PasswordField
                     name="confirmPassword"
                     value={values.confirmPassword}
-                    placeholder="Repeat password"
+                    placeholder="Repeat currentPassword"
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />

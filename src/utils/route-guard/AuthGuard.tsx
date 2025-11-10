@@ -23,7 +23,12 @@ const AuthGuard = ({ children }: GuardProps) => {
     if (status === 'loading') return;
 
     if (status === 'unauthenticated') {
-      if (pathname !== pageRoutes.login && pathname !== pageRoutes.register) {
+      if (
+        pathname !== pageRoutes.login &&
+        pathname !== pageRoutes.register &&
+        pathname !== pageRoutes.verifyRegistration &&
+        pathname !== pageRoutes.verifyRegistrationPhone
+      ) {
         router.replace(pageRoutes.login);
       }
       setIsLoading(false);
@@ -40,17 +45,25 @@ const AuthGuard = ({ children }: GuardProps) => {
 
       setTokens(user.access_token, user.refresh_token);
 
-      if (
-        [
-          pageRoutes.login,
-          pageRoutes.register,
-          pageRoutes.forgotPassword,
-          pageRoutes.verifyRegistration,
-          pageRoutes.verifyRegistrationPhone
-        ].includes(pathname)
-      ) {
-        router.replace(pageRoutes.dashboard);
+      // ✅ Only redirect to dashboard if email is verified
+      if (user.status === 'verified' || user.emailVerified) {
+        if (
+          [
+            pageRoutes.login,
+            pageRoutes.register,
+            pageRoutes.forgotPassword,
+            pageRoutes.verifyRegistration,
+            pageRoutes.verifyRegistrationPhone
+          ].includes(pathname)
+        ) {
+          router.replace(pageRoutes.dashboard);
+        }
+      } else {
+        if (pathname !== pageRoutes.verifyRegistration) {
+          router.replace(pageRoutes.verifyRegistration);
+        }
       }
+      // console.log('User from session:', user);
 
       setIsLoading(false);
     }

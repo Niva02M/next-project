@@ -100,9 +100,9 @@ export const VERIFY_FORGOT_PASSWORD_OTP_MUTATION = gql`
   }
 `;
 
-export const VERIFY_EMAIL_MUTATION = gql`
-  mutation verifyEmail($body: VerifyEmailInput!) {
-    verifyEmail(body: $body) {
+export const VERIFY_OTP_MUTATION = gql`
+  mutation verifyOtp($body: VerifyOtpInput!) {
+    verifyOtp(body: $body) {
       message
       expiry {
         expiresAt
@@ -124,13 +124,13 @@ export const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 export const RESEND_VERIFY_EMAIL_OTP_MUTATION = gql`
-  mutation resendVerifyEmailOtp($body: EmailSignupOTPInput!) {
-    resendVerifyEmailOtp(body: $body) {
+  mutation ResendVerifyOtp($body: ResendVerifyOtpInput!) {
+    resendVerifyOtp(body: $body) {
+      message
       expiry {
         expiresAt
         expiresBy
       }
-      message
     }
   }
 `;

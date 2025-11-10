@@ -46,32 +46,41 @@ interface IConsultationFee {
   initialFee: number;
 }
 
+// interface IMeResponse {
+//   _id: string;
+//   authProvider: string;
+//   authProviderId: string;
+//   contacts: IContacts;
+//   address: IAddress;
+//   firstName: string;
+//   lastLoggedInAt: Date;
+//   lastName: string;
+//   image: string;
+//   profileImageUrl: string;
+//   status: string;
+//   therapistProfile?: {
+//     arcapNumber: string;
+//     certificates: string[];
+//     medicareCardNumber: string;
+//     medicareCardValidity: Date;
+//     practice: string;
+//     practiceId?: string;
+//     title: string;
+//     aboutYou?: IAboutYou;
+//     consultationFee?: IConsultationFee;
+//     identityDetail?: IIdentityDetail;
+//   };
+//   bio: string;
+//   timeZone: string | null;
+// }
 interface IMeResponse {
   _id: string;
-  authProvider: string;
-  authProviderId: string;
-  contacts: IContacts;
-  address: IAddress;
+  email: string;
   firstName: string;
-  lastLoggedInAt: Date;
   lastName: string;
-  profileImage: string;
-  profileImageUrl: string;
+  provider: string;
   status: string;
-  therapistProfile?: {
-    arcapNumber: string;
-    certificates: string[];
-    medicareCardNumber: string;
-    medicareCardValidity: Date;
-    practice: string;
-    practiceId?: string;
-    title: string;
-    aboutYou?: IAboutYou;
-    consultationFee?: IConsultationFee;
-    identityDetail?: IIdentityDetail;
-  };
-  bio: string;
-  timeZone: string | null;
+  profileImageUrl?: string;
 }
 
 interface IPractices {

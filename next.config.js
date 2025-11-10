@@ -16,7 +16,7 @@ module.exports = {
     }
   },
   images: {
-    domains: ['flagcdn.com']
+    domains: ['lh3.googleusercontent.com', 'flagcdn.com']
   },
   env: {
     REACT_APP_VERSION: process.env.REACT_APP_VERSION,

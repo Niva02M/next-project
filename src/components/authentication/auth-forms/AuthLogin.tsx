@@ -16,7 +16,7 @@ import { Formik } from 'formik';
 
 // assets
 import { generateDeviceId } from 'utils/deviceid.helper';
-import { getSession, signIn, signOut, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { TextField, useTheme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { UserAccountStatus } from 'constants/user';

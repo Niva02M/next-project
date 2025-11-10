@@ -1,16 +1,16 @@
 import { gql } from '@apollo/client';
 
 export const UPDATE_PROFILE_MUTATION = gql`
-  mutation UpdateProfile($body: UpdateUserProfile!) {
+  mutation UpdateProfile($body: UpdateProfileInput!) {
     updateProfile(body: $body) {
       message
       user {
         _id
-        authProvider
-        authProviderId
+        email
         firstName
         lastName
-        profileImage
+        provider
+        status
       }
     }
   }

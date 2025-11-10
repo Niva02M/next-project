@@ -15,7 +15,7 @@ import useLocalStorageCodeVerify from 'hooks/useLocalStorageCodeVerify';
 import { IRegisterValues } from 'types/localStorageValues';
 import { calculateRemainingTime } from 'utils/helper';
 import OtpVerificationScreen from './otp-verification';
-import { RESEND_VERIFY_EMAIL_OTP_MUTATION, VERIFY_EMAIL_MUTATION } from 'graphql/auth';
+import { RESEND_VERIFY_EMAIL_OTP_MUTATION, VERIFY_OTP_MUTATION } from 'graphql/auth';
 import { generateDeviceId } from 'utils/deviceid.helper';
 
 // ===========================|| AUTH3 - CODE VERIFICATION ||=========================== //
@@ -32,31 +32,31 @@ const VerifyRegistration = () => {
   const router = useRouter();
 
   const [resendEmailOTP, { loading: isResendingEmailOtp }] = useMutation(RESEND_VERIFY_EMAIL_OTP_MUTATION);
-  const [verifyEmail, { loading: isVerifyingEmail }] = useMutation(VERIFY_EMAIL_MUTATION);
+  const [verifyOtp, { loading: isVerifyingEmail }] = useMutation(VERIFY_OTP_MUTATION);
 
   const handleContinue = async (otp: string) => {
     try {
-      const { data } = await verifyEmail({
+      const { data } = await verifyOtp({
         variables: {
           body: {
             email: loginDetail?.email || '',
-            verificationCode: otp
+            otp
           }
         }
       });
 
-      if (data?.verifyEmail) {
-        successSnack(data?.verifyEmail?.message || 'Email verified successfully');
-        if (data.verifyEmail?.token) {
+      if (data?.verifyOtp) {
+        successSnack(data?.verifyOtp?.message || 'Email verified successfully');
+        if (data.verifyOtp?.token) {
           const userData = {
-            _id: data.verifyEmail?.user?._id ?? '',
-            email: data.verifyEmail?.user?.email ?? '',
-            status: data.verifyEmail?.user?.status ?? 'email_verified'
+            _id: data.verifyOtp?.user?._id ?? '',
+            email: data.verifyOtp?.user?.email ?? '',
+            status: data.verifyOtp?.user?.status ?? 'email_verified'
           };
           await tryLogin({
-            ...data.verifyEmail.token,
+            ...data.verifyOtp.token,
             user: userData,
-            _id: data.verifyEmail.user._id
+            _id: data.verifyOtp.user._id
           });
         }
       }
@@ -67,11 +67,14 @@ const VerifyRegistration = () => {
 
   const tryLogin = async (tokenDetail: IToken & { user: ILoginUserResponse; _id: string }) => {
     try {
+      console.log('Token detail:', tokenDetail);
       const signInResponse = await signIn('credentials', {
         ...tokenDetail,
         user: JSON.stringify(tokenDetail.user),
         redirect: false
       });
+      console.log('Sign in response:', signInResponse);
+
       if (signInResponse?.ok) {
         removeItem('register');
         localStorage.setItem('accessToken', tokenDetail.accessToken);
@@ -94,13 +97,13 @@ const VerifyRegistration = () => {
         }
       });
 
-      if (data.resendVerifyEmailOtp) {
+      if (data.resendverifyOtpOtp) {
         setOtpTimer(!otpTimer);
         setLocalStorage('register', {
           ...loginDetail,
-          expiryTime: new Date(data.resendVerifyEmailOtp.expiry?.expiresAt || 0).getTime()
+          expiryTime: new Date(data.resendverifyOtpOtp.expiry?.expiresAt || 0).getTime()
         });
-        successSnack(data?.resendVerifyEmailOtp?.message || 'Code sent successfully. Please check your email');
+        successSnack(data?.resendverifyOtpOtp?.message || 'Code sent successfully. Please check your email');
       } else {
         errorSnack('Resending code failed. Please try again');
       }
