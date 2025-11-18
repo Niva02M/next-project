@@ -12,6 +12,8 @@ declare module 'next-auth' {
       provider?: string;
       status?: string;
       emailVerified?: boolean;
+      // agoraUserId?: string;
+      // agoraToken: string;
     } & DefaultSession['user'];
   }
 

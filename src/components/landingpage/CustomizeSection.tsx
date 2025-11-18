@@ -96,7 +96,7 @@ const CustomizeSection = () => {
                       width: { xs: '100%', md: 'calc(100% - 20%)' }
                     }}
                   >
-                    Streamlining the development process and saving you time and effort in the initial design phase.
+                    Streamlining the development process and sniv231g you time and effort in the initial design phase.
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>

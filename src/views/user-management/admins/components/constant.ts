@@ -72,8 +72,8 @@ export const accountTypeSelect = [
     label: 'Futsu'
   },
   {
-    value: 'SAVING',
-    label: 'Saving'
+    value: 'Sniv231G',
+    label: 'Sniv231g'
   },
   {
     value: 'TOZA',

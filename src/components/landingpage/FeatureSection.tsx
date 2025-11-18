@@ -88,7 +88,7 @@ const FeatureSection = () => (
           </Grid>
           <Grid item md={4} sm={6}>
             <OfferCard
-              title="Time and Cost Savings"
+              title="Time and Cost Sniv231gs"
               caption="Ebtheme can save developers time and effort by providing a pre-built user interface, allowing them to focus on other aspects of the project."
               image={Offer2}
             />

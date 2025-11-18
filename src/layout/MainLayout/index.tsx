@@ -63,7 +63,7 @@ const MainLayout: FC<Props> = ({ children }) => {
       </AppBar>
 
       {/* menu / drawer */}
-      {menu}
+      {/* {menu} */}
 
       {/* main content */}
       <MainContentStyled {...{ borderRadius, menuOrientation, open: drawerOpen!, theme }}>

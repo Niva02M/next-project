@@ -146,11 +146,39 @@ export const authOptions: NextAuthOptions = {
           user.emailVerified = true;
           user.id = existingUser.id.toString();
         }
+        try {
+          await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
+            userId: user.id,
+            nickname: user.name,
+            avatarurl: user.image || ''
+          });
+        } catch (err) {
+          const e = err as any;
+          console.error('Agora create-user failed for OAuth:', e?.response?.data || e?.message);
+        }
+
+        try {
+          await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
+            userId: user.id,
+            nickname: user.name,
+            avatarurl: user.image || ''
+          });
+        } catch (err) {
+          const e = err as any;
+          console.error('Agora update-profile failed for OAuth:', e?.response?.data || e?.message);
+        }
       }
 
       return true;
     },
     async jwt({ token, user, account, trigger, session }) {
+      if (token.id) {
+        const existing = await User.findById(token.id);
+        if (!existing) {
+          token.invalidated = true;
+          return token;
+        }
+      }
       if (user) {
         await connectToDatabase();
         const dbUser = await User.findOne({ email: user.email });

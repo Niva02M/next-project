@@ -41,7 +41,7 @@ const Header = () => {
         <Box component="span" sx={{ svg: { height: 45 } }}>
           <LogoSection />
         </Box>
-        <Box ml={3}>
+        {/* <Box ml={3}>
           {!isHorizontal && (
             <Avatar
               variant="rounded"
@@ -72,7 +72,7 @@ const Header = () => {
               <IconMenu2 stroke={1.5} size="20px" />
             </Avatar>
           )}
-        </Box>
+        </Box> */}
       </Stack>
 
       {downMD && (
@@ -82,7 +82,7 @@ const Header = () => {
         </>
       )}
       {/* header search */}
-      <SearchSection />
+      {/* <SearchSection /> */}
       {!downMD && (
         <>
           <Box sx={{ flexGrow: 1 }} />
@@ -94,10 +94,10 @@ const Header = () => {
       {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <MegaMenuSection />
       </Box> */}
-      <MessageSection />
+      {/* <MessageSection /> */}
 
       {/* notification */}
-      <NotificationSection />
+      {/* <NotificationSection /> */}
 
       {/* profile */}
       <ProfileSection />

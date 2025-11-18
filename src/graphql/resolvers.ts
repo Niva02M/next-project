@@ -1,10 +1,24 @@
 import { authOptions } from 'app/api/auth/[...nextauth]/route';
+import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import { sendOtpEmail } from 'components/sendOTPEmail/sendOTPEmail';
 import { GraphQLError } from 'graphql';
 import { connectToDatabase } from 'lib/mongodb';
 import User, { GraphQLContext } from 'models/User';
 import { getServerSession, Session } from 'next-auth';
+
+async function syncAgoraProfile(userId: string, nickname?: string, avatarurl?: string) {
+  try {
+    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
+      userId,
+      nickname,
+      avatarurl
+    });
+    console.log(`Agora profile synced for user ${userId}`);
+  } catch (err: any) {
+    console.error(' Agora sync failed:', err.response?.data || err.message);
+  }
+}
 
 export const resolvers = {
   Query: {
@@ -73,13 +87,25 @@ export const resolvers = {
       if (!user.otp || !user.otpExpiry) throw new Error('No OTP found or expired');
       if (user.otpExpiry < new Date()) throw new Error('OTP expired');
 
-      // Compare OTP (not hashed!)
       if (user.otp !== otp) throw new Error('Invalid OTP');
 
       user.status = 'verified';
       user.otp = undefined;
       user.otpExpiry = undefined;
       await user.save();
+
+      try {
+        await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
+          userId: user.id,
+          nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          avatarurl: user.image || ''
+        });
+        console.log(`Agora Chat user created for ${user.id}`);
+      } catch (err: any) {
+        console.error('Agora create-user failed:', err.response?.data || err.message);
+      }
+
+      await syncAgoraProfile(user.id.toString(), `${user.firstName || ''} ${user.lastName || ''}`.trim(), user.image || '');
 
       const expiryTime = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -212,6 +238,11 @@ export const resolvers = {
       if (!updatedUser) {
         throw new GraphQLError('User not found');
       }
+      await syncAgoraProfile(
+        updatedUser.id.toString(),
+        `${updatedUser.firstName || ''} ${updatedUser.lastName || ''}`.trim(),
+        updatedUser.image || ''
+      );
 
       return {
         message: 'Profile updated successfully',
