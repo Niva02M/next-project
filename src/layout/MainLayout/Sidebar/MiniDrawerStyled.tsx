@@ -29,7 +29,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   width: 61,
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen + 200
+    duration: theme.transitions.duration.leniv231gScreen + 200
   })
 });
 

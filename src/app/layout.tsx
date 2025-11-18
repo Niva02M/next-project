@@ -10,7 +10,7 @@ if (process.env.NEXT_ENV === 'production') {
 }
 
 export const metadata: Metadata = {
-  title: 'Ebtheme web',
+  title: 'Ebtheme web - Agora Messaging App',
   description:
     'Start your next project with Ebtheme template. It build with Reactjs, Material-UI, Redux, and Hook for faster web development.'
 };

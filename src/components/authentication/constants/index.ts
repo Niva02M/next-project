@@ -46,3 +46,5 @@ export const PASSWORD_REG_MESSAGE =
 export const CONFIRM_NEW_PASSWORD = 'Confirm new password';
 export const BOTH_PASSWORD_MUST_MATCH = 'Both Password must be match!';
 export const CHANGE_PASSWORD = 'Change password';
+export const DELETE_CHAT = 'Chat Deleted Successfully';
+export const DELETE_CHAT_FAILED = 'Chat Deletion Failed';

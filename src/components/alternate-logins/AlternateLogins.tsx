@@ -64,7 +64,7 @@ export default function AlternateLogins({ onLayoutChange, register }: { onLayout
             {register ? REGISTER_WITH_GOOGLE : LOGIN_WITH_GOOGLE}
           </Button>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           {register ? (
             <Button
               color="primary"
@@ -92,7 +92,7 @@ export default function AlternateLogins({ onLayoutChange, register }: { onLayout
               {!phoneLogin ? LOGIN_WITH_PHONE : LOGIN_WITH_EMAIL}
             </Button>
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );
