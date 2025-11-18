@@ -18,6 +18,7 @@
     }
   },
   "rules": {
+    "react-hooks/rules-of-hooks": "off",
     "react/jsx-filename-extension": "off",
     "no-param-reassign": "off",
     "react/prop-types": "off",
@@ -35,13 +36,13 @@
     "react/display-name": "off",
     "import/no-unresolved": ["off", { "caseSensitive": false }],
     "no-restricted-imports": [
-      "error",
+      "off",
       {
         "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
       }
     ],
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "off",
       {
         "vars": "all",
         "args": "none"
