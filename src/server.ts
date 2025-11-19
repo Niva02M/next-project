@@ -74,32 +74,57 @@ const handleOAuthSignIn = async (user: any, account: any) => {
     user.id = existingUser.id.toString();
   }
 
-  // Agora API calls
+  const region = 'a16';
+  const orgName = process.env.AGORA_ORG_NAME;
+  const appName = process.env.AGORA_APP_NAME;
+  const auth = Buffer.from(
+    `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
+  ).toString('base64');
+
+  // Create user in Agora
   try {
-    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
-      userId: user.id,
-      nickname: user.name,
-      avatarurl: user.image || '',
-    });
-  } catch (err) {
-    const e = err as any;
+    await axios.post(
+      `https://${region}.chat.agora.io/${orgName}/${appName}/users`,
+      {
+        username: user.id,
+        nickname: user.name,
+        avatarurl: user.image || '',
+      },
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log(`Agora Chat user created for OAuth user ${user.id}`);
+  } catch (err: any) {
     console.error(
       'Agora create-user failed for OAuth:',
-      e?.response?.data || e?.message,
+      err.response?.data || err.message,
     );
   }
 
+  // Update profile in Agora (optional)
   try {
-    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
-      userId: user.id,
-      nickname: user.name,
-      avatarurl: user.image || '',
-    });
-  } catch (err) {
-    const e = err as any;
+    await axios.post(
+      `https://${region}.chat.agora.io/${orgName}/${appName}/users/${user.id}/profile`,
+      {
+        nickname: user.name,
+        avatarurl: user.image || '',
+      },
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log(`Agora profile updated for OAuth user ${user.id}`);
+  } catch (err: any) {
     console.error(
       'Agora update-profile failed for OAuth:',
-      e?.response?.data || e?.message,
+      err.response?.data || err.message,
     );
   }
 

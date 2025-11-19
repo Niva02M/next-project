@@ -45,7 +45,6 @@ export const resolvers = {
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-      const expiryTime = new Date(Date.now() + 10 * 60 * 1000);
 
       const newUser = await User.create({
         firstName,
@@ -63,11 +62,11 @@ export const resolvers = {
 
       return {
         user: newUser,
-        expiry: {
-          expiresAt: expiryTime.toISOString(),
-          expiresBy: expiryTime.getTime(),
-        },
         message: 'Registration successful, OTP sent to email',
+        expiry: {
+          expiresAt: otpExpiry.toISOString(),
+          expiresBy: otpExpiry.getTime(),
+        },
       };
     },
     async verifyOtp(_: any, { body }: any) {
@@ -77,23 +76,9 @@ export const resolvers = {
       const user = await User.findOne({ email });
       if (!user) throw new Error('User not found');
 
-      if (user.status === 'verified') {
-        return {
-          message: 'Already verified',
-          token: {
-            accessToken: 'mock-access-token',
-            refreshToken: 'mock-refresh-token',
-            accessTokenExpiresIn: 3600,
-            refreshTokenExpiresIn: 86400,
-          },
-          user,
-        };
-      }
-
       if (!user.otp || !user.otpExpiry)
         throw new Error('No OTP found or expired');
       if (user.otpExpiry < new Date()) throw new Error('OTP expired');
-
       if (user.otp !== otp) throw new Error('Invalid OTP');
 
       user.status = 'verified';
@@ -101,12 +86,29 @@ export const resolvers = {
       user.otpExpiry = undefined;
       await user.save();
 
+      // Agora integration - direct server-side call
+      const region = 'a16';
+      const orgName = process.env.AGORA_ORG_NAME;
+      const appName = process.env.AGORA_APP_NAME;
+      const auth = Buffer.from(
+        `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
+      ).toString('base64');
+
       try {
-        await axios.post(`/api/agora/create-user`, {
-          userId: user.id,
-          nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-          avatarurl: user.image || '',
-        });
+        await axios.post(
+          `https://${region}.chat.agora.io/${orgName}/${appName}/users`,
+          {
+            username: user.id,
+            nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            avatarurl: user.image || '',
+          },
+          {
+            headers: {
+              Authorization: `Basic ${auth}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
         console.log(`Agora Chat user created for ${user.id}`);
       } catch (err: any) {
         console.error(
@@ -114,12 +116,6 @@ export const resolvers = {
           err.response?.data || err.message,
         );
       }
-
-      await syncAgoraProfile(
-        user.id.toString(),
-        `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-        user.image || '',
-      );
 
       const expiryTime = new Date(Date.now() + 60 * 60 * 1000);
 
