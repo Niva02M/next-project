@@ -14,7 +14,7 @@ async function syncAgoraProfile(
   avatarurl?: string,
 ) {
   try {
-    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
+    await axios.post(`/api/agora/update-profile`, {
       userId,
       nickname,
       avatarurl,
@@ -102,7 +102,7 @@ export const resolvers = {
       await user.save();
 
       try {
-        await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
+        await axios.post(`/api/agora/create-user`, {
           userId: user.id,
           nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           avatarurl: user.image || '',
