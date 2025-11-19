@@ -2,14 +2,8 @@ import { ChatTokenBuilder } from 'agora-token';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
-
 export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+  return new Response(null, { status: 204 });
 }
 
 export async function POST(request: NextRequest) {
@@ -20,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (!userId)
       return NextResponse.json(
         { error: 'userId is required' },
-        { status: 400, headers: corsHeaders },
+        { status: 400 },
       );
 
     const appId = process.env.AGORA_APP_ID!;
@@ -28,7 +22,7 @@ export async function POST(request: NextRequest) {
     if (!appId || !appCertificate)
       return NextResponse.json(
         { error: 'Agora credentials not configured' },
-        { status: 500, headers: corsHeaders },
+        { status: 500 },
       );
 
     const expireTimeInSeconds = 3600;
@@ -41,15 +35,12 @@ export async function POST(request: NextRequest) {
 
     console.log('Token generated for user:', userId);
 
-    return NextResponse.json(
-      { token, userId, expiresIn: expireTimeInSeconds },
-      { headers: corsHeaders },
-    );
+    return NextResponse.json({ token, userId, expiresIn: expireTimeInSeconds });
   } catch (error: any) {
     console.error('Token generation error:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to generate token' },
-      { status: 500, headers: corsHeaders },
+      { status: 500 },
     );
   }
 }

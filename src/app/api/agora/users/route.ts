@@ -1,14 +1,9 @@
 import { ChatTokenBuilder } from 'agora-token';
 
 const REGION = 'a61';
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-};
 
 export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+  return new Response(null, { status: 204 });
 }
 
 export async function GET() {
@@ -19,7 +14,7 @@ export async function GET() {
   if (!appId || !appCert || !appKey) {
     return new Response(
       JSON.stringify({ error: 'Missing Agora environment variables' }),
-      { status: 500, headers: corsHeaders },
+      { status: 500 },
     );
   }
 
@@ -40,12 +35,11 @@ export async function GET() {
     const data = await res.json();
     return new Response(JSON.stringify(data), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (err: any) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
-      headers: corsHeaders,
     });
   }
 }

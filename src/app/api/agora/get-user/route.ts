@@ -1,16 +1,9 @@
 import { ChatTokenBuilder } from 'agora-token';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-};
-
 const REGION = 'a61';
 
 export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+  return new Response(null, { status: 204 });
 }
 
 export async function GET(request: Request) {
@@ -20,7 +13,7 @@ export async function GET(request: Request) {
   if (!userId) {
     return new Response(JSON.stringify({ error: 'userId is required' }), {
       status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -33,7 +26,7 @@ export async function GET(request: Request) {
       JSON.stringify({ error: 'Missing Agora environment variables' }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       },
     );
   }
@@ -55,7 +48,7 @@ export async function GET(request: Request) {
 
     return new Response(JSON.stringify(data, null, 2), {
       status: res.status,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (err: any) {
     return new Response(
@@ -65,7 +58,7 @@ export async function GET(request: Request) {
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       },
     );
   }

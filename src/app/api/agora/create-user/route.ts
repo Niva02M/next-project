@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
 
 export async function OPTIONS() {
-  return new Response(null, { status: 204, headers: corsHeaders });
+  return new Response(null, { status: 204 });
 }
 
 export async function POST(req: Request) {
@@ -16,7 +11,7 @@ export async function POST(req: Request) {
     if (!userId)
       return NextResponse.json(
         { error: 'userId is required' },
-        { status: 400, headers: corsHeaders },
+        { status: 400 },
       );
 
     const appKey = process.env.NEXT_PUBLIC_AGORA_APP_KEY_1!;
@@ -40,13 +35,10 @@ export async function POST(req: Request) {
       },
     );
 
-    return NextResponse.json(response.data, { headers: corsHeaders });
+    return NextResponse.json(response.data);
   } catch (error: any) {
     const msg = error.response?.data || error.message;
     console.error('Agora create-user failed:', msg);
-    return NextResponse.json(
-      { error: msg },
-      { status: 500, headers: corsHeaders },
-    );
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
