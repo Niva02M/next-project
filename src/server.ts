@@ -1,13 +1,16 @@
+import axios from 'axios';
+import { connectToDatabase } from 'lib/mongodb';
+import User from 'models/User';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
 
-import { LOGIN_MUTATION, FACEBOOK_SIGNIN_MUTATION, GOOGLE_SIGNIN_MUTATION, PHONE_LOGIN_WITH_OTP_MUTATION } from 'graphql/auth';
-import { ISignInResponse, ISignInResponseFormat } from 'types/api-response/auth';
-import client from '../apollo.config';
-
-type UserStatus = 'email_verification_pending' | 'email_verified' | 'password_set' | 'password_set_pending';
+type UserStatus =
+  | 'email_verification_pending'
+  | 'email_verified'
+  | 'password_set'
+  | 'password_set_pending';
 interface IUserPops {
   _id: string;
   email: string;
@@ -34,144 +37,75 @@ export interface IPhoneLoginVerifyCredential extends IPhoneLoginCredential {
   verificationCode: string;
   expiryTime?: number;
 }
+const handleProvider = async (account: any, user: any) => {
+  await connectToDatabase();
 
-const handleProvider = async (account: any) => {
-  switch (account?.provider) {
-    case 'google':
-      try {
-        const responseGoogle = await client.mutate({
-          mutation: GOOGLE_SIGNIN_MUTATION,
-          variables: {
-            idToken: account.id_token,
-            deviceId: '123456'
-          }
-        });
-        if (responseGoogle?.errors) {
-          throw new Error(responseGoogle?.errors[0].message);
-        }
-        if (responseGoogle?.data) {
-          const returnData = responseGoogle?.data?.loginWithGoogle;
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
-      } catch (error) {
-        console.error('Google sign-in error:', error);
-        return false;
-      }
-    case 'facebook':
-      try {
-        const responseFacebook = await client.mutate({
-          mutation: FACEBOOK_SIGNIN_MUTATION,
-          variables: {
-            accessToken: account.access_token,
-            deviceId: '123456'
-          }
-        });
-        if (responseFacebook?.errors) {
-          throw new Error(responseFacebook?.errors[0].message);
-        }
-        if (responseFacebook?.data) {
-          const returnData = responseFacebook?.data?.loginWithFacebook;
+  const existingUser = await User.findOne({ email: user.email });
+  if (!existingUser) {
+    const [firstName, ...lastNameParts] = (user.name || '').split(' ');
+    const newUser = await User.create({
+      firstName,
+      lastName: lastNameParts.join(' '),
+      email: user.email,
+      provider: account.provider,
+      providerAccountId: account.providerAccountId,
+      status: 'verified',
+      emailVerified: true,
+      image: user.image,
+    });
 
-          return {
-            id: returnData?.user?._id || '',
-            user: returnData?.user,
-            access_token: returnData?.token?.accessToken,
-            refresh_token: returnData?.token?.refreshToken,
-            expires_at: returnData?.token?.accessTokenExpiresIn
-          };
-        }
-      } catch (error) {
-        console.error('Facebook sign-in error:', error);
-        return false;
-      }
-    default:
-      return false;
+    user.id = newUser.id.toString();
+    user.status = 'verified';
+    user.emailVerified = true;
+  } else {
+    existingUser.provider = account.provider;
+    existingUser.providerAccountId = account.providerAccountId;
+    existingUser.status = 'verified';
+    existingUser.emailVerified = true;
+    await existingUser.save();
+
+    user.id = existingUser.id.toString();
+    user.status = 'verified';
+    user.emailVerified = true;
   }
+
+  try {
+    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
+      userId: user.id,
+      nickname: user.name,
+      avatarurl: user.image || '',
+    });
+  } catch (err: any) {
+    console.error(
+      'Agora create-user failed for OAuth:',
+      err.response?.data || err.message,
+    );
+  }
+
+  try {
+    await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
+      userId: user.id,
+      nickname: user.name,
+      avatarurl: user.image || '',
+    });
+  } catch (err: any) {
+    console.error(
+      'Agora update-profile failed for OAuth:',
+      err.response?.data || err.message,
+    );
+  }
+
+  return user;
 };
 
 export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: 'jwt'
-  },
+  session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug
+  debug: true,
   providers: [
-    CredentialsProvider({
-      type: 'credentials',
-      credentials: {},
-      async authorize(credentials) {
-        if (!credentials) return null;
-
-        const { email, password, deviceId, accessToken, refreshToken, _id, accessTokenExpiresIn, user } = credentials as ILoginCredential;
-        try {
-          if (accessToken && refreshToken && _id) {
-            let formatedUser = user;
-            if (typeof user === 'string') {
-              formatedUser = JSON.parse(user);
-            }
-            return {
-              id: _id,
-              user: formatedUser,
-              access_token: accessToken,
-              refresh_token: refreshToken,
-              expires_at: accessTokenExpiresIn,
-              emailVerified: true
-            };
-          }
-
-          const res = await client.mutate<{ loginWithEmailPassword: ISignInResponse }>({
-            mutation: LOGIN_MUTATION,
-            variables: {
-              body: {
-                email,
-                password,
-                deviceId
-              }
-            }
-          });
-
-          if (res?.errors) {
-            throw new Error(res?.errors[0].message);
-          }
-
-          if (res?.data?.loginWithEmailPassword?.token) {
-            const data = res.data.loginWithEmailPassword;
-
-            return {
-              id: data.user?._id || '',
-              user: data.user,
-              access_token: data.token.accessToken,
-              refresh_token: data.token.refreshToken,
-              expires_at: data.token.accessTokenExpiresIn,
-              emailVerified: data.user.status !== 'email_verification_pending'
-            };
-          }
-
-          if (res?.data?.loginWithEmailPassword?.user?.status === 'email_verification_pending') {
-            const data = res.data.loginWithEmailPassword;
-            return {
-              id: data?.user?._id || '',
-              user: data?.user,
-              expiry: data?.expiry,
-              emailVerified: false
-            };
-          }
-
-          return null;
-        } catch (error: any) {
-          throw new Error(error);
-        }
-      }
-    }),
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -180,89 +114,142 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: 'consent',
           access_type: 'offline',
-          response_type: 'code'
-        }
-      }
+          response_type: 'code',
+        },
+      },
     }),
     CredentialsProvider({
-      id: 'phone-login',
-      type: 'credentials',
-      name: 'phone',
-      credentials: {},
-      async authorize(credentials, req) {
+      id: 'credentials',
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+        accessToken: { label: 'Access Token', type: 'text' },
+        refreshToken: { label: 'Refresh Token', type: 'text' },
+        user: { label: 'User', type: 'text' },
+      },
+      async authorize(credentials) {
         if (!credentials) return null;
 
-        const { phoneNumber, dialCode, deviceId, verificationCode } = credentials as IPhoneLoginVerifyCredential;
-        try {
-          const res = await client.mutate<{ phoneLoginWithOTP: ISignInResponse }>({
-            mutation: PHONE_LOGIN_WITH_OTP_MUTATION,
+        if (credentials.accessToken && credentials.user) {
+          const user = JSON.parse(credentials.user);
+          return {
+            id: user._id,
+            email: user.email,
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            status: user.status,
+            access_token: credentials.accessToken,
+            refresh_token: credentials.refreshToken,
+            provider: 'credentials',
+            emailVerified: true,
+          };
+        }
+
+        if (!credentials.email || !credentials.password) {
+          throw new Error('Missing credentials');
+        }
+
+        const resp = await axios.post(
+          `${process.env.NEXTAUTH_URL || ''}/api/graphql`,
+          {
+            query: `
+              mutation loginUser($body: LoginInput!) {
+                loginUser(body: $body) {
+                  message
+                  user {
+                    _id
+                    firstName
+                    lastName
+                    email
+                    provider
+                    status
+                  }
+                }
+              }
+            `,
             variables: {
               body: {
-                verificationCode,
-                number: phoneNumber,
-                dialCode,
-                deviceId
-              }
-            }
-          });
+                email: credentials.email,
+                password: credentials.password,
+              },
+            },
+          },
+          { headers: { 'Content-Type': 'application/json' } },
+        );
 
-          if (res?.errors) {
-            throw new Error(res?.errors[0].message);
-          }
+        const result = resp.data;
+        if (result.errors)
+          throw new Error(result.errors[0]?.message || 'Login failed');
 
-          if (res?.data?.phoneLoginWithOTP?.message) {
-            const data = res.data.phoneLoginWithOTP;
-            return {
-              id: data.user?._id || '',
-              user: data.user,
-              access_token: data.token.accessToken,
-              refresh_token: data.token.refreshToken,
-              expires_at: data.token.accessTokenExpiresIn
-            };
-          }
+        const payload = result.data?.loginUser;
+        if (!payload?.user)
+          throw new Error(payload?.message || 'Invalid credentials');
+        if (payload.user.status !== 'verified')
+          throw new Error('Please verify your email before logging in.');
 
-          return null;
-        } catch (error: any) {
-          throw new Error(error);
-        }
-      }
-    })
+        return {
+          id: payload.user._id,
+          firstName: payload.user.firstName || '',
+          lastName: payload.user.lastName || '',
+          name: `${payload.user.firstName || ''} ${payload.user.lastName || ''}`.trim(),
+          email: payload.user.email,
+          provider: payload.user.provider || 'credentials',
+          status: payload.user.status,
+          emailVerified: true,
+        };
+      },
+    }),
   ],
 
   callbacks: {
-    async signIn({ user, account, profile }: any) {
-      const providerData = await handleProvider(account);
-      if (providerData) {
-        user.id = providerData.id;
-        user.user = providerData.user;
-        user.access_token = providerData.access_token;
-        user.refresh_token = providerData.refresh_token;
-        user.expires_at = providerData.expires_at;
-
-        return true;
+    async signIn({ user, account }) {
+      if (account?.provider === 'google' || account?.provider === 'facebook') {
+        await handleProvider(account, user);
       }
       return true;
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, account, trigger, session }) {
+      if (trigger === 'update' && session) {
+        return { ...token, ...session.user };
+      }
+
       if (user) {
-        const userDetail = user as ISignInResponseFormat;
-        return {
-          access_token: userDetail?.access_token,
-          refresh_token: userDetail?.refresh_token,
-          expires_at: userDetail?.expires_at,
-          expiry: userDetail?.expiry,
-          user: userDetail?.user
-        };
+        token.id = user.id;
+        token.email = user.email;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.name = user.name;
+        token.image = user.image;
+        token.provider = user.provider;
+        token.status = user.status;
+        token.emailVerified = Boolean(user.emailVerified);
       }
       return token;
     },
-
-    async session({ session, token }: any) {
-      session.user = token;
+    async session({ session, token }) {
+      session.user = {
+        id: token.id as string,
+        email: token.email as string,
+        firstName: token.firstName as string,
+        lastName: token.lastName as string,
+        name: token.name as string,
+        image: token.image as string,
+        provider: token.provider as string,
+        status: token.status as string,
+        emailVerified: token.emailVerified as boolean,
+      };
       return session;
-    }
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.includes('google') || url.includes('facebook'))
+        return `${baseUrl}/dashboard`;
+      return url.startsWith(baseUrl) ? url : `${baseUrl}${url}`;
+    },
   },
+
   pages: {
-    signIn: '/login'
-  }
+    signIn: '/login',
+  },
 };

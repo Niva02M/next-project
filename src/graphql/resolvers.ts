@@ -6,13 +6,18 @@ import { GraphQLError } from 'graphql';
 import { connectToDatabase } from 'lib/mongodb';
 import User, { GraphQLContext } from 'models/User';
 import { getServerSession, Session } from 'next-auth';
+// import { authOptions } from 'server';
 
-async function syncAgoraProfile(userId: string, nickname?: string, avatarurl?: string) {
+async function syncAgoraProfile(
+  userId: string,
+  nickname?: string,
+  avatarurl?: string,
+) {
   try {
     await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
       userId,
       nickname,
-      avatarurl
+      avatarurl,
     });
     console.log(`Agora profile synced for user ${userId}`);
   } catch (err: any) {
@@ -25,11 +30,12 @@ export const resolvers = {
     me: async (_: unknown, __: unknown, context: GraphQLContext) => {
       if (!context.user) return null;
       return context.user;
-    }
+    },
   },
   Mutation: {
     async registerUser(_: any, { body }: any) {
-      const { firstName, lastName, email, password, phoneNumber, deviceId } = body;
+      const { firstName, lastName, email, password, phoneNumber, deviceId } =
+        body;
 
       await connectToDatabase();
 
@@ -50,7 +56,7 @@ export const resolvers = {
         deviceId,
         status: 'email_verification_pending',
         otp,
-        otpExpiry
+        otpExpiry,
       });
 
       await sendOtpEmail(email, otp);
@@ -59,9 +65,9 @@ export const resolvers = {
         user: newUser,
         expiry: {
           expiresAt: expiryTime.toISOString(),
-          expiresBy: expiryTime.getTime()
+          expiresBy: expiryTime.getTime(),
         },
-        message: 'Registration successful, OTP sent to email'
+        message: 'Registration successful, OTP sent to email',
       };
     },
     async verifyOtp(_: any, { body }: any) {
@@ -78,13 +84,14 @@ export const resolvers = {
             accessToken: 'mock-access-token',
             refreshToken: 'mock-refresh-token',
             accessTokenExpiresIn: 3600,
-            refreshTokenExpiresIn: 86400
+            refreshTokenExpiresIn: 86400,
           },
-          user
+          user,
         };
       }
 
-      if (!user.otp || !user.otpExpiry) throw new Error('No OTP found or expired');
+      if (!user.otp || !user.otpExpiry)
+        throw new Error('No OTP found or expired');
       if (user.otpExpiry < new Date()) throw new Error('OTP expired');
 
       if (user.otp !== otp) throw new Error('Invalid OTP');
@@ -98,14 +105,21 @@ export const resolvers = {
         await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
           userId: user.id,
           nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-          avatarurl: user.image || ''
+          avatarurl: user.image || '',
         });
         console.log(`Agora Chat user created for ${user.id}`);
       } catch (err: any) {
-        console.error('Agora create-user failed:', err.response?.data || err.message);
+        console.error(
+          'Agora create-user failed:',
+          err.response?.data || err.message,
+        );
       }
 
-      await syncAgoraProfile(user.id.toString(), `${user.firstName || ''} ${user.lastName || ''}`.trim(), user.image || '');
+      await syncAgoraProfile(
+        user.id.toString(),
+        `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        user.image || '',
+      );
 
       const expiryTime = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -113,17 +127,17 @@ export const resolvers = {
         accessToken: 'mock-access-token',
         refreshToken: 'mock-refresh-token',
         accessTokenExpiresIn: 3600,
-        refreshTokenExpiresIn: 86400
+        refreshTokenExpiresIn: 86400,
       };
 
       return {
         message: 'Email verified successfully',
         expiry: {
           expiresAt: expiryTime.toISOString(),
-          expiresBy: expiryTime.getTime()
+          expiresBy: expiryTime.getTime(),
         },
         token,
-        user
+        user,
       };
     },
     async resendVerifyOtp(_: any, { body }: any) {
@@ -156,8 +170,8 @@ export const resolvers = {
         message: 'OTP sent successfully. Please check your email.',
         expiry: {
           expiresAt: otpExpiry.toISOString(),
-          expiresBy: otpExpiry.getTime()
-        }
+          expiresBy: otpExpiry.getTime(),
+        },
       };
     },
     async loginUser(_: any, { body }: any) {
@@ -170,7 +184,7 @@ export const resolvers = {
         return {
           message: 'No user found with that email.',
           status: 'ERROR',
-          code: 'USER_NOT_FOUND'
+          code: 'USER_NOT_FOUND',
         };
       }
       if (user.provider !== 'credentials') {
@@ -188,7 +202,7 @@ export const resolvers = {
         return {
           message: 'Invalid password.',
           status: 'ERROR',
-          code: 'INVALID_CREDENTIALS'
+          code: 'INVALID_CREDENTIALS',
         };
       }
 
@@ -198,17 +212,17 @@ export const resolvers = {
         accessToken: 'mock-access-token',
         refreshToken: 'mock-refresh-token',
         accessTokenExpiresIn: 3600,
-        refreshTokenExpiresIn: 86400
+        refreshTokenExpiresIn: 86400,
       };
 
       return {
         message: 'Login successful',
         expiry: {
           expiresAt: expiryTime.toISOString(),
-          expiresBy: expiryTime.getTime()
+          expiresBy: expiryTime.getTime(),
         },
         token,
-        user
+        user,
       };
     },
     async updateProfile(_: any, { body }: any, context: any) {
@@ -221,7 +235,7 @@ export const resolvers = {
       await connectToDatabase();
       console.log('Updating user profile:', {
         email: session.user.email,
-        body
+        body,
       });
       const updatedUser = await User.findOneAndUpdate(
         { email: session.user.email },
@@ -229,10 +243,10 @@ export const resolvers = {
           $set: {
             firstName: body.firstName,
             lastName: body.lastName,
-            image: body.image
-          }
+            image: body.image,
+          },
         },
-        { new: true }
+        { new: true },
       );
 
       if (!updatedUser) {
@@ -241,12 +255,12 @@ export const resolvers = {
       await syncAgoraProfile(
         updatedUser.id.toString(),
         `${updatedUser.firstName || ''} ${updatedUser.lastName || ''}`.trim(),
-        updatedUser.image || ''
+        updatedUser.image || '',
       );
 
       return {
         message: 'Profile updated successfully',
-        user: updatedUser
+        user: updatedUser,
       };
     },
     async changePassword(_: any, { body }: any, context: any) {
@@ -259,7 +273,9 @@ export const resolvers = {
       const { currentPassword, newPassword } = body;
 
       if (!currentPassword || !newPassword) {
-        throw new GraphQLError('Both currentPassword and newPassword are required');
+        throw new GraphQLError(
+          'Both currentPassword and newPassword are required',
+        );
       }
 
       await connectToDatabase();
@@ -284,8 +300,8 @@ export const resolvers = {
 
       return {
         message: 'Password changed successfully',
-        user
+        user,
       };
-    }
-  }
+    },
+  },
 };

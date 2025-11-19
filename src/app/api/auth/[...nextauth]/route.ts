@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
   providers: [
     FacebookProvider({
       clientId: process.env.NEXT_FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET!,
     }),
     GoogleProvider({
       clientId: process.env.NEXT_GOOGLE_CLIENT_ID!,
@@ -22,9 +22,9 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: 'consent',
           access_type: 'offline',
-          response_type: 'code'
-        }
-      }
+          response_type: 'code',
+        },
+      },
     }),
     CredentialsProvider({
       id: 'credentials',
@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
         accessToken: { label: 'Access Token', type: 'text' },
         refreshToken: { label: 'Refresh Token', type: 'text' },
-        user: { label: 'User', type: 'text' }
+        user: { label: 'User', type: 'text' },
       },
       async authorize(credentials) {
         try {
@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
               status: user.status,
               access_token: credentials.accessToken,
               refresh_token: credentials.refreshToken,
-              provider: 'credentials'
+              provider: 'credentials',
             };
           }
 
@@ -80,18 +80,20 @@ export const authOptions: NextAuthOptions = {
               variables: {
                 body: {
                   email: credentials.email,
-                  password: credentials.password
-                }
-              }
+                  password: credentials.password,
+                },
+              },
             },
-            { headers: { 'Content-Type': 'application/json' } }
+            { headers: { 'Content-Type': 'application/json' } },
           );
 
           const result = resp.data;
-          if (result.errors) throw new Error(result.errors[0]?.message || 'Login failed');
+          if (result.errors)
+            throw new Error(result.errors[0]?.message || 'Login failed');
 
           const payload = result.data?.loginUser;
-          if (!payload?.user) throw new Error(payload?.message || 'Invalid credentials');
+          if (!payload?.user)
+            throw new Error(payload?.message || 'Invalid credentials');
 
           if (payload.user.status !== 'verified') {
             throw new Error('Please verify your email before logging in.');
@@ -104,14 +106,17 @@ export const authOptions: NextAuthOptions = {
             name: `${payload.user.firstName || ''} ${payload.user.lastName || ''}`.trim(),
             email: payload.user.email,
             provider: payload.user.provider || 'credentials',
-            status: payload.user.status
+            status: payload.user.status,
           };
         } catch (error: any) {
           console.error('Login error:', error.response?.data || error.message);
-          throw new Error(error.response?.data?.errors?.[0]?.message || 'Authentication failed');
+          throw new Error(
+            error.response?.data?.errors?.[0]?.message ||
+              'Authentication failed',
+          );
         }
-      }
-    })
+      },
+    }),
   ],
 
   callbacks: {
@@ -130,7 +135,7 @@ export const authOptions: NextAuthOptions = {
             providerAccountId: account?.providerAccountId,
             status: 'verified',
             emailVerified: true,
-            image: user.image
+            image: user.image,
           });
           user.status = 'verified';
           user.emailVerified = true;
@@ -147,25 +152,37 @@ export const authOptions: NextAuthOptions = {
           user.id = existingUser.id.toString();
         }
         try {
-          await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
-            userId: user.id,
-            nickname: user.name,
-            avatarurl: user.image || ''
-          });
+          await axios.post(
+            `${process.env.NEXTAUTH_URL}/api/agora/create-user`,
+            {
+              userId: user.id,
+              nickname: user.name,
+              avatarurl: user.image || '',
+            },
+          );
         } catch (err) {
           const e = err as any;
-          console.error('Agora create-user failed for OAuth:', e?.response?.data || e?.message);
+          console.error(
+            'Agora create-user failed for OAuth:',
+            e?.response?.data || e?.message,
+          );
         }
 
         try {
-          await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/update-profile`, {
-            userId: user.id,
-            nickname: user.name,
-            avatarurl: user.image || ''
-          });
+          await axios.post(
+            `${process.env.NEXTAUTH_URL}/api/agora/update-profile`,
+            {
+              userId: user.id,
+              nickname: user.name,
+              avatarurl: user.image || '',
+            },
+          );
         } catch (err) {
           const e = err as any;
-          console.error('Agora update-profile failed for OAuth:', e?.response?.data || e?.message);
+          console.error(
+            'Agora update-profile failed for OAuth:',
+            e?.response?.data || e?.message,
+          );
         }
       }
 
@@ -187,15 +204,20 @@ export const authOptions: NextAuthOptions = {
           token.email = dbUser.email;
           token.firstName = dbUser.firstName;
           token.lastName = dbUser.lastName;
-          token.name = `${dbUser.firstName || ''} ${dbUser.lastName || ''}`.trim();
+          token.name =
+            `${dbUser.firstName || ''} ${dbUser.lastName || ''}`.trim();
           token.image = dbUser.image;
 
-          if (account?.provider === 'google' || account?.provider === 'facebook') {
+          if (
+            account?.provider === 'google' ||
+            account?.provider === 'facebook'
+          ) {
             token.provider = dbUser.provider;
             token.status = 'verified';
             token.emailVerified = true;
           } else {
-            token.provider = account?.provider || user.provider || 'credentials';
+            token.provider =
+              account?.provider || user.provider || 'credentials';
             token.status = user.status;
             token.emailVerified = Boolean(user.emailVerified);
           }
@@ -234,11 +256,11 @@ export const authOptions: NextAuthOptions = {
         return `${baseUrl}/dashboard`;
       }
       return url.startsWith(baseUrl) ? url : `${baseUrl}${url}`;
-    }
+    },
   },
   pages: {
-    signIn: '/login'
-  }
+    signIn: '/login',
+  },
 };
 
 const handler = NextAuth(authOptions);
