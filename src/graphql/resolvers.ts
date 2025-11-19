@@ -1,4 +1,4 @@
-import { authOptions } from 'app/api/auth/[...nextauth]/route';
+// import { authOptions } from 'app/api/auth/[...nextauth]/route';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import { sendOtpEmail } from 'components/sendOTPEmail/sendOTPEmail';
@@ -6,7 +6,7 @@ import { GraphQLError } from 'graphql';
 import { connectToDatabase } from 'lib/mongodb';
 import User, { GraphQLContext } from 'models/User';
 import { getServerSession, Session } from 'next-auth';
-// import { authOptions } from 'server';
+import { authOptions } from 'server';
 
 async function syncAgoraProfile(
   userId: string,

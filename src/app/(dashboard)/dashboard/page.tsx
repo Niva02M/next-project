@@ -1,9 +1,18 @@
 'use client';
 
-import { UIKitProvider } from 'agora-chat-uikit';
-import ChatApp from 'components/agora-chat/ChatApp';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 
+// Dynamically import the UIKitProvider with SSR disabled
+const UIKitProvider = dynamic(
+  () => import('agora-chat-uikit').then((mod) => mod.UIKitProvider),
+  { ssr: false },
+);
+
+// Dynamically import ChatApp as well
+const ChatApp = dynamic(() => import('components/agora-chat/ChatApp'), {
+  ssr: false,
+});
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const appKey = process.env.NEXT_PUBLIC_AGORA_APP_KEY as string;
@@ -16,8 +25,16 @@ export default function DashboardPage() {
       initConfig={{ appKey }}
       features={{
         chat: {
-          messageInput: { picture: true, file: true, video: false, record: true, contactCard: false, emoji: true, moreAction: true }
-        }
+          messageInput: {
+            picture: true,
+            file: true,
+            video: false,
+            record: true,
+            contactCard: false,
+            emoji: true,
+            moreAction: true,
+          },
+        },
       }}
     >
       <ChatApp currentUser={session.user.id} />
