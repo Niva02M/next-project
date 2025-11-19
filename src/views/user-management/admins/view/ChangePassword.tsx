@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import { useMutation } from '@apollo/client';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import { LoadingButton } from '@mui/lab';
@@ -16,12 +16,20 @@ import {
   CHANGE_PASSWORD
 } from '../constant';
 
+interface PasswordFormValues {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export default function ChangePassword() {
   const { successSnack, errorSnack } = useSuccErrSnack();
   const [handleChangePassword] = useMutation(ADMIN_CHANGE_PASSWORD_MUTATION);
-  const handleSubmitForm = async (values: any) => {
+
+  const handleSubmitForm = async (values: PasswordFormValues, { setSubmitting }: FormikHelpers<PasswordFormValues>) => {
     const newValue = { ...values };
-    delete newValue.confirmPassword;
+    delete (newValue as any).confirmPassword;
+
     try {
       const response = await handleChangePassword({
         variables: {
@@ -33,11 +41,13 @@ export default function ChangePassword() {
       successSnack(response?.data?.changePassword?.message);
     } catch (error: any) {
       errorSnack(error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <Formik
+    <Formik<PasswordFormValues>
       enableReinitialize
       initialValues={{
         currentPassword: '',
@@ -48,7 +58,7 @@ export default function ChangePassword() {
         currentPassword: Yup.string().max(255).required().label(OLD_PASSWORD),
         newPassword: Yup.string()
           .min(8)
-          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, { PASSWORD_REG_MESSAGE })
+          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, PASSWORD_REG_MESSAGE) // Fixed: removed the object wrapper
           .required()
           .label(PASSWORD),
         confirmPassword: Yup.string()
@@ -94,7 +104,7 @@ export default function ChangePassword() {
                   <PasswordField
                     name="confirmPassword"
                     value={values.confirmPassword}
-                    placeholder="Repeat currentPassword"
+                    placeholder="Repeat password"
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />

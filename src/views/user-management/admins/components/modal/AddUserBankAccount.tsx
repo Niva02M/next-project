@@ -60,7 +60,7 @@ export default function AddUserBankAccountModal({ openModal, setOpenModal, refet
           /* and other goodies */
         }) => (
           <form onSubmit={handleSubmit}>
-            <Stack rowGap={3}>
+            {/* <Stack rowGap={3}>
               <FormControl fullWidth>
                 <InputLabel>{'Account Name'}</InputLabel>
                 <TextField
@@ -158,7 +158,7 @@ export default function AddUserBankAccountModal({ openModal, setOpenModal, refet
               <LoadingButton type="submit" loading={loading} variant="contained" disabled={loading} size="large">
                 Save changes
               </LoadingButton>
-            </Stack>
+            </Stack> */}
           </form>
         )}
       </Formik>

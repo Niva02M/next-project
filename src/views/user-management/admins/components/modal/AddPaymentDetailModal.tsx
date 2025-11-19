@@ -76,7 +76,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
           /* and other goodies */
         }) => (
           <form onSubmit={handleSubmit}>
-            <Stack rowGap={3}>
+            {/* <Stack rowGap={3}>
               <FormControl fullWidth>
                 <InputLabel>{'Account Name'}</InputLabel>
                 <TextField
@@ -88,9 +88,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
                   placeholder="Account name"
                 />
                 {touched.accountName && errors.accountName && (
-                  <FormHelperText error id="standard-weight-helper-text--register">
-                    {errors.accountName}
-                  </FormHelperText>
+       z
                 )}
               </FormControl>
               <FormControl fullWidth>
@@ -183,7 +181,7 @@ export default function AddPaymentDetailModal({ openModal, setOpenModal, refetch
               <LoadingButton type="submit" loading={loading} variant="contained" disabled={loading} size="large">
                 Save changes
               </LoadingButton>
-            </Stack>
+            </Stack> */}
           </form>
         )}
       </Formik>

@@ -28,8 +28,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
   width: 61,
   transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leniv231gScreen + 200
+    easing: theme.transitions.easing.sharp
+    // duration: theme.transitions.duration.leniv231gScreen + 200
   })
 });
 

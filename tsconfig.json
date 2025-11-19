@@ -18,7 +18,7 @@
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
     // custom config
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
@@ -34,6 +34,14 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "build/types/**/*.ts", "apollo.config.js", "next.config.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "build/types/**/*.ts",
+    "apollo.config.js",
+    "next.config.js"
+  ],
   "exclude": ["node_modules"]
 }

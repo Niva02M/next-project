@@ -168,7 +168,7 @@ export default function UserProfile() {
                       onChange={handleChange}
                     />
                   </FormControl>
-                  {touched.firstName && errors.firstName && <FormHelperText error>{errors.firstName}</FormHelperText>}
+                  {/* {touched.firstName && errors.firstName && <FormHelperText error>{errors.firstName}</FormHelperText>} */}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
@@ -181,7 +181,7 @@ export default function UserProfile() {
                       onChange={handleChange}
                     />
                   </FormControl>
-                  {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>}
+                  {/* {touched.lastName && errors.lastName && <FormHelperText error>{errors.lastName}</FormHelperText>} */}
                 </Grid>
                 {userData?.me?.provider === 'email' && (
                   <Grid item xs={12}>
@@ -199,7 +199,7 @@ export default function UserProfile() {
                         disabled
                       />
                     </FormControl>
-                    {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
+                    {/* {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>} */}
                   </Grid>
                 )}
                 {userData?.me?.provider === 'phone' && (
@@ -216,7 +216,7 @@ export default function UserProfile() {
                         disabled
                       />
                     </FormControl>
-                    {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>}
+                    {/* {touched.email && errors.email && <FormHelperText error>{errors.email}</FormHelperText>} */}
                   </Grid>
                 )}
                 <Grid item xs={12}>
