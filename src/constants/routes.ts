@@ -14,7 +14,8 @@ const pageRoutes = {
   resetPassword: '/reset-password',
   profile: '/profile',
   changePassword: '/profile/change-password',
-  addBank: '/profile/add-bank'
+  addBank: '/profile/add-bank',
+  chatDashboard: '/dashboard',
 };
 
 export default pageRoutes;

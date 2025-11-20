@@ -4,16 +4,16 @@ import pageRoutes from 'constants/routes';
 export const tabsOption = [
   {
     label: 'User profile',
-    url: pageRoutes.profile
+    url: pageRoutes.profile,
   },
   {
     label: 'Password settings',
-    url: pageRoutes.changePassword
+    url: pageRoutes.changePassword,
   },
   {
-    label: 'Add bank account',
-    url: pageRoutes.addBank
-  }
+    label: 'Chat',
+    url: pageRoutes.chatDashboard,
+  },
 ];
 
 export const PASSWORD = 'Password';
@@ -37,7 +37,7 @@ export const rowData = [
     value: '',
     values: null,
     updatedAt: '',
-    createdAt: ''
+    createdAt: '',
   },
   {
     _id: '2',
@@ -50,7 +50,7 @@ export const rowData = [
     value: '',
     values: null,
     updatedAt: '',
-    createdAt: ''
+    createdAt: '',
   },
   {
     _id: '3',
@@ -63,7 +63,7 @@ export const rowData = [
     value: null,
     values: null,
     updatedAt: '',
-    createdAt: ''
+    createdAt: '',
   },
   {
     _id: '4',
@@ -76,7 +76,7 @@ export const rowData = [
     value: '',
     values: null,
     updatedAt: '',
-    createdAt: ''
+    createdAt: '',
   },
   {
     _id: '5',
@@ -89,8 +89,8 @@ export const rowData = [
     value: null,
     values: null,
     updatedAt: '',
-    createdAt: ''
-  }
+    createdAt: '',
+  },
 ];
 
 export type FormValues = {

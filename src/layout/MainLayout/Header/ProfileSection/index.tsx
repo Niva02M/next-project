@@ -35,6 +35,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { GET_PROFILE_QUERY } from 'views/user-management/admins/graphql/queries';
 import pageRoutes from 'constants/routes';
+import { useSession } from 'next-auth/react';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -49,6 +50,7 @@ const ProfileSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { errorSnack } = useSuccErrSnack();
   const { data } = useQuery(GET_PROFILE_QUERY);
+  const { data: session } = useSession();
 
   const openLogoutModal = () => {
     setOpenModal(true);
@@ -87,7 +89,9 @@ const ProfileSection = () => {
     }
   };
 
-  const handleClose = (event: React.MouseEvent<HTMLDivElement> | MouseEvent | TouchEvent) => {
+  const handleClose = (
+    event: React.MouseEvent<HTMLDivElement> | MouseEvent | TouchEvent,
+  ) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
@@ -95,7 +99,11 @@ const ProfileSection = () => {
     setOpen(false);
   };
 
-  const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number, route: string = '') => {
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLDivElement>,
+    index: number,
+    route: string = '',
+  ) => {
     setSelectedIndex(index);
     handleClose(event);
     router.push(route);
@@ -119,11 +127,13 @@ const ProfileSection = () => {
     <>
       <IconButton onClick={handleToggle} sx={{ p: 0 }}>
         <Avatar
-          src={data?.me?.image}
+          src={session?.user?.image}
           alt="user-images"
           sx={{
-            ...(downMD ? theme.typography.mediumAvatar : theme.typography.largeAvatar),
-            cursor: 'pointer'
+            ...(downMD
+              ? theme.typography.mediumAvatar
+              : theme.typography.largeAvatar),
+            cursor: 'pointer',
           }}
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
@@ -142,9 +152,9 @@ const ProfileSection = () => {
           {
             name: 'offset',
             options: {
-              offset: [0, 14]
-            }
-          }
+              offset: [0, 14],
+            },
+          },
         ]}
       >
         {({ TransitionProps }) => (
@@ -152,8 +162,19 @@ const ProfileSection = () => {
             <Transitions in={open} {...TransitionProps}>
               <Paper>
                 {open && (
-                  <MainCard border={false} content={false} boxShadow shadow={theme.shadows[16]}>
-                    <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
+                  <MainCard
+                    border={false}
+                    content={false}
+                    boxShadow
+                    shadow={theme.shadows[16]}
+                  >
+                    <PerfectScrollbar
+                      style={{
+                        height: '100%',
+                        maxHeight: 'calc(100vh - 250px)',
+                        overflowX: 'hidden',
+                      }}
+                    >
                       <Box sx={{ p: 2, pt: 0 }}>
                         <List
                           component="nav"
@@ -163,13 +184,17 @@ const ProfileSection = () => {
                             minWidth: 300,
                             bgcolor: theme.palette.background.paper,
                             borderRadius: `${borderRadius}px`,
-                            '& .MuiListItemButton-root': { mt: 0.5 }
+                            '& .MuiListItemButton-root': { mt: 0.5 },
                           }}
                         >
                           <ListItemButton
                             sx={{ borderRadius: `${borderRadius}px` }}
                             selected={selectedIndex === 0}
-                            onClick={(event: React.MouseEvent<HTMLDivElement>) => handleListItemClick(event, 0, pageRoutes.profile)}
+                            onClick={(
+                              event: React.MouseEvent<HTMLDivElement>,
+                            ) =>
+                              handleListItemClick(event, 0, pageRoutes.profile)
+                            }
                           >
                             <ListItemIcon>
                               <IconSettings stroke={1.5} size="20px" />
@@ -220,7 +245,10 @@ const ProfileSection = () => {
         titleIcon={<InfoIcon />}
         closeModal={() => setOpenModal(false)}
       >
-        <Typography>You are about to logout from Ebtheme. Are you sure you want to logout ?</Typography>
+        <Typography>
+          You are about to logout from Ebtheme. Are you sure you want to logout
+          ?
+        </Typography>
       </GenericModal>
       {/* Logout modal ends */}
     </>

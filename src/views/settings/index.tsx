@@ -1,5 +1,12 @@
 'use client';
-import { Box, CircularProgress, Grid, Paper, Tab, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  Paper,
+  Tab,
+  Typography,
+} from '@mui/material';
 import PageTitle from 'components/page-title/PageTitle';
 import { TabWrapper } from 'components/tab-wrapper/TabWrapper.styles';
 import React, { useEffect, useState } from 'react';
@@ -18,7 +25,9 @@ export default function Settings() {
 
   // Sync tab state with URL
   useEffect(() => {
-    const currentTab = settingsTabOption.findIndex((tab) => tab.url === pathname);
+    const currentTab = settingsTabOption.findIndex(
+      (tab) => tab.url === pathname,
+    );
     if (currentTab !== -1) {
       setValue(currentTab);
       setLoading(false);
@@ -34,7 +43,7 @@ export default function Settings() {
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`
+      'aria-controls': `simple-tabpanel-${index}`,
     };
   }
   return (
@@ -43,7 +52,12 @@ export default function Settings() {
       <Grid container spacing={2}>
         <Grid item xs={12} lg={2.36}>
           <Paper>
-            <TabWrapper value={value} onChange={handleChange} orientation="vertical" variant="scrollable">
+            <TabWrapper
+              value={value}
+              onChange={handleChange}
+              orientation="vertical"
+              variant="scrollable"
+            >
               {settingsTabOption.map((tab, index) => (
                 <Tab
                   key={index}
@@ -71,9 +85,9 @@ export default function Settings() {
                 <TabPanel value={value} index={0}>
                   <EditSettings />
                 </TabPanel>
-                <TabPanel value={value} index={1}>
+                {/* <TabPanel value={value} index={1}>
                   <Payment />
-                </TabPanel>
+                </TabPanel> */}
               </Box>
             )}
           </Paper>
