@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     if (avatarurl?.trim()) formData.append('avatarurl', avatarurl.trim());
 
     const updateResp = await fetch(
-      `https://${REGION}.chat.agora.io/${orgName}/${appName}/metadata/user/${userId}`,
+      `https://${REGION}.chat.agora.io/611421375/1622355/metadata/user/${userId}`,
       {
         method: 'PUT',
         headers: {

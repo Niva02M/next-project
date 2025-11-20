@@ -23,7 +23,7 @@ export async function GET() {
 
   try {
     const res = await fetch(
-      `https://${REGION}.chat.agora.io/${orgName}/${appName}/users?pageNum=1&pageSize=100`,
+      `https://${REGION}.chat.agora.io/611421375/1622355/users?pageNum=1&pageSize=100`,
       {
         headers: {
           Authorization: `Bearer ${appToken}`,

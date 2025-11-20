@@ -96,7 +96,7 @@ export const resolvers = {
 
       try {
         await axios.post(
-          `https://${region}.chat.agora.io/${orgName}/${appName}/users`,
+          `https://${region}.chat.agora.io/611421375/1622355/users`,
           {
             username: user.id,
             nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),

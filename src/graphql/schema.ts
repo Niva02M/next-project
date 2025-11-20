@@ -36,6 +36,7 @@ export const typeDefs = gql`
     deviceId: String
     provider: String
     image: String
+    otp: String
   }
 
   # ---------- Auth Inputs ----------

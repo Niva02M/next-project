@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
     ).toString('base64');
 
-    const url = `https://${region}.chat.agora.io/${orgName}/${appName}/users`;
+    const url = `https://${region}.chat.agora.io/611421375/1622355/users`;
 
     const response = await axios.post(
       url,

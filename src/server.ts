@@ -84,7 +84,7 @@ const handleOAuthSignIn = async (user: any, account: any) => {
   // Create user in Agora
   try {
     await axios.post(
-      `https://${region}.chat.agora.io/${orgName}/${appName}/users`,
+      `https://${region}.chat.agora.io/611421375/1622355/users`,
       {
         username: user.id,
         nickname: user.name,
@@ -108,7 +108,7 @@ const handleOAuthSignIn = async (user: any, account: any) => {
   // Update profile in Agora (optional)
   try {
     await axios.post(
-      `https://${region}.chat.agora.io/${orgName}/${appName}/users/${user.id}/profile`,
+      `https://${region}.chat.agora.io/611421375/1622355/users/${user.id}/profile`,
       {
         nickname: user.name,
         avatarurl: user.image || '',

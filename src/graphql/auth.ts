@@ -12,6 +12,7 @@ export const REGISTER_MUTATION = gql`
         _id
         email
         status
+        otp
       }
     }
   }

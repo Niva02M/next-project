@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
   try {
     const res = await fetch(
-      `https://${REGION}.chat.agora.io/${orgName}/${appName}/metadata/user/${userId}`,
+      `https://${REGION}.chat.agora.io/611421375/1622355/metadata/user/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${appToken}`,
