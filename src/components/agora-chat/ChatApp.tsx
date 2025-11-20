@@ -282,6 +282,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
 
   const customRenderItem = (conversation: any) => {
     const profile = getUserProfileFromMap(conversation.conversationId);
+    const isOnline = conversation.isOnline === true;
 
     return (
       <Box
@@ -303,25 +304,40 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           // color: '#fff'
         }}
       >
-        {profile.avatarurl ? (
-          <Avatar
-            src={profile.avatarurl}
-            alt={profile.nickname}
-            style={{ width: 44, height: 44 }}
-          />
-        ) : (
-          <Avatar
-            style={{
-              backgroundColor: theme.palette.primary.main,
-              width: 44,
-              height: 44,
-              fontSize: '16px',
-              fontWeight: 600,
+        <Box position="relative" width={44} height={44}>
+          {profile.avatarurl ? (
+            <Avatar
+              src={profile.avatarurl}
+              alt={profile.nickname}
+              style={{ width: 44, height: 44 }}
+            />
+          ) : (
+            <Avatar
+              style={{
+                backgroundColor: theme.palette.primary.main,
+                width: 44,
+                height: 44,
+                fontSize: '16px',
+                fontWeight: 600,
+              }}
+            >
+              {profile.nickname.charAt(0).toUpperCase()}
+            </Avatar>
+          )}
+
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 2,
+              right: 2,
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              bgcolor: isOnline ? '#2ecc71' : '#bdc3c7',
+              border: '2px solid white',
             }}
-          >
-            {profile.nickname.charAt(0).toUpperCase()}
-          </Avatar>
-        )}
+          />
+        </Box>
 
         <Box flex={1} minWidth={0}>
           <Box
