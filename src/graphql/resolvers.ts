@@ -75,6 +75,7 @@ export const resolvers = {
       await connectToDatabase();
       const user = await User.findOne({ email });
       if (!user) throw new Error('User not found');
+      console.log('verifyOtp called for user:', user?.id);
 
       if (!user.otp || !user.otpExpiry)
         throw new Error('No OTP found or expired');
@@ -93,6 +94,8 @@ export const resolvers = {
       const auth = Buffer.from(
         `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
       ).toString('base64');
+      console.log('auth header:', auth);
+      console.log('user object:', user);
 
       try {
         console.log('Creating Agora user with payload:', {
