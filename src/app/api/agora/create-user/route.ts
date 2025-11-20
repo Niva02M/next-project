@@ -15,7 +15,6 @@ export async function POST(req: Request) {
       );
 
     const appKey = process.env.NEXT_PUBLIC_AGORA_APP_KEY_1!;
-    const [orgName, appName] = appKey.split('#');
     const region = 'a61';
 
     const auth = Buffer.from(

@@ -1,8 +1,23 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useClient, Chat, ConversationList, rootStore, Avatar, Message } from 'agora-chat-uikit';
-import { Box, CircularProgress, Alert, Typography, useTheme, alpha, Drawer } from '@mui/material';
+import {
+  useClient,
+  Chat,
+  ConversationList,
+  rootStore,
+  Avatar,
+  Message,
+} from 'agora-chat-uikit';
+import {
+  Box,
+  CircularProgress,
+  Alert,
+  Typography,
+  useTheme,
+  alpha,
+  Drawer,
+} from '@mui/material';
 import 'agora-chat-uikit/style.css';
 import { CircleNotifications } from '@mui/icons-material';
 import { useSession } from 'next-auth/react';
@@ -39,7 +54,9 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   const [error, setError] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [allUsers, setAllUsers] = useState<AgoraUser[]>([]);
-  const [userProfilesMap, setUserProfilesMap] = useState<Map<string, UserProfile>>(new Map());
+  const [userProfilesMap, setUserProfilesMap] = useState<
+    Map<string, UserProfile>
+  >(new Map());
 
   useEffect(() => {
     axios
@@ -78,7 +95,9 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     for (const u of userList) {
       let meta;
       try {
-        const metaRes = await axios.get(`/api/agora/get-user?userId=${u.username}`);
+        const metaRes = await axios.get(
+          `/api/agora/get-user?userId=${u.username}`,
+        );
         meta = metaRes.data.data;
       } catch {
         meta = null;
@@ -86,7 +105,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
 
       const userProfile: UserProfile = {
         nickname: meta?.nickname || u.username,
-        avatarurl: meta?.avatarurl || ''
+        avatarurl: meta?.avatarurl || '',
       };
 
       const fullUser: AgoraUser = {
@@ -97,7 +116,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         activated: u.activated,
         username: u.username,
         nickname: userProfile.nickname,
-        avatarurl: userProfile.avatarurl
+        avatarurl: userProfile.avatarurl,
       };
 
       users.push(fullUser);
@@ -129,7 +148,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         conversationId: user.userId,
         name: user.nickname || user.userId,
         lastMessage: {} as Message, // type cast if allowed
-        unreadCount: 0
+        unreadCount: 0,
       };
       //@ts-ignore
       rootStore?.conversationStore?.addConversation(conversation);
@@ -151,7 +170,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
             border: '1px solid #ddd',
             borderRadius: '12px',
             fontSize: '14px',
-            outline: 'none'
+            outline: 'none',
             // backgroundColor: '#1C1F26',
             // color: '#fff'
           }}
@@ -166,7 +185,10 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
 
             const filtered = allUsers.filter((u) => {
               const q = value.toLowerCase();
-              return u.userId.toLowerCase().includes(q) || u.nickname?.toLowerCase().includes(q);
+              return (
+                u.userId.toLowerCase().includes(q) ||
+                u.nickname?.toLowerCase().includes(q)
+              );
             });
 
             setMatches(filtered);
@@ -177,7 +199,9 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               if (!value) return;
 
               const foundUser = allUsers.find(
-                (u) => u.userId.toLowerCase().includes(value.toLowerCase()) || u.nickname?.toLowerCase().includes(value.toLowerCase())
+                (u) =>
+                  u.userId.toLowerCase().includes(value.toLowerCase()) ||
+                  u.nickname?.toLowerCase().includes(value.toLowerCase()),
               );
 
               const targetId = foundUser?.userId || value;
@@ -188,7 +212,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
                 conversationId: targetId,
                 name: targetName,
                 lastMessage: {} as Message, // type cast if allowed
-                unreadCount: 0
+                unreadCount: 0,
               };
               //@ts-ignore
               rootStore.conversationStore.addConversation(conversation);
@@ -213,7 +237,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               borderRadius: '8px',
               maxHeight: '200px',
               overflowY: 'auto',
-              zIndex: 20
+              zIndex: 20,
             }}
           >
             {matches.map((u) => (
@@ -225,17 +249,26 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
                   alignItems: 'center',
                   padding: '8px 12px',
                   cursor: 'pointer',
-                  borderBottom: '1px solid #f1f1f1'
+                  borderBottom: '1px solid #f1f1f1',
                 }}
                 onClick={() => handleSelect(u)}
               >
                 {' '}
-                <Avatar src={u.avatarurl} alt={u.nickname} style={{ width: 44, height: 44 }} />{' '}
+                <Avatar
+                  src={u.avatarurl}
+                  alt={u.nickname}
+                  style={{ width: 44, height: 44 }}
+                />{' '}
                 <Box>
                   <Typography variant="body1" fontWeight={600} noWrap>
                     {u.nickname ? `${u.nickname} ` : u.userId}
                   </Typography>{' '}
-                  <Typography variant="subtitle1" fontWeight={200} noWrap fontSize={12}>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={200}
+                    noWrap
+                    fontSize={12}
+                  >
                     {u.userId}
                   </Typography>
                 </Box>
@@ -260,17 +293,22 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           p: 2,
           cursor: 'pointer',
           bgcolor:
-            rootStore.conversationStore.currentCvs?.conversationId === conversation.conversationId
+            rootStore.conversationStore.currentCvs?.conversationId ===
+            conversation.conversationId
               ? alpha(theme.palette.primary.main, 0.08)
               : 'transparent',
           '&:hover': {
-            bgcolor: alpha(theme.palette.primary.main, 0.08)
-          }
+            bgcolor: alpha(theme.palette.primary.main, 0.08),
+          },
           // color: '#fff'
         }}
       >
         {profile.avatarurl ? (
-          <Avatar src={profile.avatarurl} alt={profile.nickname} style={{ width: 44, height: 44 }} />
+          <Avatar
+            src={profile.avatarurl}
+            alt={profile.nickname}
+            style={{ width: 44, height: 44 }}
+          />
         ) : (
           <Avatar
             style={{
@@ -278,7 +316,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               width: 44,
               height: 44,
               fontSize: '16px',
-              fontWeight: 600
+              fontWeight: 600,
             }}
           >
             {profile.nickname.charAt(0).toUpperCase()}
@@ -286,7 +324,12 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         )}
 
         <Box flex={1} minWidth={0}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={0.5}
+          >
             <Typography variant="body1" fontWeight={600} noWrap>
               {profile.nickname}
             </Typography>
@@ -303,7 +346,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
                   justifyContent: 'center',
                   fontSize: '11px',
                   fontWeight: 600,
-                  px: 0.5
+                  px: 0.5,
                 }}
               >
                 {conversation.unreadCount}
@@ -312,7 +355,9 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           </Box>
           {conversation.lastMessage && (
             <Typography variant="body2" color="text.secondary" noWrap>
-              {conversation.lastMessage.type === 'txt' ? conversation.lastMessage.msg : `[${conversation.lastMessage.type}]`}
+              {conversation.lastMessage.type === 'txt'
+                ? conversation.lastMessage.msg
+                : `[${conversation.lastMessage.type}]`}
             </Typography>
           )}
         </Box>
@@ -323,14 +368,18 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   const customRenderConversationHeader = () => (
     <Box
       sx={{
-        padding: { xs: '14px', sm: '20px' }
+        padding: { xs: '14px', sm: '20px' },
         // color: '#fff'
       }}
       // style={{ backgroundColor: '#1C1F26', color: '#fff', borderTopLeftRadius: '24px' }}
     >
       <Box display="flex" alignItems="center" gap={1.5}>
         {user?.image ? (
-          <Avatar src={user.image} alt={user?.name || currentUser} style={{ width: 44, height: 44 }} />
+          <Avatar
+            src={user.image}
+            alt={user?.name || currentUser}
+            style={{ width: 44, height: 44 }}
+          />
         ) : (
           <Avatar
             style={{
@@ -338,7 +387,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               width: 44,
               height: 44,
               fontWeight: 600,
-              fontSize: '18px'
+              fontSize: '18px',
             }}
           >
             {currentUser.charAt(0).toUpperCase()}
@@ -352,7 +401,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
             <CircleNotifications
               sx={{
                 fontSize: 10,
-                color: isConnected ? '#4caf50' : '#bdbdbd'
+                color: isConnected ? '#4caf50' : '#bdbdbd',
               }}
             />
             <Typography variant="caption" color="text.secondary">
@@ -366,7 +415,12 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="80vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -384,7 +438,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     <Box
       sx={{
         display: 'flex',
-        height: '88vh'
+        height: '88vh',
       }}
     >
       {' '}
@@ -394,10 +448,11 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           height: '100%',
           display: { xs: 'none', sm: 'block' },
           borderRight: '1px solid',
-          borderColor: theme.palette.divider
+          borderColor: theme.palette.divider,
         }}
       >
         <ConversationList
+          presence={true}
           renderHeader={customRenderConversationHeader}
           renderSearch={customRenderSearch}
           renderItem={customRenderItem}
@@ -405,7 +460,12 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           // style={{ backgroundColor: '#1C1F26' }}
         />
       </Box>
-      <Drawer anchor="left" open={openSidebar} onClose={() => setOpenSidebar(false)} sx={{ display: { xs: 'block', sm: 'none' } }}>
+      <Drawer
+        anchor="left"
+        open={openSidebar}
+        onClose={() => setOpenSidebar(false)}
+        sx={{ display: { xs: 'block', sm: 'none' } }}
+      >
         <Box sx={{ width: 280 }}>
           <ConversationList
             renderHeader={customRenderConversationHeader}
@@ -422,13 +482,15 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
       <Box
         sx={{
           flex: 1,
-          height: 'auto'
+          height: 'auto',
         }}
       >
         <Chat
-          renderHeader={() => {
+          renderHeader={(msg) => {
             const currentConversation = rootStore.conversationStore.currentCvs;
             if (!currentConversation) return null;
+            console.log('currentConversation', currentConversation);
+            console.log('msg', msg);
 
             return (
               <CustomChatHeader
@@ -441,8 +503,14 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           messageListProps={{
             renderMessage: (msg: any) => {
               if (msg.type === 'cmd') return null;
-              return <ChatItem msg={msg} currentUser={currentUser} getUserProfileFromMap={getUserProfileFromMap} />;
-            }
+              return (
+                <ChatItem
+                  msg={msg}
+                  currentUser={currentUser}
+                  getUserProfileFromMap={getUserProfileFromMap}
+                />
+              );
+            },
           }}
           // renderMessageInput={() => {
           //   const c = rootStore.conversationStore.currentCvs;

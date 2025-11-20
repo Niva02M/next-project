@@ -22,7 +22,7 @@ export default function DashboardPage() {
 
   return (
     <UIKitProvider
-      initConfig={{ appKey }}
+      initConfig={{ appKey, useUserInfo: true }}
       features={{
         chat: {
           messageInput: {

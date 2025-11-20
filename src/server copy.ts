@@ -74,62 +74,6 @@ const handleOAuthSignIn = async (user: any, account: any) => {
     user.id = existingUser.id.toString();
   }
 
-  //   const region = 'a61';
-
-  //   const auth = Buffer.from(
-  //     `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
-  //   ).toString('base64');
-
-  //   // Create user in Agora
-  //   try {
-  //     await axios.post(
-  //       `https://${region}.chat.agora.io/611421375/1622355/users`,
-  //       {
-  //         username: user.id,
-  //         nickname: user.name,
-  //         avatarurl: user.image || '',
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Basic ${auth}`,
-  //           'Content-Type': 'application/json',
-  //         },
-  //       },
-  //     );
-  //     console.log(`Agora Chat user created for OAuth user ${user.id}`);
-  //   } catch (err: any) {
-  //     console.error(
-  //       'Agora create-user failed for OAuth:',
-  //       err.response?.data || err.message,
-  //     );
-
-  //   }
-
-  //   // Update profile in Agora (optional)
-  //   try {
-  //     await axios.post(
-  //       `https://${region}.chat.agora.io/611421375/1622355/users/${user.id}/profile`,
-  //       {
-  //         nickname: user.name,
-  //         avatarurl: user.image || '',
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Basic ${auth}`,
-  //           'Content-Type': 'application/json',
-  //         },
-  //       },
-  //     );
-  //     console.log(`Agora profile updated for OAuth user ${user.id}`);
-  //   } catch (err: any) {
-  //     console.error(
-  //       'Agora update-profile failed for OAuth:',
-  //       err.response?.data || err.message,
-  //     );
-  //   }
-
-  //   return true;
-  // };
   // Agora API calls
   try {
     await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
@@ -225,20 +169,20 @@ export const authOptions: NextAuthOptions = {
             `${process.env.NEXTAUTH_URL || ''}/api/graphql`,
             {
               query: `
-                mutation loginUser($body: LoginInput!) {
-                  loginUser(body: $body) {
-                    message
-                    user {
-                      _id
-                      firstName
-                      lastName
-                      email
-                      provider
-                      status
-                    }
-                  }
-                }
-              `,
+mutation loginUser($body: LoginInput!) {
+loginUser(body: $body) {
+message
+user {
+_id
+firstName
+lastName
+email
+provider
+status
+}
+}
+}
+`,
               variables: {
                 body: {
                   email: creds.email,

@@ -45,6 +45,7 @@ export const resolvers = {
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+      const expiryTime = new Date(Date.now() + 10 * 60 * 1000);
 
       const newUser = await User.create({
         firstName,
@@ -62,11 +63,11 @@ export const resolvers = {
 
       return {
         user: newUser,
-        message: 'Registration successful, OTP sent to email',
         expiry: {
-          expiresAt: otpExpiry.toISOString(),
-          expiresBy: otpExpiry.getTime(),
+          expiresAt: expiryTime.toISOString(),
+          expiresBy: expiryTime.getTime(),
         },
+        message: 'Registration successful, OTP sent to email',
       };
     },
     async verifyOtp(_: any, { body }: any) {
@@ -75,11 +76,24 @@ export const resolvers = {
       await connectToDatabase();
       const user = await User.findOne({ email });
       if (!user) throw new Error('User not found');
-      console.log('verifyOtp called for user:', user?.id);
+
+      if (user.status === 'verified') {
+        return {
+          message: 'Already verified',
+          token: {
+            accessToken: 'mock-access-token',
+            refreshToken: 'mock-refresh-token',
+            accessTokenExpiresIn: 3600,
+            refreshTokenExpiresIn: 86400,
+          },
+          user,
+        };
+      }
 
       if (!user.otp || !user.otpExpiry)
         throw new Error('No OTP found or expired');
       if (user.otpExpiry < new Date()) throw new Error('OTP expired');
+
       if (user.otp !== otp) throw new Error('Invalid OTP');
 
       user.status = 'verified';
@@ -87,42 +101,6 @@ export const resolvers = {
       user.otpExpiry = undefined;
       await user.save();
 
-      // // Agora integration - direct server-side call
-      // const region = '61';
-
-      // const auth = Buffer.from(
-      //   `${process.env.AGORA_CUSTOMER_KEY}:${process.env.AGORA_CUSTOMER_SECRET}`,
-      // ).toString('base64');
-      // console.log('auth header:', auth);
-      // console.log('user object:', user);
-
-      // try {
-      //   console.log('Creating Agora user with payload:', {
-      //     username: user.id,
-      //     nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-      //     avatarurl: user.image || '',
-      //   });
-      //   const response = await axios.post(
-      //     `https://${region}.chat.agora.io/611421375/1622355/users`,
-      //     {
-      //       username: user.id,
-      //       nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-      //       avatarurl: user.image || '',
-      //     },
-      //     {
-      //       headers: {
-      //         Authorization: `Basic ${auth}`,
-      //         'Content-Type': 'application/json',
-      //       },
-      //     },
-      //   );
-      //   console.log('Agora create response:', response.data);
-      // } catch (err: any) {
-      //   console.error(
-      //     'Agora create-user failed:',
-      //     err.response?.data || err.message,
-      //   );
-      // }
       try {
         await axios.post(`${process.env.NEXTAUTH_URL}/api/agora/create-user`, {
           userId: user.id,
@@ -136,6 +114,7 @@ export const resolvers = {
           err.response?.data || err.message,
         );
       }
+
       await syncAgoraProfile(
         user.id.toString(),
         `${user.firstName || ''} ${user.lastName || ''}`.trim(),
