@@ -95,7 +95,12 @@ export const resolvers = {
       ).toString('base64');
 
       try {
-        await axios.post(
+        console.log('Creating Agora user with payload:', {
+          username: user.id,
+          nickname: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          avatarurl: user.image || '',
+        });
+        const response = await axios.post(
           `https://${region}.chat.agora.io/611421375/1622355/users`,
           {
             username: user.id,
@@ -109,7 +114,7 @@ export const resolvers = {
             },
           },
         );
-        console.log(`Agora Chat user created for ${user.id}`);
+        console.log('Agora create response:', response.data);
       } catch (err: any) {
         console.error(
           'Agora create-user failed:',
