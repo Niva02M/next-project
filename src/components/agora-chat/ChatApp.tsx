@@ -480,7 +480,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         anchor="left"
         open={openSidebar}
         onClose={() => setOpenSidebar(false)}
-        sx={{ display: { xs: 'block', sm: 'none' } }}
+        sx={{ display: { xs: 'block', md: 'none' } }}
       >
         <Box sx={{ width: 280 }}>
           <ConversationList
