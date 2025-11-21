@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { Box, IconButton, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { MoreVert, Delete } from '@mui/icons-material';
 import { Avatar, rootStore } from 'agora-chat-uikit';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
-import { DELETE_CHAT, DELETE_CHAT_FAILED } from 'components/authentication/constants';
+import {
+  DELETE_CHAT,
+  DELETE_CHAT_FAILED,
+} from 'components/authentication/constants';
 
 type UserProfile = {
   nickname: string;
@@ -17,7 +27,11 @@ interface CustomChatHeaderProps {
   openSidebar?: () => void;
 }
 
-export default function CustomChatHeader({ conversationId, getUserProfileFromMap, onDelete, openSidebar }: CustomChatHeaderProps) {
+export default function CustomChatHeader({
+  conversationId,
+  getUserProfileFromMap,
+  onDelete,
+}: CustomChatHeaderProps) {
   const theme = useTheme();
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -42,12 +56,12 @@ export default function CustomChatHeader({ conversationId, getUserProfileFromMap
         channel: conversationId,
         chatType: 'singleChat',
         deleteMessages: true,
-        deleteRoam: true
+        deleteRoam: true,
       });
 
       rootStore.conversationStore.deleteConversation({
         conversationId,
-        chatType: 'singleChat'
+        chatType: 'singleChat',
       });
 
       successSnack(DELETE_CHAT);
@@ -65,13 +79,18 @@ export default function CustomChatHeader({ conversationId, getUserProfileFromMap
         display: 'flex',
         alignItems: 'center',
         padding: '16px 20px',
-        bgcolor: theme.palette.mode === 'dark' ? theme.palette.dark?.dark : '#fff',
-        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)'
+        bgcolor:
+          theme.palette.mode === 'dark' ? theme.palette.dark?.dark : '#fff',
+        boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)',
       }}
       // style={{ backgroundColor: '#1C1F26' }}
     >
       {avatarUrl ? (
-        <Avatar src={avatarUrl} alt={displayName} style={{ width: 40, height: 40 }} />
+        <Avatar
+          src={avatarUrl}
+          alt={displayName}
+          style={{ width: 40, height: 40 }}
+        />
       ) : (
         <Avatar
           style={{
@@ -79,7 +98,7 @@ export default function CustomChatHeader({ conversationId, getUserProfileFromMap
             width: 40,
             height: 40,
             fontSize: '16px',
-            fontWeight: 600
+            fontWeight: 600,
           }}
         >
           {displayName.charAt(0).toUpperCase()}
@@ -108,9 +127,6 @@ export default function CustomChatHeader({ conversationId, getUserProfileFromMap
           Delete Conversation
         </MenuItem>
       </Menu>
-      <Box onClick={openSidebar} sx={{ cursor: 'pointer', display: { xs: 'block', sm: 'none' }, ml: 1 }}>
-        <Typography variant="body2">Chats</Typography>
-      </Box>
     </Box>
   );
 }

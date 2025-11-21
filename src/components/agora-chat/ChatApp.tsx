@@ -19,7 +19,7 @@ import {
   Drawer,
 } from '@mui/material';
 import 'agora-chat-uikit/style.css';
-import { CircleNotifications } from '@mui/icons-material';
+import { ChatBubbleOutline, CircleNotifications } from '@mui/icons-material';
 import { useSession } from 'next-auth/react';
 import ChatItem from './ChatItem';
 import CustomChatHeader from './ChatHeader';
@@ -454,7 +454,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     <Box
       sx={{
         display: 'flex',
-        height: '88vh',
+        height: { xs: '86vh', md: '88vh' },
       }}
     >
       {' '}
@@ -462,7 +462,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         sx={{
           width: { sm: '280px', md: '320px' },
           height: '100%',
-          display: { xs: 'none', sm: 'block' },
+          display: { xs: 'none', md: 'block' },
           borderRight: '1px solid',
           borderColor: theme.palette.divider,
         }}
@@ -501,6 +501,30 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           height: 'auto',
         }}
       >
+        <Box
+          onClick={() => setOpenSidebar(true)}
+          sx={{
+            marginBottom: 1,
+            display: { xs: 'flex', md: 'none' },
+            alignItems: 'center',
+            gap: 1,
+            width: '110px',
+            justifyContent: 'center',
+            border: '1px solid',
+            borderColor: theme.palette.grey[400],
+            backgroundColor: theme.palette.background.paper,
+            padding: '6px 12px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            marginLeft: 'auto',
+          }}
+        >
+          <ChatBubbleOutline fontSize="small" />
+          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+            Chats
+          </Typography>
+        </Box>
+
         <Chat
           renderHeader={(msg) => {
             const currentConversation = rootStore.conversationStore.currentCvs;
@@ -512,7 +536,6 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               <CustomChatHeader
                 conversationId={currentConversation.conversationId}
                 getUserProfileFromMap={getUserProfileFromMap}
-                openSidebar={() => setOpenSidebar(true)}
               />
             );
           }}
