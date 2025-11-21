@@ -470,7 +470,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     <Box
       sx={{
         display: 'flex',
-        height: { xs: '84vh', lg: '88vh' },
+        height: { xs: '78vh', lg: '88vh' },
       }}
     >
       {' '}
