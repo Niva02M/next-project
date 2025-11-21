@@ -4,6 +4,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Skeleton,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -39,7 +40,10 @@ export default function CustomChatHeader({
 
   const userProfile = getUserProfileFromMap(conversationId);
 
-  const displayName = userProfile?.nickname || conversationId || 'Unknown User';
+  const displayName =
+    userProfile?.nickname && !userProfile.nickname.match(/^[0-9a-f]{24}$/)
+      ? userProfile.nickname
+      : 'Unknown User';
   const avatarUrl = userProfile?.avatarurl || '';
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -107,7 +111,7 @@ export default function CustomChatHeader({
 
       <Box flex={1} ml={2}>
         <Typography variant="h6" fontWeight={600}>
-          {displayName}
+          {displayName ? displayName : <Skeleton variant="text" width={120} />}
         </Typography>
       </Box>
 

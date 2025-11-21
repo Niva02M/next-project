@@ -51,7 +51,7 @@ function extractMessageProperties(msg: RawMessage): RawMessage {
       file: msg.file,
       file_length: msg.file_length,
       length: msg.length,
-      addr: msg.addr
+      addr: msg.addr,
     };
   } catch {
     try {
@@ -76,12 +76,14 @@ const Bubble = ({
       {...rest}
       style={{
         padding: '12px 16px',
-        borderRadius: isCurrentUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+        borderRadius: isCurrentUser
+          ? '16px 16px 4px 16px'
+          : '16px 16px 16px 4px',
         backgroundColor: isCurrentUser ? '#1C1F26' : '#F3F4F6',
         color: isCurrentUser ? '#F3F4F6' : '#1C1F26',
         fontSize: '14px',
         boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-        ...style
+        ...style,
       }}
     >
       {children}
@@ -89,7 +91,15 @@ const Bubble = ({
   );
 };
 
-const Timestamp = ({ isCurrentUser, time, children }: { isCurrentUser: boolean; time: string; children?: React.ReactNode }) => {
+const Timestamp = ({
+  isCurrentUser,
+  time,
+  children,
+}: {
+  isCurrentUser: boolean;
+  time: string;
+  children?: React.ReactNode;
+}) => {
   return (
     <div
       style={{
@@ -100,7 +110,7 @@ const Timestamp = ({ isCurrentUser, time, children }: { isCurrentUser: boolean; 
         textAlign: isCurrentUser ? 'right' : 'left',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: isCurrentUser ? 'flex-end' : 'flex-start'
+        justifyContent: isCurrentUser ? 'flex-end' : 'flex-start',
       }}
     >
       {time}
@@ -109,7 +119,17 @@ const Timestamp = ({ isCurrentUser, time, children }: { isCurrentUser: boolean; 
   );
 };
 
-const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: string; url: string; onClose: () => void }) => {
+const MediaPreviewModal = ({
+  open,
+  type,
+  url,
+  onClose,
+}: {
+  open: boolean;
+  type: string;
+  url: string;
+  onClose: () => void;
+}) => {
   if (!open) return null;
 
   return (
@@ -122,7 +142,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 9999
+        zIndex: 9999,
       }}
     >
       <div
@@ -135,7 +155,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px'
+          gap: '16px',
         }}
       >
         {type === 'img' && (
@@ -145,7 +165,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
             style={{
               maxWidth: '80vw',
               maxHeight: '70vh',
-              objectFit: 'contain'
+              objectFit: 'contain',
             }}
           />
         )}
@@ -155,7 +175,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
             controls
             src={url}
             style={{
-              width: '400px'
+              width: '300px',
             }}
           />
         )}
@@ -166,7 +186,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '12px'
+              gap: '12px',
             }}
           >
             <div
@@ -174,7 +194,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
                 fontSize: '15px',
                 color: '#444',
                 wordBreak: 'break-all',
-                textAlign: 'center'
+                textAlign: 'center',
               }}
             >
               File ready to download
@@ -189,7 +209,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
                 padding: '10px 20px',
                 borderRadius: '6px',
                 textDecoration: 'none',
-                fontSize: '15px'
+                fontSize: '15px',
               }}
             >
               Download file
@@ -207,7 +227,7 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
             border: 'none',
             borderRadius: '6px',
             fontSize: '14px',
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           Close
@@ -217,11 +237,20 @@ const MediaPreviewModal = ({ open, type, url, onClose }: { open: boolean; type: 
   );
 };
 
-const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFromMap }: ChatItemProps) => {
-  const [preview, setPreview] = useState<{ open: boolean; type: string; url: string }>({
+const ChatItem = ({
+  msg,
+  currentUser,
+  userProfiles = new Map(),
+  getUserProfileFromMap,
+}: ChatItemProps) => {
+  const [preview, setPreview] = useState<{
+    open: boolean;
+    type: string;
+    url: string;
+  }>({
     open: false,
     type: '',
-    url: ''
+    url: '',
   });
 
   const safeMsg = extractMessageProperties(msg);
@@ -242,7 +271,10 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
   const isCurrentUser = safeMsg.from === currentUser;
 
   const messageTime = safeMsg.time
-    ? new Date(safeMsg.time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    ? new Date(safeMsg.time).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
     : '11:23 AM';
 
   const getIsReadStatus = () => {
@@ -256,27 +288,75 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
     const finalStatus = getIsReadStatus();
     if (finalStatus === 'read') {
       return (
-        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', marginLeft: '4px' }}
+        >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 8L5 11L9 7" stroke="#868585ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M6 8L9 11L13 7" stroke="#868585ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M2 8L5 11L9 7"
+              stroke="#868585ff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M6 8L9 11L13 7"
+              stroke="#868585ff"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
-          <span style={{ fontSize: '9px', color: '#868585ff', marginLeft: '2px' }}>seen</span>
+          <span
+            style={{ fontSize: '9px', color: '#868585ff', marginLeft: '2px' }}
+          >
+            seen
+          </span>
         </div>
       );
     }
     if (finalStatus === 'received') {
       return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ marginLeft: '4px' }}>
-          <path d="M2 8L5 11L9 7" stroke="#868585ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M6 8L9 11L13 7" stroke="#868585ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          style={{ marginLeft: '4px' }}
+        >
+          <path
+            d="M2 8L5 11L9 7"
+            stroke="#868585ff"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M6 8L9 11L13 7"
+            stroke="#868585ff"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     }
     if (finalStatus === 'sent') {
       return (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ marginLeft: '4px' }}>
-          <path d="M3 8L6 11L13 4" stroke="#868585ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          style={{ marginLeft: '4px' }}
+        >
+          <path
+            d="M3 8L6 11L13 4"
+            stroke="#868585ff"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       );
     }
@@ -302,14 +382,20 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
             setPreview({
               open: true,
               type: 'img',
-              url: safeMsg.url || safeMsg.thumb || ''
+              url: safeMsg.url || safeMsg.thumb || '',
             })
           }
         >
           <img
             src={safeMsg.url || safeMsg.thumb}
             alt="Shared image"
-            style={{ width: '100%', height: 'auto', maxHeight: '400px', objectFit: 'cover', display: 'block' }}
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxHeight: '400px',
+              objectFit: 'cover',
+              display: 'block',
+            }}
           />
           <Timestamp isCurrentUser={isCurrentUser} time={messageTime}>
             <ReadReceipt />
@@ -322,19 +408,35 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
       return (
         <Bubble
           isCurrentUser={isCurrentUser}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+          }}
           onClick={() => {
             if (!msg.url) return;
             setPreview({ open: true, type: 'file', url: msg.url });
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+          >
             <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
             <polyline points="13 2 13 9 20 9" />
           </svg>
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: '500' }}>{msg.filename || 'File'}</div>
-            {msg.file_length && <div style={{ fontSize: '12px', color: '#6B7280' }}>{(msg.file_length / 1024).toFixed(2)} KB</div>}
+            {msg.file_length && (
+              <div style={{ fontSize: '12px', color: '#6B7280' }}>
+                {(msg.file_length / 1024).toFixed(2)} KB
+              </div>
+            )}
           </div>
           <Timestamp isCurrentUser={isCurrentUser} time={messageTime}>
             <ReadReceipt />
@@ -347,13 +449,19 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
       return (
         <Bubble
           isCurrentUser={isCurrentUser}
-          style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: '200px', cursor: 'pointer' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            minWidth: '200px',
+            cursor: 'pointer',
+          }}
           onClick={() =>
             msg.url &&
             setPreview({
               open: true,
               type: 'audio',
-              url: msg.url
+              url: msg.url,
             })
           }
         >
@@ -366,7 +474,7 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0
+              flexShrink: 0,
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
@@ -374,8 +482,14 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
             </svg>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: '500' }}>{msg.filename || 'Audio message'}</div>
-            {msg.length && <div style={{ fontSize: '12px', color: '#6B7280' }}>{msg.length}s</div>}
+            <div style={{ fontWeight: '500' }}>
+              {msg.filename || 'Audio message'}
+            </div>
+            {msg.length && (
+              <div style={{ fontSize: '12px', color: '#6B7280' }}>
+                {msg.length}s
+              </div>
+            )}
           </div>
           <Timestamp isCurrentUser={isCurrentUser} time={messageTime}>
             <ReadReceipt />
@@ -413,18 +527,40 @@ const ChatItem = ({ msg, currentUser, userProfiles = new Map(), getUserProfileFr
           gap: '8px',
           padding: '0 16px',
           width: '100%',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
         }}
       >
         {!isCurrentUser && avatarUrl ? (
-          <img src={avatarUrl} alt={displayName} style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }} />
+          <img
+            src={avatarUrl}
+            alt={displayName}
+            style={{
+              borderRadius: '50%',
+              width: '32px',
+              height: '32px',
+              objectFit: 'cover',
+            }}
+          />
         ) : (
-          <Avatar style={{ width: 32, height: 32, display: isCurrentUser ? 'none' : 'block' }}>
+          <Avatar
+            style={{
+              width: 32,
+              height: 32,
+              display: isCurrentUser ? 'none' : 'block',
+            }}
+          >
             {displayName?.charAt(0)?.toUpperCase() || 'U'}
           </Avatar>
         )}
 
-        <div style={{ maxWidth: '60%', display: 'flex', flexDirection: 'column', alignItems: isCurrentUser ? 'flex-end' : 'flex-start' }}>
+        <div
+          style={{
+            maxWidth: '60%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: isCurrentUser ? 'flex-end' : 'flex-start',
+          }}
+        >
           {renderMessageContent()}
         </div>
       </div>
