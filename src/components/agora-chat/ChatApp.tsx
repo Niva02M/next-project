@@ -17,6 +17,7 @@ import {
   useTheme,
   alpha,
   Drawer,
+  Skeleton,
 } from '@mui/material';
 import 'agora-chat-uikit/style.css';
 import { ChatBubbleOutline, CircleNotifications } from '@mui/icons-material';
@@ -89,8 +90,8 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     const res = await axios.get('/api/agora/users');
     const userList = res.data.entities || [];
 
-    const users: AgoraUser[] = []; // Add explicit type here
-    const profilesMap = new Map<string, UserProfile>(); // This is already typed
+    const users: AgoraUser[] = [];
+    const profilesMap = new Map<string, UserProfile>();
 
     for (const u of userList) {
       let meta;
@@ -283,6 +284,19 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   const customRenderItem = (conversation: any) => {
     const profile = getUserProfileFromMap(conversation.conversationId);
     const isOnline = conversation.isOnline === true;
+    console.log('profile', profile);
+    const displayName =
+      profile.nickname && !profile.nickname.match(/^[0-9a-f]{24}$/)
+        ? profile.nickname
+        : null;
+    // : profile.nickname.slice(0, 7) + '...';
+    const lastMessagePreview = (() => {
+      if (!conversation.lastMessage) return 'Start chatting';
+      const { type, msg } = conversation.lastMessage;
+      if (type === 'txt') return msg || '';
+      if (type) return `[${type}]`;
+      return 'Start a new Conversation ...';
+    })();
 
     return (
       <Box
@@ -347,7 +361,11 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
             mb={0.5}
           >
             <Typography variant="body1" fontWeight={600} noWrap>
-              {profile.nickname}
+              {displayName ? (
+                displayName
+              ) : (
+                <Skeleton variant="text" width={120} />
+              )}
             </Typography>
             {conversation.unreadCount > 0 && (
               <Box
@@ -371,9 +389,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           </Box>
           {conversation.lastMessage && (
             <Typography variant="body2" color="text.secondary" noWrap>
-              {conversation.lastMessage.type === 'txt'
-                ? conversation.lastMessage.msg
-                : `[${conversation.lastMessage.type}]`}
+              {lastMessagePreview}
             </Typography>
           )}
         </Box>
