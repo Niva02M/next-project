@@ -470,7 +470,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     <Box
       sx={{
         display: 'flex',
-        height: { xs: '86vh', md: '88vh' },
+        height: { xs: '84vh', lg: '88vh' },
       }}
     >
       {' '}
@@ -478,7 +478,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         sx={{
           width: { sm: '280px', md: '320px' },
           height: '100%',
-          display: { xs: 'none', md: 'block' },
+          display: { xs: 'none', sm: 'block' },
           borderRight: '1px solid',
           borderColor: theme.palette.divider,
         }}
@@ -496,7 +496,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         anchor="left"
         open={openSidebar}
         onClose={() => setOpenSidebar(false)}
-        sx={{ display: { xs: 'block', md: 'none' } }}
+        sx={{ display: { xs: 'block', sm: 'none' } }}
       >
         <Box sx={{ width: 280 }}>
           <ConversationList
@@ -521,7 +521,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
           onClick={() => setOpenSidebar(true)}
           sx={{
             marginBottom: 1,
-            display: { xs: 'flex', md: 'none' },
+            display: { xs: 'flex', sm: 'none' },
             alignItems: 'center',
             gap: 1,
             width: '110px',
