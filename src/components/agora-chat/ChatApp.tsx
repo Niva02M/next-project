@@ -24,6 +24,7 @@ import { ChatBubbleOutline, CircleNotifications } from '@mui/icons-material';
 import { useSession } from 'next-auth/react';
 import ChatItem from './ChatItem';
 import CustomChatHeader from './ChatHeader';
+import VoiceCallModal from './SimpleVoiceCall';
 
 interface AgoraUser {
   userId: string;
@@ -58,7 +59,11 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   const [userProfilesMap, setUserProfilesMap] = useState<
     Map<string, UserProfile>
   >(new Map());
-
+  const [incomingCall, setIncomingCall] = useState<{
+    from: string;
+    callerName: string;
+    callerAvatar?: string;
+  } | null>(null);
   useEffect(() => {
     axios
       .post('/api/agora/token', { userId: currentUser })
@@ -85,7 +90,43 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         setError('Failed to connect to chat service.');
       });
   }, [client, token, currentUser]);
+  useEffect(() => {
+    if (!isConnected) return;
 
+    console.log('🎧 Setting up global incoming call listener');
+
+    const handleIncomingCall = (message: any) => {
+      console.log('🔔 Global listener received message:', message);
+
+      if (
+        message.customEvent === 'VOICE_CALL' &&
+        message.customExts?.action === 'voice-call-request'
+      ) {
+        const from = message.from;
+        const callerName = message.customExts?.callerName || from;
+        const callerAvatar = message.customExts?.callerAvatar;
+
+        console.log('🔔 Incoming call from:', from, 'caller:', callerName);
+
+        setIncomingCall({
+          from,
+          callerName,
+          callerAvatar,
+        });
+      }
+    };
+
+    rootStore.client.addEventHandler('INCOMING_CALL', {
+      onCustomMessage: handleIncomingCall,
+    });
+
+    console.log('✅ Global incoming call listener registered');
+
+    return () => {
+      console.log('🔇 Removing global incoming call listener');
+      rootStore.client.removeEventHandler('INCOMING_CALL');
+    };
+  }, [isConnected]);
   const fetchUsersWithProfiles = async () => {
     const res = await axios.get('/api/agora/users');
     const userList = res.data.entities || [];
@@ -467,114 +508,130 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        height: { xs: '78vh', lg: '84vh', xl: '88vh' },
-      }}
-    >
-      {' '}
+    <>
       <Box
         sx={{
-          width: { sm: '280px', md: '320px' },
-          height: '100%',
-          display: { xs: 'none', sm: 'block' },
-          borderRight: '1px solid',
-          borderColor: theme.palette.divider,
+          display: 'flex',
+          height: { xs: '78vh', lg: '84vh', xl: '88vh' },
         }}
       >
-        <ConversationList
-          presence={true}
-          renderHeader={customRenderConversationHeader}
-          renderSearch={customRenderSearch}
-          renderItem={customRenderItem}
-          onItemClick={handleItemClick}
-          // style={{ backgroundColor: '#1C1F26' }}
-        />
-      </Box>
-      <Drawer
-        anchor="left"
-        open={openSidebar}
-        onClose={() => setOpenSidebar(false)}
-        sx={{ display: { xs: 'block', sm: 'none' } }}
-      >
-        <Box sx={{ width: 280 }}>
+        {' '}
+        <Box
+          sx={{
+            width: { sm: '280px', md: '320px' },
+            height: '100%',
+            display: { xs: 'none', sm: 'block' },
+            borderRight: '1px solid',
+            borderColor: theme.palette.divider,
+          }}
+        >
           <ConversationList
+            presence={true}
             renderHeader={customRenderConversationHeader}
             renderSearch={customRenderSearch}
             renderItem={customRenderItem}
-            onItemClick={(c) => {
-              handleItemClick(c);
-              setOpenSidebar(false);
-            }}
+            onItemClick={handleItemClick}
             // style={{ backgroundColor: '#1C1F26' }}
           />
         </Box>
-      </Drawer>
-      <Box
-        sx={{
-          flex: 1,
-          height: 'auto',
-        }}
-      >
+        <Drawer
+          anchor="left"
+          open={openSidebar}
+          onClose={() => setOpenSidebar(false)}
+          sx={{ display: { xs: 'block', sm: 'none' } }}
+        >
+          <Box sx={{ width: 280 }}>
+            <ConversationList
+              renderHeader={customRenderConversationHeader}
+              renderSearch={customRenderSearch}
+              renderItem={customRenderItem}
+              onItemClick={(c) => {
+                handleItemClick(c);
+                setOpenSidebar(false);
+              }}
+              // style={{ backgroundColor: '#1C1F26' }}
+            />
+          </Box>
+        </Drawer>
         <Box
-          onClick={() => setOpenSidebar(true)}
           sx={{
-            marginBottom: 1,
-            display: { xs: 'flex', sm: 'none' },
-            alignItems: 'center',
-            gap: 1,
-            width: '110px',
-            justifyContent: 'center',
-            border: '1px solid',
-            borderColor: theme.palette.grey[400],
-            backgroundColor: theme.palette.background.paper,
-            padding: '6px 12px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            marginLeft: 'auto',
+            flex: 1,
+            height: 'auto',
           }}
         >
-          <ChatBubbleOutline fontSize="small" />
-          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-            Chats
-          </Typography>
-        </Box>
+          <Box
+            onClick={() => setOpenSidebar(true)}
+            sx={{
+              marginBottom: 1,
+              display: { xs: 'flex', sm: 'none' },
+              alignItems: 'center',
+              gap: 1,
+              width: '110px',
+              justifyContent: 'center',
+              border: '1px solid',
+              borderColor: theme.palette.grey[400],
+              backgroundColor: theme.palette.background.paper,
+              padding: '6px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              marginLeft: 'auto',
+            }}
+          >
+            <ChatBubbleOutline fontSize="small" />
+            <Typography variant="body2" sx={{ fontWeight: 500 }}>
+              Chats
+            </Typography>
+          </Box>
 
-        <Chat
-          renderHeader={(msg) => {
-            const currentConversation = rootStore.conversationStore.currentCvs;
-            if (!currentConversation) return null;
-            console.log('currentConversation', currentConversation);
-            console.log('msg', msg);
+          <Chat
+            renderHeader={(msg) => {
+              const currentConversation =
+                rootStore.conversationStore.currentCvs;
+              if (!currentConversation) return null;
 
-            return (
-              <CustomChatHeader
-                conversationId={currentConversation.conversationId}
-                getUserProfileFromMap={getUserProfileFromMap}
-              />
-            );
-          }}
-          messageListProps={{
-            renderMessage: (msg: any) => {
-              if (msg.type === 'cmd') return null;
               return (
-                <ChatItem
-                  msg={msg}
-                  currentUser={currentUser}
+                <CustomChatHeader
+                  conversationId={currentConversation.conversationId}
                   getUserProfileFromMap={getUserProfileFromMap}
+                  currentUserId={currentUser}
+                  currentUserName={user?.name || currentUser}
+                  currentUserAvatar={user?.image}
                 />
               );
-            },
-          }}
-          // renderMessageInput={() => {
-          //   const c = rootStore.conversationStore.currentCvs;
-          //   if (!c) return null;
+            }}
+            messageListProps={{
+              renderMessage: (msg: any) => {
+                if (msg.type === 'cmd') return null;
+                return (
+                  <ChatItem
+                    msg={msg}
+                    currentUser={currentUser}
+                    getUserProfileFromMap={getUserProfileFromMap}
+                  />
+                );
+              },
+            }}
+            // renderMessageInput={() => {
+            //   const c = rootStore.conversationStore.currentCvs;
+            //   if (!c) return null;
 
-          //   return <CustomMessageInput conversationId={c.conversationId} />;
-          // }}
-        />
+            //   return <CustomMessageInput conversationId={c.conversationId} />;
+            // }}
+          />
+        </Box>
       </Box>
-    </Box>
+      {/* {incomingCall && (
+        <VoiceCallModal
+          open={true}
+          onClose={() => setIncomingCall(null)}
+          recipientId={incomingCall.from}
+          recipientName={incomingCall.callerName}
+          recipientAvatar={incomingCall.callerAvatar}
+          currentUserId={currentUser}
+          currentUserName={user?.name || currentUser}
+          currentUserAvatar={user?.image}
+        />
+      )} */}
+    </>
   );
 }

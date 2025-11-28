@@ -29,6 +29,7 @@
     "@stripe/stripe-js": "^4.3.0",
     "@tabler/icons-react": "^2.47.0",
     "agora-chat-uikit": "^2.0.0",
+    "agora-rtc-sdk-ng": "^4.24.1",
     "agora-token": "^2.0.5",
     "axios": "^1.6.7",
     "bcryptjs": "^3.0.3",
