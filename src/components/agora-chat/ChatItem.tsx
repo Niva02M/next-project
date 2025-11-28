@@ -1,5 +1,6 @@
 import { Avatar } from 'agora-chat-uikit';
 import React, { useState } from 'react';
+import CallMessageBubble from './CallMessageBubble';
 
 type RawMessage = {
   from?: string;
@@ -18,6 +19,7 @@ type RawMessage = {
   file_length?: number;
   length?: number;
   addr?: string;
+  ext?: any;
 };
 
 type UserProfile = {
@@ -52,6 +54,7 @@ function extractMessageProperties(msg: RawMessage): RawMessage {
       file_length: msg.file_length,
       length: msg.length,
       addr: msg.addr,
+      ext: msg.ext,
     };
   } catch {
     try {
@@ -362,6 +365,73 @@ const ChatItem = ({
     }
     return null;
   };
+
+  // CHECK FOR VOICE CALL MESSAGE BEFORE RENDERING ANYTHING ELSE
+  if (msg.ext?.type === 'VOICE_CALL_INVITE') {
+    console.log('✅ RENDERING CALL BUBBLE!');
+    return (
+      <>
+        <MediaPreviewModal
+          open={preview.open}
+          type={preview.type}
+          url={preview.url}
+          onClose={() => setPreview({ open: false, type: '', url: '' })}
+        />
+
+        <div
+          style={{
+            display: 'flex',
+            marginTop: '8px',
+            marginBottom: '8px',
+            justifyContent: isCurrentUser ? 'flex-end' : 'flex-start',
+            alignItems: 'flex-end',
+            gap: '8px',
+            padding: '0 16px',
+            width: '100%',
+            boxSizing: 'border-box',
+          }}
+        >
+          {!isCurrentUser && avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={displayName}
+              style={{
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <Avatar
+              style={{
+                width: 32,
+                height: 32,
+                display: isCurrentUser ? 'none' : 'block',
+              }}
+            >
+              {displayName?.charAt(0)?.toUpperCase() || 'U'}
+            </Avatar>
+          )}
+
+          <div
+            style={{
+              maxWidth: '60%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: isCurrentUser ? 'flex-end' : 'flex-start',
+            }}
+          >
+            <CallMessageBubble
+              message={msg}
+              currentUserId={currentUser}
+              getUserProfileFromMap={getUserProfileFromMap}
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
 
   const renderMessageContent = () => {
     if (safeMsg.type === 'txt') {
