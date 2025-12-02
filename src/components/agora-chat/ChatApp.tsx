@@ -1,12 +1,10 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import {
   useClient,
   Chat,
   ConversationList,
   rootStore,
-  Avatar,
   Message,
 } from 'agora-chat-uikit';
 import {
@@ -15,475 +13,106 @@ import {
   Alert,
   Typography,
   useTheme,
-  alpha,
   Drawer,
-  Skeleton,
 } from '@mui/material';
 import 'agora-chat-uikit/style.css';
-import { ChatBubbleOutline, CircleNotifications } from '@mui/icons-material';
+import { ChatBubbleOutline } from '@mui/icons-material';
 import { useSession } from 'next-auth/react';
 import ChatItem from './ChatItem';
 import CustomChatHeader from './ChatHeader';
-import VoiceCallModal from './SimpleVoiceCall';
-
-interface AgoraUser {
-  userId: string;
-  type: string;
-  created: number;
-  modified: number;
-  username: string;
-  activated: boolean;
-  nickname?: string;
-  avatarurl?: string;
-}
-
-type UserProfile = {
-  nickname: string;
-  avatarurl: string;
-};
+import { useChatConnection } from '../../hooks/useChatConnection';
+import { useChatUsers } from '../../hooks/useChatUsers';
+import { ConversationSearch } from './ConversationSearch';
+import { ConversationHeader } from './ConversationHeader';
+import { ConversationItem } from './ConversationItem';
+import { CreateGroupDialog } from './CreateGroupDialog';
 
 export default function ChatApp({ currentUser }: { currentUser: string }) {
   const theme = useTheme();
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [createGroupOpen, setCreateGroupOpen] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
 
   const { data: session } = useSession();
   const user = session?.user;
   if (!session?.user) return null;
 
   const client = useClient();
-  const [token, setToken] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [isConnected, setIsConnected] = useState(false);
-  const [allUsers, setAllUsers] = useState<AgoraUser[]>([]);
-  const [userProfilesMap, setUserProfilesMap] = useState<
-    Map<string, UserProfile>
-  >(new Map());
-  const [incomingCall, setIncomingCall] = useState<{
-    from: string;
-    callerName: string;
-    callerAvatar?: string;
-  } | null>(null);
-  useEffect(() => {
-    axios
-      .post('/api/agora/token', { userId: currentUser })
-      .then((res) => {
-        setToken(res.data.token);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Token error:', err.response?.data || err.message);
-        setError('Failed to authenticate. Please try again.');
-        setLoading(false);
-      });
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!client || !token) return;
-    client
-      .open({ user: currentUser, accessToken: token })
-      .then(() => {
-        setIsConnected(true);
-      })
-      .catch((err: unknown) => {
-        console.error('Connection error:', err);
-        setError('Failed to connect to chat service.');
-      });
-  }, [client, token, currentUser]);
-  useEffect(() => {
-    if (!isConnected) return;
-
-    console.log('🎧 Setting up global incoming call listener');
-
-    const handleIncomingCall = (message: any) => {
-      console.log('🔔 Global listener received message:', message);
-
-      if (
-        message.customEvent === 'VOICE_CALL' &&
-        message.customExts?.action === 'voice-call-request'
-      ) {
-        const from = message.from;
-        const callerName = message.customExts?.callerName || from;
-        const callerAvatar = message.customExts?.callerAvatar;
-
-        console.log('🔔 Incoming call from:', from, 'caller:', callerName);
-
-        setIncomingCall({
-          from,
-          callerName,
-          callerAvatar,
-        });
-      }
-    };
-
-    rootStore.client.addEventHandler('INCOMING_CALL', {
-      onCustomMessage: handleIncomingCall,
-    });
-
-    console.log('✅ Global incoming call listener registered');
-
-    return () => {
-      console.log('🔇 Removing global incoming call listener');
-      rootStore.client.removeEventHandler('INCOMING_CALL');
-    };
-  }, [isConnected]);
-  const fetchUsersWithProfiles = async () => {
-    const res = await axios.get('/api/agora/users');
-    const userList = res.data.entities || [];
-
-    const users: AgoraUser[] = [];
-    const profilesMap = new Map<string, UserProfile>();
-
-    for (const u of userList) {
-      let meta;
-      try {
-        const metaRes = await axios.get(
-          `/api/agora/get-user?userId=${u.username}`,
-        );
-        meta = metaRes.data.data;
-      } catch {
-        meta = null;
-      }
-
-      const userProfile: UserProfile = {
-        nickname: meta?.nickname || u.username,
-        avatarurl: meta?.avatarurl || '',
-      };
-
-      const fullUser: AgoraUser = {
-        userId: u.username,
-        type: u.type,
-        created: u.created,
-        modified: u.modified,
-        activated: u.activated,
-        username: u.username,
-        nickname: userProfile.nickname,
-        avatarurl: userProfile.avatarurl,
-      };
-
-      users.push(fullUser);
-      profilesMap.set(u.username, userProfile);
-    }
-
-    setUserProfilesMap(profilesMap);
-    return users;
-  };
-
-  useEffect(() => {
-    fetchUsersWithProfiles().then(setAllUsers);
-  }, []);
-
-  const getUserProfileFromMap = (id: string): UserProfile => {
-    return userProfilesMap.get(id) || { nickname: id, avatarurl: '' };
-  };
+  const { loading, error, isConnected } = useChatConnection(currentUser);
+  const { allUsers, getUserProfileFromMap } = useChatUsers();
 
   const handleItemClick = (conversation: any) => {
     rootStore.conversationStore.setCurrentCvs(conversation);
   };
-  const customRenderSearch = () => {
-    const [query, setQuery] = useState('');
-    const [matches, setMatches] = useState<any[]>([]);
 
-    const handleSelect = (user: any) => {
-      const conversation = {
-        chatType: 'singleChat' as const,
-        conversationId: user.userId,
-        name: user.nickname || user.userId,
-        lastMessage: {} as Message, // type cast if allowed
-        unreadCount: 0,
+  const handleCreateGroup = async (
+    groupName: string,
+    groupDescription: string,
+    selectedMembers: string[],
+  ) => {
+    try {
+      const options = {
+        data: {
+          groupname: groupName,
+          desc: groupDescription,
+          members: selectedMembers,
+          public: false,
+          approval: false,
+          allowinvites: true,
+          inviteNeedConfirm: false,
+        },
       };
-      //@ts-ignore
-      rootStore?.conversationStore?.addConversation(conversation);
-      //@ts-ignore
-      rootStore?.conversationStore?.setCurrentCvs(conversation);
 
-      setQuery('');
-      setMatches([]);
-    };
+      const group = await client.createGroup(options);
+      console.log('Group created:', group);
 
-    return (
-      <Box sx={{ p: 2, position: 'relative', width: '100%' }}>
-        <input
-          placeholder="Search by username or name..."
-          value={query}
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            border: '1px solid #ddd',
-            borderRadius: '12px',
-            fontSize: '14px',
-            outline: 'none',
-            // backgroundColor: '#1C1F26',
-            // color: '#fff'
-          }}
-          onChange={(e) => {
-            const value = e.target.value;
-            setQuery(value);
+      // Don't manually create conversation - Agora creates it automatically
+      // Just switch to the new group conversation
+      const groupId = group.data.groupid;
 
-            if (!value.trim()) {
-              setMatches([]);
-              return;
-            }
+      // Wait a bit for Agora to create the conversation
+      setTimeout(() => {
+        const conversations = rootStore.conversationStore.conversationList;
+        const groupConversation = conversations.find(
+          (c: any) => c.conversationId === groupId,
+        );
 
-            const filtered = allUsers.filter((u) => {
-              const q = value.toLowerCase();
-              return (
-                u.userId.toLowerCase().includes(q) ||
-                u.nickname?.toLowerCase().includes(q)
-              );
-            });
+        if (groupConversation) {
+          rootStore.conversationStore.setCurrentCvs(groupConversation);
+        }
+      }, 500);
 
-            setMatches(filtered);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              const value = query.trim();
-              if (!value) return;
-
-              const foundUser = allUsers.find(
-                (u) =>
-                  u.userId.toLowerCase().includes(value.toLowerCase()) ||
-                  u.nickname?.toLowerCase().includes(value.toLowerCase()),
-              );
-
-              const targetId = foundUser?.userId || value;
-              const targetName = foundUser?.nickname || value;
-
-              const conversation = {
-                chatType: 'singleChat' as const,
-                conversationId: targetId,
-                name: targetName,
-                lastMessage: {} as Message, // type cast if allowed
-                unreadCount: 0,
-              };
-              //@ts-ignore
-              rootStore.conversationStore.addConversation(conversation);
-              //@ts-ignore
-              rootStore.conversationStore.setCurrentCvs(conversation);
-
-              setQuery('');
-              setMatches([]);
-            }
-          }}
-        />
-
-        {matches.length > 0 && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '68px',
-              left: 0,
-              right: 0,
-              width: '100%',
-              background: '#fff',
-              borderRadius: '8px',
-              maxHeight: '200px',
-              overflowY: 'auto',
-              zIndex: 20,
-            }}
-          >
-            {matches.map((u) => (
-              <Box
-                key={u.userId}
-                sx={{
-                  display: 'flex',
-                  gap: '8px',
-                  alignItems: 'center',
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  borderBottom: '1px solid #f1f1f1',
-                }}
-                onClick={() => handleSelect(u)}
-              >
-                {' '}
-                <Avatar
-                  src={u.avatarurl}
-                  alt={u.nickname}
-                  style={{ width: 44, height: 44 }}
-                />{' '}
-                <Box>
-                  <Typography variant="body1" fontWeight={600} noWrap>
-                    {u.nickname ? `${u.nickname} ` : u.userId}
-                  </Typography>{' '}
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={200}
-                    noWrap
-                    fontSize={12}
-                  >
-                    {u.userId}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Box>
-    );
+      setCreateGroupOpen(false);
+    } catch (error) {
+      console.error('Error creating group:', error);
+      alert('Failed to create group. Please try again.');
+    }
   };
 
-  const customRenderItem = (conversation: any) => {
-    const profile = getUserProfileFromMap(conversation.conversationId);
-    const isOnline = conversation.isOnline === true;
-    console.log('profile', profile);
-    const displayName =
-      profile.nickname && !profile.nickname.match(/^[0-9a-f]{24}$/)
-        ? profile.nickname
-        : null;
-    // : profile.nickname.slice(0, 7) + '...';
-    const lastMessagePreview = (() => {
-      if (!conversation.lastMessage) return 'Start chatting';
-      const { type, msg } = conversation.lastMessage;
-      if (type === 'txt') return msg || '';
-      if (type) return `[${type}]`;
-      return 'Start a new Conversation ...';
-    })();
+  const customRenderSearch = () => (
+    <ConversationSearch
+      allUsers={allUsers}
+      onCreateGroupClick={() => setCreateGroupOpen(true)}
+    />
+  );
 
-    return (
-      <Box
-        onClick={() => handleItemClick(conversation)}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1.5,
-          p: 2,
-          cursor: 'pointer',
-          bgcolor:
-            rootStore.conversationStore.currentCvs?.conversationId ===
-            conversation.conversationId
-              ? alpha(theme.palette.primary.main, 0.08)
-              : 'transparent',
-          '&:hover': {
-            bgcolor: alpha(theme.palette.primary.main, 0.08),
-          },
-          // color: '#fff'
-        }}
-      >
-        <Box position="relative" width={44} height={44}>
-          {profile.avatarurl ? (
-            <Avatar
-              src={profile.avatarurl}
-              alt={profile.nickname}
-              style={{ width: 44, height: 44 }}
-            />
-          ) : (
-            <Avatar
-              style={{
-                backgroundColor: theme.palette.primary.main,
-                width: 44,
-                height: 44,
-                fontSize: '16px',
-                fontWeight: 600,
-              }}
-            >
-              {profile.nickname.charAt(0).toUpperCase()}
-            </Avatar>
-          )}
-
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 2,
-              right: 2,
-              width: 10,
-              height: 10,
-              borderRadius: '50%',
-              bgcolor: isOnline ? '#2ecc71' : '#bdc3c7',
-              border: '2px solid white',
-            }}
-          />
-        </Box>
-
-        <Box flex={1} minWidth={0}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={0.5}
-          >
-            <Typography variant="body1" fontWeight={600} noWrap>
-              {displayName ? (
-                displayName
-              ) : (
-                <Skeleton variant="text" width={120} />
-              )}
-            </Typography>
-            {conversation.unreadCount > 0 && (
-              <Box
-                sx={{
-                  minWidth: 20,
-                  height: 20,
-                  borderRadius: '10px',
-                  bgcolor: theme.palette.error.main,
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  px: 0.5,
-                }}
-              >
-                {conversation.unreadCount}
-              </Box>
-            )}
-          </Box>
-          {conversation.lastMessage && (
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {lastMessagePreview}
-            </Typography>
-          )}
-        </Box>
-      </Box>
-    );
-  };
+  const customRenderItem = (conversation: any) => (
+    <ConversationItem
+      conversation={conversation}
+      getUserProfileFromMap={getUserProfileFromMap}
+      onClick={handleItemClick}
+    />
+  );
 
   const customRenderConversationHeader = () => (
-    <Box
-      sx={{
-        padding: { xs: '14px', sm: '20px' },
-        // color: '#fff'
-      }}
-      // style={{ backgroundColor: '#1C1F26', color: '#fff', borderTopLeftRadius: '24px' }}
-    >
-      <Box display="flex" alignItems="center" gap={1.5}>
-        {user?.image ? (
-          <Avatar
-            src={user.image}
-            alt={user?.name || currentUser}
-            style={{ width: 44, height: 44 }}
-          />
-        ) : (
-          <Avatar
-            style={{
-              backgroundColor: theme.palette.primary.main,
-              width: 44,
-              height: 44,
-              fontWeight: 600,
-              fontSize: '18px',
-            }}
-          >
-            {currentUser.charAt(0).toUpperCase()}
-          </Avatar>
-        )}
-        <Box flex={1}>
-          <Typography variant="h6" fontWeight={600}>
-            {user?.name || currentUser}
-          </Typography>
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <CircleNotifications
-              sx={{
-                fontSize: 10,
-                color: isConnected ? '#4caf50' : '#bdbdbd',
-              }}
-            />
-            <Typography variant="caption" color="text.secondary">
-              {isConnected ? 'Online' : 'Connecting...'}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+    <ConversationHeader
+      currentUser={currentUser}
+      userName={user?.name}
+      userImage={user?.image}
+      isConnected={isConnected}
+      tabValue={tabValue}
+      onTabChange={(e, newValue) => setTabValue(newValue)}
+    />
   );
 
   if (loading) {
@@ -510,12 +139,8 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
   return (
     <>
       <Box
-        sx={{
-          display: 'flex',
-          height: { xs: '78vh', lg: '84vh', xl: '88vh' },
-        }}
+        sx={{ display: 'flex', height: { xs: '78vh', lg: '84vh', xl: '88vh' } }}
       >
-        {' '}
         <Box
           sx={{
             width: { sm: '280px', md: '320px' },
@@ -531,9 +156,9 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
             renderSearch={customRenderSearch}
             renderItem={customRenderItem}
             onItemClick={handleItemClick}
-            // style={{ backgroundColor: '#1C1F26' }}
           />
         </Box>
+
         <Drawer
           anchor="left"
           open={openSidebar}
@@ -549,16 +174,11 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
                 handleItemClick(c);
                 setOpenSidebar(false);
               }}
-              // style={{ backgroundColor: '#1C1F26' }}
             />
           </Box>
         </Drawer>
-        <Box
-          sx={{
-            flex: 1,
-            height: 'auto',
-          }}
-        >
+
+        <Box sx={{ flex: 1, height: 'auto' }}>
           <Box
             onClick={() => setOpenSidebar(true)}
             sx={{
@@ -592,6 +212,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
               return (
                 <CustomChatHeader
                   conversationId={currentConversation.conversationId}
+                  chatType={currentConversation.chatType}
                   getUserProfileFromMap={getUserProfileFromMap}
                   currentUserId={currentUser}
                   currentUserName={user?.name || currentUser}
@@ -611,27 +232,18 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
                 );
               },
             }}
-            // renderMessageInput={() => {
-            //   const c = rootStore.conversationStore.currentCvs;
-            //   if (!c) return null;
-
-            //   return <CustomMessageInput conversationId={c.conversationId} />;
-            // }}
           />
         </Box>
       </Box>
-      {/* {incomingCall && (
-        <VoiceCallModal
-          open={true}
-          onClose={() => setIncomingCall(null)}
-          recipientId={incomingCall.from}
-          recipientName={incomingCall.callerName}
-          recipientAvatar={incomingCall.callerAvatar}
-          currentUserId={currentUser}
-          currentUserName={user?.name || currentUser}
-          currentUserAvatar={user?.image}
-        />
-      )} */}
+
+      <CreateGroupDialog
+        open={createGroupOpen}
+        onClose={() => setCreateGroupOpen(false)}
+        onCreateGroup={handleCreateGroup}
+        allUsers={allUsers}
+        currentUser={currentUser}
+        getUserProfileFromMap={getUserProfileFromMap}
+      />
     </>
   );
 }

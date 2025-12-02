@@ -1,30 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
   Menu,
   MenuItem,
-  Skeleton,
   Typography,
   useTheme,
 } from '@mui/material';
-import { MoreVert, Delete, Phone } from '@mui/icons-material';
-import { Avatar, rootStore } from 'agora-chat-uikit';
+import { MoreVert, Delete, Phone, ExitToApp } from '@mui/icons-material';
+import { Avatar, rootStore, useClient } from 'agora-chat-uikit';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import {
   DELETE_CHAT,
   DELETE_CHAT_FAILED,
 } from 'components/authentication/constants';
 import SimpleVoiceCall from './SimpleVoiceCall';
+import axios from 'axios';
 
-type UserProfile = {
-  nickname: string;
-  avatarurl: string;
-};
+import { UserProfile } from '../../types/chat';
 
 interface CustomChatHeaderProps {
   conversationId: string;
-  getUserProfileFromMap: (username: string) => UserProfile;
+  chatType?: 'singleChat' | 'groupChat' | 'chatRoom';
+  getUserProfileFromMap: (id: string) => UserProfile;
   currentUserId: string;
   currentUserName: string;
   currentUserAvatar?: string;
@@ -34,6 +32,7 @@ interface CustomChatHeaderProps {
 
 export default function CustomChatHeader({
   conversationId,
+  chatType,
   getUserProfileFromMap,
   currentUserId,
   currentUserName,
@@ -41,17 +40,40 @@ export default function CustomChatHeader({
   onDelete,
 }: CustomChatHeaderProps) {
   const theme = useTheme();
+  const client = useClient();
+  const [groupName, setGroupName] = useState<string>('');
+  const [groupMemberCount, setGroupMemberCount] = useState<number>(0);
+
+  const isGroup = chatType === 'groupChat';
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [callModalOpen, setCallModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
+  // Fetch group details if it's a group chat
+  useEffect(() => {
+    if (isGroup && conversationId) {
+      client
+        .getGroupInfo({ groupId: conversationId })
+        .then((res: any) => {
+          setGroupName(res.data[0]?.name || conversationId);
+          setGroupMemberCount(res.data[0]?.affiliations_count || 0);
+        })
+        .catch((err: any) => {
+          console.error('Error fetching group info:', err);
+          setGroupName(conversationId);
+        });
+    }
+  }, [conversationId, isGroup, client]);
+
   const userProfile = getUserProfileFromMap(conversationId);
 
-  const displayName =
-    userProfile?.nickname && !userProfile.nickname.match(/^[0-9a-f]{24}$/)
+  const displayName = isGroup
+    ? groupName || 'Group Chat'
+    : userProfile?.nickname && !userProfile.nickname.match(/^[0-9a-f]{24}$/)
       ? userProfile.nickname
       : 'Unknown User';
+
   const avatarUrl = userProfile?.avatarurl || '';
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -85,13 +107,48 @@ export default function CustomChatHeader({
     }
   };
 
+  const handleLeaveGroup = async () => {
+    if (!window.confirm('Are you sure you want to leave this group?')) {
+      handleClose();
+      return;
+    }
+
+    try {
+      // Call API endpoint to leave the group
+      const response = await axios.post('/api/agora/group/leave', {
+        groupId: conversationId,
+      });
+
+      console.log('Left group successfully:', response.data);
+
+      // Remove from local conversation store
+      rootStore.conversationStore.deleteConversation({
+        conversationId,
+        chatType: 'groupChat',
+      });
+
+      successSnack('Successfully left the group');
+      handleClose();
+      onDelete?.();
+    } catch (error: any) {
+      console.error('Error leaving group:', error);
+      const errorMessage =
+        error.response?.data?.error || error.message || 'Unknown error';
+      errorSnack('Failed to leave group: ' + errorMessage);
+      handleClose();
+    }
+  };
+
   const handleVoiceCall = async () => {
     try {
       console.log('📞 Starting call to:', conversationId);
 
-      setCallModalOpen(true);
+      // For groups, use groupId as channel, for single chats use sorted userIds
+      const channelName = isGroup
+        ? `group_${conversationId}_call`
+        : [currentUserId, conversationId].sort().join('_call');
 
-      const channelName = [currentUserId, conversationId].sort().join('_call');
+      setCallModalOpen(true);
 
       const msgId = `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -99,7 +156,7 @@ export default function CustomChatHeader({
         id: msgId,
         type: 'txt',
         to: conversationId,
-        chatType: 'singleChat',
+        chatType: isGroup ? 'groupChat' : 'singleChat',
         msg: `📞 Voice Call - Click to join`,
         ext: {
           type: 'VOICE_CALL_INVITE',
@@ -107,6 +164,7 @@ export default function CustomChatHeader({
           callerName: currentUserName,
           callerAvatar: currentUserAvatar,
           callerId: currentUserId,
+          isGroupCall: isGroup,
         },
       };
 
@@ -128,24 +186,37 @@ export default function CustomChatHeader({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          padding: '16px 20px',
-          bgcolor:
-            theme.palette.mode === 'dark' ? theme.palette.dark?.dark : '#fff',
-          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)',
+          gap: 2,
+          p: 2,
+          borderBottom: '1px solid',
+          borderColor: theme.palette.divider,
+          bgcolor: theme.palette.background.paper,
         }}
       >
-        {avatarUrl ? (
+        {isGroup ? (
           <Avatar
-            src={avatarUrl}
+            style={{
+              backgroundColor: theme.palette.secondary.main,
+              width: 44,
+              height: 44,
+              fontSize: '16px',
+              fontWeight: 600,
+            }}
+          >
+            {displayName.charAt(0).toUpperCase() || 'G'}
+          </Avatar>
+        ) : userProfile?.avatarurl ? (
+          <Avatar
+            src={userProfile.avatarurl}
             alt={displayName}
-            style={{ width: 40, height: 40 }}
+            style={{ width: 44, height: 44 }}
           />
         ) : (
           <Avatar
             style={{
               backgroundColor: theme.palette.primary.main,
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               fontSize: '16px',
               fontWeight: 600,
             }}
@@ -154,17 +225,26 @@ export default function CustomChatHeader({
           </Avatar>
         )}
 
-        <Box flex={1} ml={2}>
-          <Typography variant="h6" fontWeight={600}>
-            {displayName ? (
-              displayName
-            ) : (
-              <Skeleton variant="text" width={120} />
-            )}
-          </Typography>
-        </Box>
+        {isGroup ? (
+          <Box flex={1}>
+            <Typography variant="h6" fontWeight={600} noWrap>
+              {groupName || 'Group Chat'}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {groupMemberCount > 0 ? `${groupMemberCount} members` : 'Group'}
+            </Typography>
+          </Box>
+        ) : (
+          <Box flex={1}>
+            <Typography variant="h6" fontWeight={600} noWrap>
+              {displayName}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Active now
+            </Typography>
+          </Box>
+        )}
 
-        {/* Call button */}
         <Box display="flex" gap={1} alignItems="center">
           <IconButton
             onClick={handleVoiceCall}
@@ -179,7 +259,7 @@ export default function CustomChatHeader({
             <Phone />
           </IconButton>
 
-          <IconButton onClick={handleClick} size="small" sx={{ ml: 1 }}>
+          <IconButton onClick={handleClick} size="small">
             <MoreVert />
           </IconButton>
         </Box>
@@ -191,10 +271,23 @@ export default function CustomChatHeader({
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <MenuItem onClick={handleDelete} sx={{ color: 'error.main', gap: 1 }}>
-            <Delete fontSize="small" />
-            Delete Conversation
-          </MenuItem>
+          {isGroup ? (
+            <MenuItem
+              onClick={handleLeaveGroup}
+              sx={{ color: 'error.main', gap: 1 }}
+            >
+              <ExitToApp fontSize="small" />
+              Leave Group
+            </MenuItem>
+          ) : (
+            <MenuItem
+              onClick={handleDelete}
+              sx={{ color: 'error.main', gap: 1 }}
+            >
+              <Delete fontSize="small" />
+              Delete Conversation
+            </MenuItem>
+          )}
         </Menu>
       </Box>
 
@@ -206,6 +299,12 @@ export default function CustomChatHeader({
         recipientAvatar={avatarUrl}
         currentUserId={currentUserId}
         isIncoming={false}
+        isGroupCall={isGroup}
+        channelName={
+          isGroup
+            ? `group_${conversationId}_call`
+            : [currentUserId, conversationId].sort().join('_call')
+        }
       />
     </>
   );

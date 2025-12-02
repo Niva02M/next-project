@@ -9,7 +9,7 @@ import {
   useTheme,
   Button,
 } from '@mui/material';
-import { CallEnd, Mic, MicOff } from '@mui/icons-material';
+import { CallEnd, Mic, MicOff, Group } from '@mui/icons-material';
 import AgoraRTC, {
   IAgoraRTCClient,
   IMicrophoneAudioTrack,
@@ -24,6 +24,8 @@ interface SimpleVoiceCallProps {
   recipientAvatar?: string;
   currentUserId: string;
   isIncoming?: boolean;
+  isGroupCall?: boolean;
+  channelName?: string; // Optional custom channel name
 }
 
 export default function SimpleVoiceCall({
@@ -34,6 +36,8 @@ export default function SimpleVoiceCall({
   recipientAvatar,
   currentUserId,
   isIncoming = false,
+  isGroupCall = false,
+  channelName: providedChannelName,
 }: SimpleVoiceCallProps) {
   const theme = useTheme();
   const [client, setClient] = useState<IAgoraRTCClient | null>(null);
@@ -46,14 +50,19 @@ export default function SimpleVoiceCall({
   const [callDuration, setCallDuration] = useState(0);
   const callTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Channel name: use sorted IDs to ensure both users join same channel
-  const channelName = [currentUserId, recipientId].sort().join('_call');
+  // Use provided channel name or generate one
+  const channelName =
+    providedChannelName ||
+    (isGroupCall
+      ? `group_${recipientId}_call`
+      : [currentUserId, recipientId].sort().join('_call'));
 
   const joinCall = async () => {
     try {
       setIsConnecting(true);
 
       console.log('🎤 Joining call channel:', channelName);
+      console.log('🎤 Is group call:', isGroupCall);
 
       // Get RTC token from server
       const tokenResponse = await axios.post('/api/agora/rtc-token', {
@@ -77,6 +86,7 @@ export default function SimpleVoiceCall({
       // Set up event listeners
       agoraClient.on('user-joined', (user) => {
         console.log('👤 User joined:', user.uid);
+        setRemoteUserCount((prev) => prev + 1);
       });
 
       agoraClient.on('user-published', async (user, mediaType) => {
@@ -85,7 +95,6 @@ export default function SimpleVoiceCall({
           await agoraClient.subscribe(user, mediaType);
 
           if (mediaType === 'audio') {
-            setRemoteUserCount((prev) => prev + 1);
             user.audioTrack?.play();
             console.log('🔊 Playing remote audio from:', user.uid);
           }
@@ -108,8 +117,16 @@ export default function SimpleVoiceCall({
 
       setClient(agoraClient);
 
-      // Join the channel - use 0 as UID (token was generated with uid=0)
-      const joinedUid = await agoraClient.join(appId, channelName, rtcToken, 0);
+      // Join the channel - use currentUserId as UID for better tracking
+      const uid = currentUserId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+      console.log('🎤 Joining with UID:', uid);
+
+      const joinedUid = await agoraClient.join(
+        appId,
+        channelName,
+        rtcToken,
+        uid,
+      );
       console.log('✅ Joined channel with UID:', joinedUid);
 
       // Create and publish audio track
@@ -153,12 +170,21 @@ export default function SimpleVoiceCall({
       // Stop timer
       if (callTimerRef.current) {
         clearInterval(callTimerRef.current);
+        callTimerRef.current = null;
       }
+
+      // Reset state
+      setCallDuration(0);
+      setRemoteUserCount(0);
+      setIsConnected(false);
+      setIsConnecting(false);
+      setIsAudioMuted(false);
 
       // Stop and close audio track
       if (localAudioTrack) {
         localAudioTrack.stop();
         localAudioTrack.close();
+        setLocalAudioTrack(null);
       }
 
       // Leave channel
@@ -166,6 +192,7 @@ export default function SimpleVoiceCall({
         await client.unpublish();
         await client.leave();
         client.removeAllListeners();
+        setClient(null);
       }
 
       console.log('✅ Call ended');
@@ -193,14 +220,12 @@ export default function SimpleVoiceCall({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Auto-join if outgoing call
   useEffect(() => {
     if (open && !isIncoming) {
       joinCall();
     }
   }, [open]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (callTimerRef.current) {
@@ -232,7 +257,6 @@ export default function SimpleVoiceCall({
       }}
     >
       <DialogContent sx={{ p: 4, textAlign: 'center' }}>
-        {/* Incoming Call - Not Connected Yet */}
         {isIncoming && !isConnected && !isConnecting && (
           <Box
             display="flex"
@@ -241,24 +265,45 @@ export default function SimpleVoiceCall({
             gap={3}
           >
             <Typography variant="h6" color="text.secondary">
-              Incoming Voice Call
+              {isGroupCall ? 'Incoming Group Call' : 'Incoming Voice Call'}
             </Typography>
 
-            <Avatar
-              src={recipientAvatar}
-              sx={{
-                width: 100,
-                height: 100,
-                bgcolor: theme.palette.primary.main,
-                fontSize: '40px',
-              }}
-            >
-              {recipientName.charAt(0).toUpperCase()}
-            </Avatar>
+            <Box position="relative">
+              <Avatar
+                src={recipientAvatar}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  bgcolor: theme.palette.primary.main,
+                  fontSize: '40px',
+                }}
+              >
+                {recipientName.charAt(0).toUpperCase()}
+              </Avatar>
+              {isGroupCall && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    bgcolor: theme.palette.secondary.main,
+                    borderRadius: '50%',
+                    p: 0.5,
+                  }}
+                >
+                  <Group sx={{ color: 'white', fontSize: 20 }} />
+                </Box>
+              )}
+            </Box>
 
             <Typography variant="h5" fontWeight={600}>
               {recipientName}
             </Typography>
+            {isGroupCall && (
+              <Typography variant="body2" color="text.secondary">
+                Group Voice Call
+              </Typography>
+            )}
 
             <Box display="flex" gap={2} mt={2}>
               <Button
@@ -281,7 +326,6 @@ export default function SimpleVoiceCall({
           </Box>
         )}
 
-        {/* Connecting */}
         {isConnecting && (
           <Box
             display="flex"
@@ -289,23 +333,39 @@ export default function SimpleVoiceCall({
             alignItems="center"
             gap={3}
           >
-            <Avatar
-              src={recipientAvatar}
-              sx={{
-                width: 100,
-                height: 100,
-                bgcolor: theme.palette.primary.main,
-                fontSize: '40px',
-              }}
-            >
-              {recipientName.charAt(0).toUpperCase()}
-            </Avatar>
+            <Box position="relative">
+              <Avatar
+                src={recipientAvatar}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  bgcolor: theme.palette.primary.main,
+                  fontSize: '40px',
+                }}
+              >
+                {recipientName.charAt(0).toUpperCase()}
+              </Avatar>
+              {isGroupCall && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    bgcolor: theme.palette.secondary.main,
+                    borderRadius: '50%',
+                    p: 0.5,
+                  }}
+                >
+                  <Group sx={{ color: 'white', fontSize: 20 }} />
+                </Box>
+              )}
+            </Box>
 
             <Typography variant="h5" fontWeight={600}>
               {recipientName}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Connecting...
+              {isGroupCall ? 'Connecting to group call...' : 'Connecting...'}
             </Typography>
 
             <IconButton
@@ -324,7 +384,6 @@ export default function SimpleVoiceCall({
           </Box>
         )}
 
-        {/* Connected */}
         {isConnected && (
           <Box
             display="flex"
@@ -332,17 +391,33 @@ export default function SimpleVoiceCall({
             alignItems="center"
             gap={3}
           >
-            <Avatar
-              src={recipientAvatar}
-              sx={{
-                width: 100,
-                height: 100,
-                bgcolor: theme.palette.primary.main,
-                fontSize: '40px',
-              }}
-            >
-              {recipientName.charAt(0).toUpperCase()}
-            </Avatar>
+            <Box position="relative">
+              <Avatar
+                src={recipientAvatar}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  bgcolor: theme.palette.primary.main,
+                  fontSize: '40px',
+                }}
+              >
+                {recipientName.charAt(0).toUpperCase()}
+              </Avatar>
+              {isGroupCall && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    bgcolor: theme.palette.secondary.main,
+                    borderRadius: '50%',
+                    p: 0.5,
+                  }}
+                >
+                  <Group sx={{ color: 'white', fontSize: 20 }} />
+                </Box>
+              )}
+            </Box>
 
             <Box textAlign="center">
               <Typography variant="h5" fontWeight={600}>
@@ -355,9 +430,9 @@ export default function SimpleVoiceCall({
                 variant="caption"
                 color={remoteUserCount > 0 ? 'success.main' : 'text.secondary'}
               >
-                {remoteUserCount > 0
-                  ? '● Connected'
-                  : '○ Waiting for other user...'}
+                {isGroupCall
+                  ? `${remoteUserCount > 0 ? `● ${remoteUserCount} ${remoteUserCount === 1 ? 'person' : 'people'} in call` : '○ Waiting for others...'}`
+                  : `${remoteUserCount > 0 ? '● Connected' : '○ Waiting for other user...'}`}
               </Typography>
             </Box>
 
