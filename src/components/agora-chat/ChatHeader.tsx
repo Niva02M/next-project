@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
   Menu,
   MenuItem,
-  Skeleton,
   Typography,
   useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Divider,
+  Chip,
 } from '@mui/material';
-import { MoreVert, Delete, Phone } from '@mui/icons-material';
-import { Avatar, rootStore } from 'agora-chat-uikit';
+import {
+  MoreVert,
+  Delete,
+  Phone,
+  ExitToApp,
+  Info,
+  Close,
+} from '@mui/icons-material';
+import { Avatar, rootStore, useClient } from 'agora-chat-uikit';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import {
   DELETE_CHAT,
   DELETE_CHAT_FAILED,
 } from 'components/authentication/constants';
 import SimpleVoiceCall from './SimpleVoiceCall';
-
-type UserProfile = {
-  nickname: string;
-  avatarurl: string;
-};
+import { UserProfile } from '../../types/chat';
 
 interface CustomChatHeaderProps {
   conversationId: string;
-  getUserProfileFromMap: (username: string) => UserProfile;
+  chatType?: 'singleChat' | 'groupChat' | 'chatRoom';
+  getUserProfileFromMap: (id: string) => UserProfile;
   currentUserId: string;
   currentUserName: string;
   currentUserAvatar?: string;
@@ -32,8 +46,14 @@ interface CustomChatHeaderProps {
   openSidebar?: () => void;
 }
 
+interface GroupMember {
+  member: string;
+  owner?: boolean;
+}
+
 export default function CustomChatHeader({
   conversationId,
+  chatType,
   getUserProfileFromMap,
   currentUserId,
   currentUserName,
@@ -41,17 +61,63 @@ export default function CustomChatHeader({
   onDelete,
 }: CustomChatHeaderProps) {
   const theme = useTheme();
+  const client = useClient();
+  const [groupName, setGroupName] = useState<string>('');
+  const [groupMemberCount, setGroupMemberCount] = useState<number>(0);
+  const [groupMembers, setGroupMembers] = useState<GroupMember[]>([]);
+  const [groupOwnerUserId, setGroupOwnerUserId] = useState<string>('');
+
+  const isGroup = chatType === 'groupChat';
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [callModalOpen, setCallModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const open = Boolean(anchorEl);
+  const [isGroupOwner, setIsGroupOwner] = useState(false);
 
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (isGroup && conversationId) {
+        try {
+          const groupInfo = await client.getGroupInfo({
+            groupId: conversationId,
+          });
+          const owner = groupInfo.data[0]?.owner;
+          setIsGroupOwner(owner === currentUserId);
+        } catch (error) {
+          console.error('Error checking group ownership:', error);
+        }
+      }
+    };
+
+    checkOwnership();
+  }, [conversationId, isGroup, client, currentUserId]);
+  useEffect(() => {
+    if (isGroup && conversationId) {
+      client
+        .getGroupInfo({ groupId: conversationId })
+        .then((res: any) => {
+          const groupData = res.data[0];
+          setGroupName(groupData?.name || conversationId);
+          setGroupMemberCount(groupData?.affiliations_count || 0);
+          setGroupMembers(groupData?.affiliations || []);
+          setGroupOwnerUserId(groupData?.owner || '');
+          console.log('Group data:', groupData);
+        })
+        .catch((err: any) => {
+          console.error('Error fetching group info:', err);
+          setGroupName(conversationId);
+        });
+    }
+  }, [conversationId, isGroup, client]);
   const userProfile = getUserProfileFromMap(conversationId);
 
-  const displayName =
-    userProfile?.nickname && !userProfile.nickname.match(/^[0-9a-f]{24}$/)
+  const displayName = isGroup
+    ? groupName || 'Group Chat'
+    : userProfile?.nickname && !userProfile.nickname.match(/^[0-9a-f]{24}$/)
       ? userProfile.nickname
       : 'Unknown User';
+
   const avatarUrl = userProfile?.avatarurl || '';
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -60,6 +126,11 @@ export default function CustomChatHeader({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleViewDetails = () => {
+    handleClose();
+    setDetailsModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -85,13 +156,133 @@ export default function CustomChatHeader({
     }
   };
 
+  const handleLeaveGroup = async () => {
+    handleClose();
+
+    try {
+      if (!client || !client.isOpened()) {
+        alert('Chat connection lost. Please refresh the page.');
+        return;
+      }
+
+      const groupInfo = await client.getGroupInfo({ groupId: conversationId });
+      const groupData = groupInfo.data[0];
+      const isOwner = groupData?.owner === currentUserId;
+
+      if (isOwner) {
+        alert(
+          'As the group owner, you must either transfer ownership or delete the group.',
+        );
+        return;
+      }
+
+      const isAdmin = groupData?.affiliations?.some(
+        (member: any) =>
+          member.member === currentUserId && member.owner === false,
+      );
+
+      const confirmMessage = isAdmin
+        ? 'You are a group admin. Leaving will remove your admin privileges.\n\nAre you sure you want to leave this group?'
+        : 'Are you sure you want to leave this group?';
+
+      if (confirm(confirmMessage)) {
+        await client.leaveGroup({ groupId: conversationId });
+
+        console.log('✅ Successfully left group:', conversationId);
+
+        rootStore.conversationStore.deleteConversation({
+          conversationId: conversationId,
+          chatType: 'groupChat',
+        });
+
+        const remainingConversations =
+          rootStore.conversationStore.conversationList;
+        if (remainingConversations.length > 0) {
+          rootStore.conversationStore.setCurrentCvs(remainingConversations[0]);
+        } else {
+          rootStore.conversationStore.setCurrentCvs({} as any);
+        }
+
+        alert('You have left the group successfully');
+      }
+    } catch (error: any) {
+      console.error('❌ Error leaving group:', error);
+
+      let errorMessage = 'Failed to leave group';
+
+      if (error.type === 700) {
+        errorMessage =
+          'Authentication error. Please refresh the page and try again.';
+      } else if (error.type === 603) {
+        try {
+          const errorData = JSON.parse(error.data);
+          errorMessage = errorData.error_description || errorMessage;
+        } catch (e) {
+          errorMessage = error.message || errorMessage;
+        }
+      } else if (error.data) {
+        try {
+          const errorData =
+            typeof error.data === 'string'
+              ? JSON.parse(error.data)
+              : error.data;
+          errorMessage =
+            errorData.error_description || error.message || errorMessage;
+        } catch (e) {
+          errorMessage = error.message || errorMessage;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    handleClose();
+
+    if (
+      !confirm(
+        'Are you sure you want to delete this group? This cannot be undone and will remove all members.',
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await client.destroyGroup({ groupId: conversationId });
+      console.log('✅ Group destroyed:', conversationId);
+
+      rootStore.conversationStore.deleteConversation({
+        conversationId: conversationId,
+        chatType: 'groupChat',
+      });
+
+      const remainingConversations =
+        rootStore.conversationStore.conversationList;
+      if (remainingConversations.length > 0) {
+        rootStore.conversationStore.setCurrentCvs(remainingConversations[0]);
+      } else {
+        rootStore.conversationStore.setCurrentCvs({} as any);
+      }
+
+      alert('Group deleted successfully');
+    } catch (error: any) {
+      console.error('❌ Error deleting group:', error);
+      alert('Failed to delete group');
+    }
+  };
+
   const handleVoiceCall = async () => {
     try {
       console.log('📞 Starting call to:', conversationId);
 
-      setCallModalOpen(true);
+      const channelName = isGroup
+        ? `group_${conversationId}_call`
+        : [currentUserId, conversationId].sort().join('_call');
 
-      const channelName = [currentUserId, conversationId].sort().join('_call');
+      setCallModalOpen(true);
 
       const msgId = `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -99,7 +290,7 @@ export default function CustomChatHeader({
         id: msgId,
         type: 'txt',
         to: conversationId,
-        chatType: 'singleChat',
+        chatType: isGroup ? 'groupChat' : 'singleChat',
         msg: `📞 Voice Call - Click to join`,
         ext: {
           type: 'VOICE_CALL_INVITE',
@@ -107,6 +298,7 @@ export default function CustomChatHeader({
           callerName: currentUserName,
           callerAvatar: currentUserAvatar,
           callerId: currentUserId,
+          isGroupCall: isGroup,
         },
       };
 
@@ -121,6 +313,13 @@ export default function CustomChatHeader({
       setCallModalOpen(false);
     }
   };
+  const getRegularMembers = () => {
+    if (!groupOwnerUserId) return groupMembers;
+
+    return groupMembers.filter((m) => {
+      return m.member && m.member !== groupOwnerUserId;
+    });
+  };
 
   return (
     <>
@@ -128,24 +327,38 @@ export default function CustomChatHeader({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          padding: '16px 20px',
-          bgcolor:
-            theme.palette.mode === 'dark' ? theme.palette.dark?.dark : '#fff',
-          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.12)',
+          gap: 2,
+          p: 2,
+          borderBottom: '1px solid',
+          borderColor: theme.palette.divider,
+          bgcolor: theme.palette.background.paper,
         }}
       >
-        {avatarUrl ? (
+        {isGroup ? (
           <Avatar
-            src={avatarUrl}
+            onClick={handleViewDetails}
+            style={{
+              backgroundColor: theme.palette.secondary.main,
+              width: 44,
+              height: 44,
+              fontSize: '16px',
+              fontWeight: 600,
+            }}
+          >
+            {displayName.charAt(0).toUpperCase() || 'G'}
+          </Avatar>
+        ) : userProfile?.avatarurl ? (
+          <Avatar
+            src={userProfile.avatarurl}
             alt={displayName}
-            style={{ width: 40, height: 40 }}
+            style={{ width: 44, height: 44 }}
           />
         ) : (
           <Avatar
             style={{
               backgroundColor: theme.palette.primary.main,
-              width: 40,
-              height: 40,
+              width: 44,
+              height: 44,
               fontSize: '16px',
               fontWeight: 600,
             }}
@@ -154,17 +367,31 @@ export default function CustomChatHeader({
           </Avatar>
         )}
 
-        <Box flex={1} ml={2}>
-          <Typography variant="h6" fontWeight={600}>
-            {displayName ? (
-              displayName
-            ) : (
-              <Skeleton variant="text" width={120} />
-            )}
-          </Typography>
-        </Box>
+        {isGroup ? (
+          <Box flex={1}>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              noWrap
+              onClick={handleViewDetails}
+            >
+              {groupName || 'Group Chat'}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {groupMemberCount > 0 ? `${groupMemberCount} members` : 'Group'}
+            </Typography>
+          </Box>
+        ) : (
+          <Box flex={1}>
+            <Typography variant="h6" fontWeight={600} noWrap>
+              {displayName}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Active now
+            </Typography>
+          </Box>
+        )}
 
-        {/* Call button */}
         <Box display="flex" gap={1} alignItems="center">
           <IconButton
             onClick={handleVoiceCall}
@@ -179,7 +406,7 @@ export default function CustomChatHeader({
             <Phone />
           </IconButton>
 
-          <IconButton onClick={handleClick} size="small" sx={{ ml: 1 }}>
+          <IconButton onClick={handleClick} size="small">
             <MoreVert />
           </IconButton>
         </Box>
@@ -191,12 +418,162 @@ export default function CustomChatHeader({
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <MenuItem onClick={handleDelete} sx={{ color: 'error.main', gap: 1 }}>
-            <Delete fontSize="small" />
-            Delete Conversation
-          </MenuItem>
+          {isGroup ? (
+            <>
+              <MenuItem onClick={handleViewDetails} sx={{ gap: 1 }}>
+                <Info fontSize="small" />
+                View Group Details
+              </MenuItem>
+              <Divider />
+              {isGroupOwner ? (
+                <MenuItem
+                  onClick={handleDeleteGroup}
+                  sx={{ color: 'error.main', gap: 1 }}
+                >
+                  <Delete fontSize="small" />
+                  Delete Group
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={handleLeaveGroup}
+                  sx={{ color: 'error.main', gap: 1 }}
+                >
+                  <ExitToApp fontSize="small" />
+                  Leave Group
+                </MenuItem>
+              )}
+            </>
+          ) : (
+            <MenuItem
+              onClick={handleDelete}
+              sx={{ color: 'error.main', gap: 1 }}
+            >
+              <Delete fontSize="small" />
+              Delete Conversation
+            </MenuItem>
+          )}
         </Menu>
       </Box>
+
+      <Dialog
+        open={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6">Group Details</Typography>
+            <IconButton onClick={() => setDetailsModalOpen(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box mb={3}>
+            <Box display="flex" alignItems="center" gap={2} mb={2}>
+              <Avatar
+                style={{
+                  backgroundColor: theme.palette.secondary.main,
+                  width: 60,
+                  height: 60,
+                  fontSize: '24px',
+                  fontWeight: 600,
+                }}
+              >
+                {groupName.charAt(0).toUpperCase() || 'G'}
+              </Avatar>
+              <Box>
+                <Typography variant="h6" fontWeight={600}>
+                  {groupName || 'Group Chat'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {groupMemberCount} members
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box mb={1}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                fontWeight={600}
+              >
+                Group ID
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ mt: 0.5, fontFamily: 'monospace' }}
+              >
+                {conversationId}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Typography variant="subtitle2" fontWeight={600} mb={2}>
+            Members ({groupMemberCount})
+          </Typography>
+
+          <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+            {groupOwnerUserId && (
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar
+                    src={getUserProfileFromMap(groupOwnerUserId).avatarurl}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: theme.palette.primary.main,
+                    }}
+                  >
+                    {getUserProfileFromMap(groupOwnerUserId)
+                      .nickname.charAt(0)
+                      .toUpperCase()}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body2">
+                        {getUserProfileFromMap(groupOwnerUserId).nickname}
+                      </Typography>
+                      <Chip label="Owner" size="small" color="primary" />
+                    </Box>
+                  }
+                  secondary={groupOwnerUserId}
+                />
+              </ListItem>
+            )}
+
+            {getRegularMembers().map((member) => (
+              <ListItem key={member.member}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={getUserProfileFromMap(member.member).avatarurl}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: theme.palette.grey[500],
+                    }}
+                  >
+                    {getUserProfileFromMap(member.member).nickname}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={getUserProfileFromMap(member.member).nickname}
+                  secondary={member.member}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+      </Dialog>
 
       <SimpleVoiceCall
         open={callModalOpen}
@@ -206,6 +583,12 @@ export default function CustomChatHeader({
         recipientAvatar={avatarUrl}
         currentUserId={currentUserId}
         isIncoming={false}
+        isGroupCall={isGroup}
+        channelName={
+          isGroup
+            ? `group_${conversationId}_call`
+            : [currentUserId, conversationId].sort().join('_call')
+        }
       />
     </>
   );

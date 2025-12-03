@@ -366,7 +366,6 @@ const ChatItem = ({
     return null;
   };
 
-  // CHECK FOR VOICE CALL MESSAGE BEFORE RENDERING ANYTHING ELSE
   if (msg.ext?.type === 'VOICE_CALL_INVITE') {
     console.log('✅ RENDERING CALL BUBBLE!');
     return (

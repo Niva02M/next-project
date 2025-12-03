@@ -22,18 +22,19 @@ export async function POST(request: NextRequest) {
     const appCertificate = process.env.AGORA_APP_CERTIFICATE;
 
     if (!appId || !appCertificate) {
+      console.error('Missing Agora credentials');
       return NextResponse.json(
-        { error: 'Agora credentials not configured' },
+        { error: 'Server configuration error' },
         { status: 500 },
       );
     }
 
-    // Use 0 for uid to allow any user to join with string userId
-    const uid = 0;
+    const uid = userId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+
     const role = RtcRole.PUBLISHER;
-    const expireTimeInSeconds = 3600;
-    const currentTime = Math.floor(Date.now() / 1000);
-    const privilegeExpire = currentTime + expireTimeInSeconds;
+    const expirationTimeInSeconds = 3600;
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
 
     const rtcToken = RtcTokenBuilder.buildTokenWithUid(
       appId,
@@ -41,16 +42,17 @@ export async function POST(request: NextRequest) {
       channel,
       uid,
       role,
-      expireTimeInSeconds,
-      privilegeExpire,
+      expirationTimeInSeconds,
+      privilegeExpiredTs,
     );
+    console.log('✅ Generated RTC token for:', { userId, uid, channel });
 
     return NextResponse.json({
       rtcToken,
       userId,
       channel,
       appId,
-      expiresIn: expireTimeInSeconds,
+      expiresIn: expirationTimeInSeconds,
     });
   } catch (error: any) {
     console.error('RTC Token generation error:', error);

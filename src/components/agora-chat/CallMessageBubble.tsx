@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, useTheme } from '@mui/material';
-import { Phone } from '@mui/icons-material';
+import { Phone, Group } from '@mui/icons-material';
 import SimpleVoiceCall from './SimpleVoiceCall';
+import { useClient } from 'agora-chat-uikit';
 
 type UserProfile = {
   nickname?: string;
@@ -20,9 +21,10 @@ export default function CallMessageBubble({
   getUserProfileFromMap,
 }: CallMessageBubbleProps) {
   const theme = useTheme();
+  const client = useClient();
   const [callModalOpen, setCallModalOpen] = useState(false);
+  const [groupName, setGroupName] = useState<string>('');
 
-  // Safety check
   if (!message) {
     console.error('❌ Message is undefined in CallMessageBubble');
     return null;
@@ -32,18 +34,46 @@ export default function CallMessageBubble({
   const callerId = message.ext?.callerId || message.from;
   const callerProfile = getUserProfileFromMap(callerId);
 
+  const channelName = message.ext?.channelName;
+  const isGroupCall = message.ext?.isGroupCall || false;
+  const callerName =
+    message.ext?.callerName || callerProfile?.nickname || callerId;
+  const callerAvatar =
+    message.ext?.callerAvatar || callerProfile?.avatarurl || '';
+  const groupId = isGroupCall ? message.to : null;
+
+  useEffect(() => {
+    if (isGroupCall && groupId) {
+      client
+        .getGroupInfo({ groupId })
+        .then((res: any) => {
+          const fetchedName = res.data[0]?.name || groupId;
+          setGroupName(fetchedName);
+        })
+        .catch((err: any) => {
+          console.error('Error fetching group info:', err);
+          setGroupName(groupId);
+        });
+    }
+  }, [isGroupCall, groupId, client]);
+
   const handleJoinCall = () => {
     console.log('🎯 Join Call button clicked!');
-    console.log('📞 Opening modal for:', callerId);
-    console.log('📞 Caller profile:', callerProfile);
+    console.log('📞 Channel Name:', channelName);
+    console.log('📞 Is Group Call:', isGroupCall);
+    console.log('📞 Group Name:', groupName);
     setCallModalOpen(true);
   };
+
+  const displayName = isGroupCall ? groupName || 'Group Call' : callerName;
 
   console.log(
     '📋 CallMessageBubble render - isIncoming:',
     isIncoming,
-    'callModalOpen:',
-    callModalOpen,
+    'isGroupCall:',
+    isGroupCall,
+    'displayName:',
+    displayName,
   );
 
   return (
@@ -62,26 +92,42 @@ export default function CallMessageBubble({
         }}
       >
         <Box display="flex" alignItems="center" gap={1}>
-          <Phone sx={{ color: theme.palette.primary.main }} />
+          {isGroupCall ? (
+            <Group sx={{ color: theme.palette.primary.main }} />
+          ) : (
+            <Phone sx={{ color: theme.palette.primary.main }} />
+          )}
           <Typography variant="body2" fontWeight={600}>
-            {isIncoming ? 'Incoming Voice Call' : 'Outgoing Voice Call'}
+            {isIncoming
+              ? isGroupCall
+                ? 'Incoming Group Call'
+                : 'Incoming Voice Call'
+              : isGroupCall
+                ? 'Outgoing Group Call'
+                : 'Outgoing Voice Call'}
           </Typography>
         </Box>
+
+        {isGroupCall && displayName !== 'Group Call' && (
+          <Typography variant="caption" color="text.secondary">
+            {displayName}
+          </Typography>
+        )}
 
         {isIncoming ? (
           <Button
             variant="contained"
             color="success"
             size="small"
-            startIcon={<Phone />}
+            startIcon={isGroupCall ? <Group /> : <Phone />}
             onClick={handleJoinCall}
             fullWidth
           >
-            Join Call
+            Join {isGroupCall ? 'Group ' : ''}Call
           </Button>
         ) : (
           <Typography variant="caption" color="text.secondary">
-            Waiting for {callerProfile?.nickname || 'user'} to join...
+            {isGroupCall ? 'Group call started' : `Call started `}
           </Typography>
         )}
       </Box>
@@ -93,11 +139,13 @@ export default function CallMessageBubble({
             console.log('🔴 Closing call modal');
             setCallModalOpen(false);
           }}
-          recipientId={callerId}
-          recipientName={callerProfile?.nickname || callerId}
-          recipientAvatar={callerProfile?.avatarurl || ''}
+          recipientId={isGroupCall ? groupId : callerId}
+          recipientName={displayName}
+          recipientAvatar={callerAvatar}
           currentUserId={currentUserId}
           isIncoming={true}
+          isGroupCall={isGroupCall}
+          channelName={channelName}
         />
       )}
     </>

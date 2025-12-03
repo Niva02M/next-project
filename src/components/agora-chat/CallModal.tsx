@@ -57,7 +57,6 @@ export default function CallModal({
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
 
-  // Channel name: use sorted IDs to ensure both users join same channel
   const channelName = [currentUserId, recipientId].sort().join('_');
 
   useEffect(() => {
@@ -67,7 +66,6 @@ export default function CallModal({
       try {
         setIsConnecting(true);
 
-        // Get RTC token first
         const tokenResponse = await axios.post('/api/agora/rtc-token', {
           userId: currentUserId,
           channel: channelName,
@@ -79,14 +77,12 @@ export default function CallModal({
           throw new Error('App ID not returned from server');
         }
 
-        // Create Agora client
         const agoraClient = AgoraRTC.createClient({
           mode: 'rtc',
           codec: 'vp8',
         });
         setClient(agoraClient);
 
-        // Set up event listeners
         agoraClient.on('user-published', async (user, mediaType) => {
           try {
             await agoraClient.subscribe(user, mediaType);
@@ -120,10 +116,8 @@ export default function CallModal({
           });
         });
 
-        // Join channel - using null for uid to auto-generate
         await agoraClient.join(appId, channelName, rtcToken, null);
 
-        // Create and publish tracks
         const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         setLocalAudioTrack(audioTrack);
 
@@ -156,7 +150,6 @@ export default function CallModal({
     initCall();
 
     return () => {
-      // Cleanup function
       if (client) {
         client.leave().catch(console.error);
         client.removeAllListeners();
@@ -239,7 +232,6 @@ export default function CallModal({
           </Box>
         ) : (
           <>
-            {/* Remote video container */}
             <Box
               ref={remoteVideoRef}
               sx={{
@@ -274,7 +266,6 @@ export default function CallModal({
               )}
             </Box>
 
-            {/* Local video preview (bottom right corner) */}
             {callType === 'video' && (
               <Box
                 ref={localVideoRef}
