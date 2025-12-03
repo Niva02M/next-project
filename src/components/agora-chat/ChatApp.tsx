@@ -85,7 +85,6 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         return;
       }
 
-      // Get the group ID - check multiple possible response structures
       const groupId = group.data.groupid || group.data.id || group.data.groupId;
 
       if (!groupId) {
@@ -105,20 +104,17 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         unreadCount: 0,
       };
 
-      // Add conversation using the store's method
       try {
         rootStore.conversationStore.addConversation(newConversation);
         console.log('Manually added conversation to store');
 
-        // Switch to the new conversation immediately
         rootStore.conversationStore.setCurrentCvs(newConversation);
         alert('Group created successfully!');
       } catch (addError) {
         console.error('Error adding conversation to store:', addError);
 
-        // Fallback: try to find it with retry logic
         let attempts = 0;
-        const maxAttempts = 15; // Increased attempts
+        const maxAttempts = 15;
 
         const findAndSwitchToGroup = () => {
           attempts++;
@@ -144,7 +140,7 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
             console.log(
               `Attempt ${attempts}: Group conversation not found yet, retrying...`,
             );
-            setTimeout(findAndSwitchToGroup, 500); // Increased timeout
+            setTimeout(findAndSwitchToGroup, 500);
           } else {
             console.warn(
               'Could not find group conversation after multiple attempts',
