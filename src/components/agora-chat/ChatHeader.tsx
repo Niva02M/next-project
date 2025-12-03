@@ -15,7 +15,6 @@ import {
   DELETE_CHAT_FAILED,
 } from 'components/authentication/constants';
 import SimpleVoiceCall from './SimpleVoiceCall';
-import axios from 'axios';
 
 import { UserProfile } from '../../types/chat';
 
@@ -49,8 +48,25 @@ export default function CustomChatHeader({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [callModalOpen, setCallModalOpen] = useState(false);
   const open = Boolean(anchorEl);
+  const [isGroupOwner, setIsGroupOwner] = useState(false);
 
-  // Fetch group details if it's a group chat
+  useEffect(() => {
+    const checkOwnership = async () => {
+      if (isGroup && conversationId) {
+        try {
+          const groupInfo = await client.getGroupInfo({
+            groupId: conversationId,
+          });
+          const owner = groupInfo.data[0]?.owner;
+          setIsGroupOwner(owner === currentUserId);
+        } catch (error) {
+          console.error('Error checking group ownership:', error);
+        }
+      }
+    };
+
+    checkOwnership();
+  }, [conversationId, isGroup, client, currentUserId]);
   useEffect(() => {
     if (isGroup && conversationId) {
       client
@@ -108,42 +124,126 @@ export default function CustomChatHeader({
   };
 
   const handleLeaveGroup = async () => {
-    if (!window.confirm('Are you sure you want to leave this group?')) {
-      handleClose();
+    handleClose();
+
+    try {
+      if (!client || !client.isOpened()) {
+        alert('Chat connection lost. Please refresh the page.');
+        return;
+      }
+
+      const groupInfo = await client.getGroupInfo({ groupId: conversationId });
+      const groupData = groupInfo.data[0];
+      const isOwner = groupData?.owner === currentUserId;
+
+      if (isOwner) {
+        alert(
+          'As the group owner, you must either transfer ownership or delete the group.',
+        );
+        return;
+      }
+
+      const isAdmin = groupData?.affiliations?.some(
+        (member: any) =>
+          member.member === currentUserId && member.owner === false,
+      );
+
+      const confirmMessage = isAdmin
+        ? 'You are a group admin. Leaving will remove your admin privileges.\n\nAre you sure you want to leave this group?'
+        : 'Are you sure you want to leave this group?';
+
+      if (confirm(confirmMessage)) {
+        await client.leaveGroup({ groupId: conversationId });
+
+        console.log('✅ Successfully left group:', conversationId);
+
+        rootStore.conversationStore.deleteConversation({
+          conversationId: conversationId,
+          chatType: 'groupChat',
+        });
+
+        const remainingConversations =
+          rootStore.conversationStore.conversationList;
+        if (remainingConversations.length > 0) {
+          rootStore.conversationStore.setCurrentCvs(remainingConversations[0]);
+        } else {
+          rootStore.conversationStore.setCurrentCvs({} as any);
+        }
+
+        alert('You have left the group successfully');
+      }
+    } catch (error: any) {
+      console.error('❌ Error leaving group:', error);
+
+      let errorMessage = 'Failed to leave group';
+
+      if (error.type === 700) {
+        errorMessage =
+          'Authentication error. Please refresh the page and try again.';
+      } else if (error.type === 603) {
+        try {
+          const errorData = JSON.parse(error.data);
+          errorMessage = errorData.error_description || errorMessage;
+        } catch (e) {
+          errorMessage = error.message || errorMessage;
+        }
+      } else if (error.data) {
+        try {
+          const errorData =
+            typeof error.data === 'string'
+              ? JSON.parse(error.data)
+              : error.data;
+          errorMessage =
+            errorData.error_description || error.message || errorMessage;
+        } catch (e) {
+          errorMessage = error.message || errorMessage;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      alert(`Error: ${errorMessage}`);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    handleClose();
+
+    if (
+      !confirm(
+        'Are you sure you want to delete this group? This cannot be undone and will remove all members.',
+      )
+    ) {
       return;
     }
 
     try {
-      // Call API endpoint to leave the group
-      const response = await axios.post('/api/agora/group/leave', {
-        groupId: conversationId,
-      });
+      await client.destroyGroup({ groupId: conversationId });
+      console.log('✅ Group destroyed:', conversationId);
 
-      console.log('Left group successfully:', response.data);
-
-      // Remove from local conversation store
       rootStore.conversationStore.deleteConversation({
-        conversationId,
+        conversationId: conversationId,
         chatType: 'groupChat',
       });
 
-      successSnack('Successfully left the group');
-      handleClose();
-      onDelete?.();
+      const remainingConversations =
+        rootStore.conversationStore.conversationList;
+      if (remainingConversations.length > 0) {
+        rootStore.conversationStore.setCurrentCvs(remainingConversations[0]);
+      } else {
+        rootStore.conversationStore.setCurrentCvs({} as any);
+      }
+
+      alert('Group deleted successfully');
     } catch (error: any) {
-      console.error('Error leaving group:', error);
-      const errorMessage =
-        error.response?.data?.error || error.message || 'Unknown error';
-      errorSnack('Failed to leave group: ' + errorMessage);
-      handleClose();
+      console.error('❌ Error deleting group:', error);
+      alert('Failed to delete group');
     }
   };
-
   const handleVoiceCall = async () => {
     try {
       console.log('📞 Starting call to:', conversationId);
 
-      // For groups, use groupId as channel, for single chats use sorted userIds
       const channelName = isGroup
         ? `group_${conversationId}_call`
         : [currentUserId, conversationId].sort().join('_call');
@@ -272,13 +372,23 @@ export default function CustomChatHeader({
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           {isGroup ? (
-            <MenuItem
-              onClick={handleLeaveGroup}
-              sx={{ color: 'error.main', gap: 1 }}
-            >
-              <ExitToApp fontSize="small" />
-              Leave Group
-            </MenuItem>
+            isGroupOwner ? (
+              <MenuItem
+                onClick={handleDeleteGroup}
+                sx={{ color: 'error.main', gap: 1 }}
+              >
+                <Delete fontSize="small" />
+                Delete Group
+              </MenuItem>
+            ) : (
+              <MenuItem
+                onClick={handleLeaveGroup}
+                sx={{ color: 'error.main', gap: 1 }}
+              >
+                <ExitToApp fontSize="small" />
+                Leave Group
+              </MenuItem>
+            )
           ) : (
             <MenuItem
               onClick={handleDelete}
