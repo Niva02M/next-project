@@ -6,6 +6,7 @@ import {
   ConversationList,
   rootStore,
   Conversation,
+  Message,
 } from 'agora-chat-uikit';
 import {
   Box,
@@ -97,17 +98,18 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
       console.log('Group ID:', groupId);
 
       setCreateGroupOpen(false);
-      const newConversation: Conversation = {
+      const newConversation = {
         conversationId: groupId,
         chatType: 'groupChat',
-        lastMessage: {},
+        lastMessage: {} as Message,
         unreadCount: 0,
       };
 
       try {
+        //@ts-ignore
         rootStore.conversationStore.addConversation(newConversation);
         console.log('Manually added conversation to store');
-
+        //@ts-ignore
         rootStore.conversationStore.setCurrentCvs(newConversation);
         alert('Group created successfully!');
       } catch (addError) {
