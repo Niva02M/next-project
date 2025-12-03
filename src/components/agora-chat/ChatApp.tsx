@@ -5,7 +5,7 @@ import {
   Chat,
   ConversationList,
   rootStore,
-  Message,
+  Conversation,
 } from 'agora-chat-uikit';
 import {
   Box,
@@ -51,6 +51,17 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
     selectedMembers: string[],
   ) => {
     try {
+      console.log('Creating group with:', {
+        groupName,
+        groupDescription,
+        selectedMembers,
+      });
+
+      if (!client || !isConnected) {
+        alert('Chat client is not connected. Please try again.');
+        return;
+      }
+
       const options = {
         data: {
           groupname: groupName,
@@ -63,29 +74,108 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
         },
       };
 
+      console.log('Calling createGroup with options:', options);
       const group = await client.createGroup(options);
-      console.log('Group created:', group);
+      console.log('Group created - full response:', group);
 
-      // Don't manually create conversation - Agora creates it automatically
-      // Just switch to the new group conversation
-      const groupId = group.data.groupid;
+      if (!group || !group.data) {
+        console.error('Invalid group response:', group);
+        alert('Failed to create group. Invalid response from server.');
+        setCreateGroupOpen(false);
+        return;
+      }
 
-      // Wait a bit for Agora to create the conversation
-      setTimeout(() => {
-        const conversations = rootStore.conversationStore.conversationList;
-        const groupConversation = conversations.find(
-          (c: any) => c.conversationId === groupId,
-        );
+      // Get the group ID - check multiple possible response structures
+      const groupId = group.data.groupid || group.data.id || group.data.groupId;
 
-        if (groupConversation) {
-          rootStore.conversationStore.setCurrentCvs(groupConversation);
-        }
-      }, 500);
+      if (!groupId) {
+        console.error('No group ID found in response:', group);
+        alert('Group created but cannot navigate to it.');
+        setCreateGroupOpen(false);
+        return;
+      }
+
+      console.log('Group ID:', groupId);
 
       setCreateGroupOpen(false);
-    } catch (error) {
-      console.error('Error creating group:', error);
-      alert('Failed to create group. Please try again.');
+      const newConversation: Conversation = {
+        conversationId: groupId,
+        chatType: 'groupChat',
+        lastMessage: {},
+        unreadCount: 0,
+      };
+
+      // Add conversation using the store's method
+      try {
+        rootStore.conversationStore.addConversation(newConversation);
+        console.log('Manually added conversation to store');
+
+        // Switch to the new conversation immediately
+        rootStore.conversationStore.setCurrentCvs(newConversation);
+        alert('Group created successfully!');
+      } catch (addError) {
+        console.error('Error adding conversation to store:', addError);
+
+        // Fallback: try to find it with retry logic
+        let attempts = 0;
+        const maxAttempts = 15; // Increased attempts
+
+        const findAndSwitchToGroup = () => {
+          attempts++;
+          const conversations = rootStore.conversationStore.conversationList;
+          console.log(
+            'Current conversations:',
+            conversations.map((c: any) => ({
+              id: c.conversationId,
+              type: c.chatType,
+            })),
+          );
+
+          const groupConversation = conversations.find(
+            (c: any) =>
+              c.conversationId === groupId && c.chatType === 'groupChat',
+          );
+
+          if (groupConversation) {
+            console.log('Found group conversation:', groupConversation);
+            rootStore.conversationStore.setCurrentCvs(groupConversation);
+            alert('Group created successfully!');
+          } else if (attempts < maxAttempts) {
+            console.log(
+              `Attempt ${attempts}: Group conversation not found yet, retrying...`,
+            );
+            setTimeout(findAndSwitchToGroup, 500); // Increased timeout
+          } else {
+            console.warn(
+              'Could not find group conversation after multiple attempts',
+            );
+            alert(
+              'Group created but not visible yet. Please refresh or send a message in the group.',
+            );
+          }
+        };
+
+        setTimeout(findAndSwitchToGroup, 1000);
+      }
+    } catch (error: any) {
+      console.error('Error creating group - full error:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error keys:', Object.keys(error));
+
+      let errorMessage = 'Unknown error';
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error.data?.error) {
+        errorMessage = error.data.error;
+      } else if (error.error_description) {
+        errorMessage = error.error_description;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
+      alert(`Failed to create group: ${errorMessage}`);
+      setCreateGroupOpen(false);
     }
   };
 
