@@ -1,4 +1,3 @@
-// components/CreateGroupDialog.tsx
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -89,7 +88,7 @@ export const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({
           margin="normal"
           required
         />
-        <TextField
+        {/* <TextField
           fullWidth
           label="Description (Optional)"
           value={groupDescription}
@@ -97,7 +96,7 @@ export const CreateGroupDialog: React.FC<CreateGroupDialogProps> = ({
           margin="normal"
           multiline
           rows={2}
-        />
+        /> */}
 
         <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
           Select Members ({selectedMembers.length} selected)

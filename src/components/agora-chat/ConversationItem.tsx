@@ -19,7 +19,6 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
   const isGroup = conversation.chatType === 'groupChat';
   const [groupName, setGroupName] = useState<string>('');
 
-  // Fetch group name if it's a group chat
   useEffect(() => {
     if (isGroup && conversation.conversationId) {
       client
@@ -109,7 +108,6 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
     );
   }
 
-  // Single chat rendering
   const profile = getUserProfileFromMap(conversation.conversationId);
   const isOnline = conversation.isOnline === true;
   const displayName =

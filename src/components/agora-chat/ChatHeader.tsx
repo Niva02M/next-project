@@ -6,8 +6,26 @@ import {
   MenuItem,
   Typography,
   useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Divider,
+  Chip,
 } from '@mui/material';
-import { MoreVert, Delete, Phone, ExitToApp } from '@mui/icons-material';
+import {
+  MoreVert,
+  Delete,
+  Phone,
+  ExitToApp,
+  Info,
+  Close,
+} from '@mui/icons-material';
 import { Avatar, rootStore, useClient } from 'agora-chat-uikit';
 import useSuccErrSnack from 'hooks/useSuccErrSnack';
 import {
@@ -15,7 +33,6 @@ import {
   DELETE_CHAT_FAILED,
 } from 'components/authentication/constants';
 import SimpleVoiceCall from './SimpleVoiceCall';
-
 import { UserProfile } from '../../types/chat';
 
 interface CustomChatHeaderProps {
@@ -27,6 +44,11 @@ interface CustomChatHeaderProps {
   currentUserAvatar?: string;
   onDelete?: () => void;
   openSidebar?: () => void;
+}
+
+interface GroupMember {
+  member: string;
+  owner?: boolean;
 }
 
 export default function CustomChatHeader({
@@ -42,11 +64,14 @@ export default function CustomChatHeader({
   const client = useClient();
   const [groupName, setGroupName] = useState<string>('');
   const [groupMemberCount, setGroupMemberCount] = useState<number>(0);
+  const [groupMembers, setGroupMembers] = useState<GroupMember[]>([]);
+  const [groupOwnerUserId, setGroupOwnerUserId] = useState<string>('');
 
   const isGroup = chatType === 'groupChat';
   const { errorSnack, successSnack } = useSuccErrSnack();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [callModalOpen, setCallModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const open = Boolean(anchorEl);
   const [isGroupOwner, setIsGroupOwner] = useState(false);
 
@@ -72,8 +97,12 @@ export default function CustomChatHeader({
       client
         .getGroupInfo({ groupId: conversationId })
         .then((res: any) => {
-          setGroupName(res.data[0]?.name || conversationId);
-          setGroupMemberCount(res.data[0]?.affiliations_count || 0);
+          const groupData = res.data[0];
+          setGroupName(groupData?.name || conversationId);
+          setGroupMemberCount(groupData?.affiliations_count || 0);
+          setGroupMembers(groupData?.affiliations || []);
+          setGroupOwnerUserId(groupData?.owner || '');
+          console.log('Group data:', groupData);
         })
         .catch((err: any) => {
           console.error('Error fetching group info:', err);
@@ -81,7 +110,6 @@ export default function CustomChatHeader({
         });
     }
   }, [conversationId, isGroup, client]);
-
   const userProfile = getUserProfileFromMap(conversationId);
 
   const displayName = isGroup
@@ -98,6 +126,11 @@ export default function CustomChatHeader({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleViewDetails = () => {
+    handleClose();
+    setDetailsModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -240,6 +273,7 @@ export default function CustomChatHeader({
       alert('Failed to delete group');
     }
   };
+
   const handleVoiceCall = async () => {
     try {
       console.log('📞 Starting call to:', conversationId);
@@ -279,6 +313,13 @@ export default function CustomChatHeader({
       setCallModalOpen(false);
     }
   };
+  const getRegularMembers = () => {
+    if (!groupOwnerUserId) return groupMembers;
+
+    return groupMembers.filter((m) => {
+      return m.member && m.member !== groupOwnerUserId;
+    });
+  };
 
   return (
     <>
@@ -295,6 +336,7 @@ export default function CustomChatHeader({
       >
         {isGroup ? (
           <Avatar
+            onClick={handleViewDetails}
             style={{
               backgroundColor: theme.palette.secondary.main,
               width: 44,
@@ -327,7 +369,12 @@ export default function CustomChatHeader({
 
         {isGroup ? (
           <Box flex={1}>
-            <Typography variant="h6" fontWeight={600} noWrap>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              noWrap
+              onClick={handleViewDetails}
+            >
               {groupName || 'Group Chat'}
             </Typography>
             <Typography variant="caption" color="text.secondary">
@@ -372,23 +419,30 @@ export default function CustomChatHeader({
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
           {isGroup ? (
-            isGroupOwner ? (
-              <MenuItem
-                onClick={handleDeleteGroup}
-                sx={{ color: 'error.main', gap: 1 }}
-              >
-                <Delete fontSize="small" />
-                Delete Group
+            <>
+              <MenuItem onClick={handleViewDetails} sx={{ gap: 1 }}>
+                <Info fontSize="small" />
+                View Group Details
               </MenuItem>
-            ) : (
-              <MenuItem
-                onClick={handleLeaveGroup}
-                sx={{ color: 'error.main', gap: 1 }}
-              >
-                <ExitToApp fontSize="small" />
-                Leave Group
-              </MenuItem>
-            )
+              <Divider />
+              {isGroupOwner ? (
+                <MenuItem
+                  onClick={handleDeleteGroup}
+                  sx={{ color: 'error.main', gap: 1 }}
+                >
+                  <Delete fontSize="small" />
+                  Delete Group
+                </MenuItem>
+              ) : (
+                <MenuItem
+                  onClick={handleLeaveGroup}
+                  sx={{ color: 'error.main', gap: 1 }}
+                >
+                  <ExitToApp fontSize="small" />
+                  Leave Group
+                </MenuItem>
+              )}
+            </>
           ) : (
             <MenuItem
               onClick={handleDelete}
@@ -400,6 +454,126 @@ export default function CustomChatHeader({
           )}
         </Menu>
       </Box>
+
+      <Dialog
+        open={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6">Group Details</Typography>
+            <IconButton onClick={() => setDetailsModalOpen(false)} size="small">
+              <Close />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Box mb={3}>
+            <Box display="flex" alignItems="center" gap={2} mb={2}>
+              <Avatar
+                style={{
+                  backgroundColor: theme.palette.secondary.main,
+                  width: 60,
+                  height: 60,
+                  fontSize: '24px',
+                  fontWeight: 600,
+                }}
+              >
+                {groupName.charAt(0).toUpperCase() || 'G'}
+              </Avatar>
+              <Box>
+                <Typography variant="h6" fontWeight={600}>
+                  {groupName || 'Group Chat'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {groupMemberCount} members
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box mb={1}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                fontWeight={600}
+              >
+                Group ID
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ mt: 0.5, fontFamily: 'monospace' }}
+              >
+                {conversationId}
+              </Typography>
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 2 }} />
+
+          <Typography variant="subtitle2" fontWeight={600} mb={2}>
+            Members ({groupMemberCount})
+          </Typography>
+
+          <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+            {groupOwnerUserId && (
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar
+                    src={getUserProfileFromMap(groupOwnerUserId).avatarurl}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: theme.palette.primary.main,
+                    }}
+                  >
+                    {getUserProfileFromMap(groupOwnerUserId)
+                      .nickname.charAt(0)
+                      .toUpperCase()}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Typography variant="body2">
+                        {getUserProfileFromMap(groupOwnerUserId).nickname}
+                      </Typography>
+                      <Chip label="Owner" size="small" color="primary" />
+                    </Box>
+                  }
+                  secondary={groupOwnerUserId}
+                />
+              </ListItem>
+            )}
+
+            {getRegularMembers().map((member) => (
+              <ListItem key={member.member}>
+                <ListItemAvatar>
+                  <Avatar
+                    src={getUserProfileFromMap(member.member).avatarurl}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: theme.palette.grey[500],
+                    }}
+                  >
+                    {getUserProfileFromMap(member.member).nickname}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={getUserProfileFromMap(member.member).nickname}
+                  secondary={member.member}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+      </Dialog>
 
       <SimpleVoiceCall
         open={callModalOpen}

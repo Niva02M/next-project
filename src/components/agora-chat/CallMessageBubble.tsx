@@ -34,7 +34,6 @@ export default function CallMessageBubble({
   const callerId = message.ext?.callerId || message.from;
   const callerProfile = getUserProfileFromMap(callerId);
 
-  // Extract call details from message extension
   const channelName = message.ext?.channelName;
   const isGroupCall = message.ext?.isGroupCall || false;
   const callerName =
@@ -43,7 +42,6 @@ export default function CallMessageBubble({
     message.ext?.callerAvatar || callerProfile?.avatarurl || '';
   const groupId = isGroupCall ? message.to : null;
 
-  // Fetch group name if it's a group call
   useEffect(() => {
     if (isGroupCall && groupId) {
       client
@@ -67,7 +65,6 @@ export default function CallMessageBubble({
     setCallModalOpen(true);
   };
 
-  // Get display name - for group calls, show group name
   const displayName = isGroupCall ? groupName || 'Group Call' : callerName;
 
   console.log(

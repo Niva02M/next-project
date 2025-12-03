@@ -1,4 +1,3 @@
-// components/ConversationSearch.tsx
 import React, { useState } from 'react';
 import { Box, Typography, IconButton, useTheme, alpha } from '@mui/material';
 import { GroupAdd } from '@mui/icons-material';

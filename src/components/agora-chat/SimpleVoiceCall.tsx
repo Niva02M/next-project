@@ -25,7 +25,7 @@ interface SimpleVoiceCallProps {
   currentUserId: string;
   isIncoming?: boolean;
   isGroupCall?: boolean;
-  channelName?: string; // Optional custom channel name
+  channelName?: string;
 }
 
 export default function SimpleVoiceCall({
@@ -50,7 +50,6 @@ export default function SimpleVoiceCall({
   const [callDuration, setCallDuration] = useState(0);
   const callTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Use provided channel name or generate one
   const channelName =
     providedChannelName ||
     (isGroupCall
@@ -117,7 +116,6 @@ export default function SimpleVoiceCall({
 
       setClient(agoraClient);
 
-      // Join the channel - use currentUserId as UID for better tracking
       const uid = currentUserId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
       console.log('🎤 Joining with UID:', uid);
 
@@ -129,7 +127,6 @@ export default function SimpleVoiceCall({
       );
       console.log('✅ Joined channel with UID:', joinedUid);
 
-      // Create and publish audio track
       const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
       setLocalAudioTrack(audioTrack);
 
@@ -139,7 +136,6 @@ export default function SimpleVoiceCall({
       setIsConnected(true);
       setIsConnecting(false);
 
-      // Start call timer
       callTimerRef.current = setInterval(() => {
         setCallDuration((prev) => prev + 1);
       }, 1000);
@@ -167,27 +163,23 @@ export default function SimpleVoiceCall({
     try {
       console.log('📞 Ending call...');
 
-      // Stop timer
       if (callTimerRef.current) {
         clearInterval(callTimerRef.current);
         callTimerRef.current = null;
       }
 
-      // Reset state
       setCallDuration(0);
       setRemoteUserCount(0);
       setIsConnected(false);
       setIsConnecting(false);
       setIsAudioMuted(false);
 
-      // Stop and close audio track
       if (localAudioTrack) {
         localAudioTrack.stop();
         localAudioTrack.close();
         setLocalAudioTrack(null);
       }
 
-      // Leave channel
       if (client) {
         await client.unpublish();
         await client.leave();

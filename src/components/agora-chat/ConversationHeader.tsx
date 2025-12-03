@@ -1,4 +1,3 @@
-// components/ConversationHeader.tsx
 import React from 'react';
 import { Box, Typography, Tabs, Tab, useTheme } from '@mui/material';
 import { CircleNotifications } from '@mui/icons-material';
