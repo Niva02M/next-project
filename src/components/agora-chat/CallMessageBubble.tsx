@@ -58,10 +58,6 @@ export default function CallMessageBubble({
   }, [isGroupCall, groupId, client]);
 
   const handleJoinCall = () => {
-    console.log('🎯 Join Call button clicked!');
-    console.log('📞 Channel Name:', channelName);
-    console.log('📞 Is Group Call:', isGroupCall);
-    console.log('📞 Group Name:', groupName);
     setCallModalOpen(true);
   };
 
@@ -136,7 +132,6 @@ export default function CallMessageBubble({
         <SimpleVoiceCall
           open={callModalOpen}
           onClose={() => {
-            console.log('🔴 Closing call modal');
             setCallModalOpen(false);
           }}
           recipientId={isGroupCall ? groupId : callerId}

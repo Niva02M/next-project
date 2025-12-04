@@ -33,8 +33,6 @@ export async function POST(request: NextRequest) {
       expireTimeInSeconds,
     );
 
-    console.log('Token generated for user:', userId);
-
     return NextResponse.json({ token, userId, expiresIn: expireTimeInSeconds });
   } catch (error: any) {
     console.error('Token generation error:', error);

@@ -188,8 +188,6 @@ export default function CustomChatHeader({
       if (confirm(confirmMessage)) {
         await client.leaveGroup({ groupId: conversationId });
 
-        console.log('✅ Successfully left group:', conversationId);
-
         rootStore.conversationStore.deleteConversation({
           conversationId: conversationId,
           chatType: 'groupChat',
@@ -252,7 +250,6 @@ export default function CustomChatHeader({
 
     try {
       await client.destroyGroup({ groupId: conversationId });
-      console.log('✅ Group destroyed:', conversationId);
 
       rootStore.conversationStore.deleteConversation({
         conversationId: conversationId,
@@ -276,8 +273,6 @@ export default function CustomChatHeader({
 
   const handleVoiceCall = async () => {
     try {
-      console.log('📞 Starting call to:', conversationId);
-
       const channelName = isGroup
         ? `group_${conversationId}_call`
         : [currentUserId, conversationId].sort().join('_call');
@@ -302,11 +297,9 @@ export default function CustomChatHeader({
         },
       };
 
-      console.log('📞 Sending message:', msg);
       const result = await rootStore.client.send(msg);
-      console.log('📞 Message sent successfully:', result);
     } catch (error: any) {
-      console.error('❌ Failed to send call invitation:', error);
+      console.error(' Failed to send call invitation:', error);
       errorSnack(
         'Failed to initiate call: ' + (error.message || 'Unknown error'),
       );

@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
       expirationTimeInSeconds,
       privilegeExpiredTs,
     );
-    console.log('✅ Generated RTC token for:', { userId, uid, channel });
 
     return NextResponse.json({
       rtcToken,
