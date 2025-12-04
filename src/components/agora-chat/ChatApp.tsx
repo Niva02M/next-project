@@ -108,7 +108,6 @@ export default function ChatApp({ currentUser }: { currentUser: string }) {
       try {
         //@ts-ignore
         rootStore.conversationStore.addConversation(newConversation);
-        console.log('Manually added conversation to store');
         //@ts-ignore
         rootStore.conversationStore.setCurrentCvs(newConversation);
         alert('Group created successfully!');

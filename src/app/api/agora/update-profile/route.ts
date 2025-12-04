@@ -61,10 +61,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const [orgName, appName] = appKey.split('#');
     const appToken = ChatTokenBuilder.buildAppToken(appId, appCert, 3600);
-
-    console.log(`Updating user profile for: ${userId}`);
 
     if (!nickname && !avatarurl) {
       return new Response(
@@ -114,8 +111,6 @@ export async function POST(request: Request) {
         },
       );
     }
-
-    console.log('Agora user profile updated successfully:', userId);
 
     return new Response(
       JSON.stringify({

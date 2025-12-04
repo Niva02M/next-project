@@ -60,64 +60,51 @@ export default function SimpleVoiceCall({
     try {
       setIsConnecting(true);
 
-      console.log('🎤 Joining call channel:', channelName);
-      console.log('🎤 Is group call:', isGroupCall);
-
-      // Get RTC token from server
       const tokenResponse = await axios.post('/api/agora/rtc-token', {
         userId: currentUserId,
         channel: channelName,
       });
 
       const { rtcToken, appId } = tokenResponse.data;
-      console.log('✅ Got RTC token, appId:', appId);
 
       if (!appId || !rtcToken) {
         throw new Error('Failed to get RTC token from server');
       }
 
-      // Create Agora RTC client
       const agoraClient = AgoraRTC.createClient({
         mode: 'rtc',
         codec: 'vp8',
       });
 
-      // Set up event listeners
       agoraClient.on('user-joined', (user) => {
-        console.log('👤 User joined:', user.uid);
         setRemoteUserCount((prev) => prev + 1);
       });
 
       agoraClient.on('user-published', async (user, mediaType) => {
         try {
-          console.log('👤 User published:', user.uid, 'media:', mediaType);
           await agoraClient.subscribe(user, mediaType);
 
           if (mediaType === 'audio') {
             user.audioTrack?.play();
-            console.log('🔊 Playing remote audio from:', user.uid);
           }
         } catch (err) {
-          console.error('❌ Error subscribing to user:', err);
+          console.error(' Error subscribing to user:', err);
         }
       });
 
       agoraClient.on('user-unpublished', (user, mediaType) => {
-        console.log('👤 User unpublished:', user.uid, mediaType);
         if (mediaType === 'audio') {
           setRemoteUserCount((prev) => Math.max(0, prev - 1));
         }
       });
 
       agoraClient.on('user-left', (user) => {
-        console.log('👤 User left:', user.uid);
         setRemoteUserCount((prev) => Math.max(0, prev - 1));
       });
 
       setClient(agoraClient);
 
       const uid = currentUserId.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
-      console.log('🎤 Joining with UID:', uid);
 
       const joinedUid = await agoraClient.join(
         appId,
@@ -125,13 +112,11 @@ export default function SimpleVoiceCall({
         rtcToken,
         uid,
       );
-      console.log('✅ Joined channel with UID:', joinedUid);
 
       const audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
       setLocalAudioTrack(audioTrack);
 
       await agoraClient.publish([audioTrack]);
-      console.log('✅ Published audio track');
 
       setIsConnected(true);
       setIsConnecting(false);
@@ -140,7 +125,7 @@ export default function SimpleVoiceCall({
         setCallDuration((prev) => prev + 1);
       }, 1000);
     } catch (error: any) {
-      console.error('❌ Failed to join call:', error);
+      console.error(' Failed to join call:', error);
       console.error('Error code:', error.code);
       console.error('Error message:', error.message);
       setIsConnecting(false);
@@ -187,7 +172,6 @@ export default function SimpleVoiceCall({
         setClient(null);
       }
 
-      console.log('✅ Call ended');
       onClose();
     } catch (error) {
       console.error('Error ending call:', error);
